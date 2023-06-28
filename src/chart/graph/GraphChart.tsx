@@ -13,7 +13,7 @@ import { GraphChartVisualizationProps, layouts } from './GraphChartVisualization
 import { handleExpand } from './util/ExplorationUtils';
 import { categoricalColorSchemes } from '../../config/ColorConfig';
 import { IconButtonArray } from '@neo4j-ndl/react';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Stack, Tooltip } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import { RenderSubValue } from '../../report/ReportRecordProcessing';
 import { downloadCSV } from '../ChartUtils';
@@ -21,6 +21,7 @@ import { generateSafeColumnKey } from '../table/TableChart';
 import { GraphChartContextMenu } from './component/GraphChartContextMenu';
 import { getSettings } from '../SettingsUtils';
 import { getPageNumbersAndNamesList } from '../../extensions/advancedcharts/Utils';
+import { NeoGraphChartLegendButton } from './component/button/GraphChartLegendButton';
 
 /**
  * Draws graph data using a force-directed-graph visualization.
@@ -31,7 +32,6 @@ const NeoGraphChart = (props: ChartProps) => {
   if (props.records == null || props.records.length == 0 || props.records[0].keys == null) {
     return <>No data, re-run the report.</>;
   }
-
   // Retrieve config from advanced settings
   const settings = getSettings(props.settings, props.extensions, props.getGlobalParameter);
   const linkDirectionalParticles = props.settings && props.settings.relationshipParticles ? 5 : undefined;
@@ -128,6 +128,7 @@ const NeoGraphChart = (props: ChartProps) => {
 
   const chartProps: GraphChartVisualizationProps = {
     data: {
+      legendDefinition: props.legendDefinition ? props.legendDefinition : {},
       nodes: data.nodes,
       nodeLabels: nodeLabels,
       links: data.links,
@@ -207,6 +208,7 @@ const NeoGraphChart = (props: ChartProps) => {
     extensions: {
       styleRules: settings.styleRules,
       actionsRules: settings.actionsRules,
+      // If legends are activated and available - populate definitions otherwise set to null
     },
   };
 
@@ -218,17 +220,20 @@ const NeoGraphChart = (props: ChartProps) => {
   return (
     <div ref={observe} style={{ width: '100%', height: '100%' }}>
       <NeoGraphChartCanvas>
-        <IconButtonArray
-          aria-label={'graph icon'}
-          floating
-          orientation='horizontal'
-          style={{ position: 'absolute', bottom: '15px', right: '15px', zIndex: 50 }}
-        >
-          <GraphChartContextMenu {...chartProps} />
-          <NeoGraphChartFitViewButton {...chartProps} />
-          {settings.lockable ? <NeoGraphChartLockButton {...chartProps} /> : <></>}
-          {settings.drilldownLink ? <NeoGraphChartDeepLinkButton {...chartProps} /> : <></>}
-        </IconButtonArray>
+        <Stack direction={'row'}>
+          <NeoGraphChartLegendButton {...chartProps}></NeoGraphChartLegendButton>
+          <IconButtonArray
+            aria-label={'graph icon'}
+            floating
+            orientation='horizontal'
+            style={{ position: 'absolute', bottom: '15px', right: '15px', zIndex: 50 }}
+          >
+            <GraphChartContextMenu {...chartProps} />
+            <NeoGraphChartFitViewButton {...chartProps} />
+            {settings.lockable ? <NeoGraphChartLockButton {...chartProps} /> : <></>}
+            {settings.drilldownLink ? <NeoGraphChartDeepLinkButton {...chartProps} /> : <></>}
+          </IconButtonArray>
+        </Stack>
         <NeoGraphChartVisualization2D {...chartProps} />
         <NeoGraphChartInspectModal {...chartProps}></NeoGraphChartInspectModal>
         {settings.allowDownload && props.records && props.records.length > 0 ? (
