@@ -26,6 +26,10 @@ export const DEFAULT_ROW_LIMIT = 100;
 
 // A dictionary of available reports (visualizations).
 export const REPORT_TYPES = {
+  panel: {
+    label: 'Panel',
+    helperText: 'A panel will group several cards/reports'
+  },
   table: {
     label: 'Table',
     helperText: 'A table will contain all returned data.',

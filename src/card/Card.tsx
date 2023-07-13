@@ -121,11 +121,11 @@ const NeoCard = ({
   }, [report.collapseTimeout]);
 
   useEffect(() => {
-    if (!report.settings.legendDefinition) {
+    if (!report?.settings?.legendDefinition) {
       return;
     }
-    setLegendDefinition(report.settings?.legendDefinition);
-  }, [report.settings.legendDefinition]);
+    setLegendDefinition(report?.settings?.legendDefinition);
+  }, [report.settings]);
 
   // TODO - get rid of some of the props-drilling here...
   const component = (

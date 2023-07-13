@@ -9,6 +9,7 @@ import { getDashboardIsEditable, getPageNumber } from '../settings/SettingsSelec
 import { getDashboardSettings } from '../dashboard/DashboardSelectors';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { GRID_COMPACTION_TYPE } from '../config/PageConfig';
+import {Card, Stack, Typography} from "@mui/material";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -183,6 +184,27 @@ export const NeoPage = ({
         {reports.map((report) => {
           const w = 12;
           const { id } = report;
+
+          if(report.type === 'panel') {
+            return   <Grid
+                key={getReportKey(pagenumber, id)}
+                style={{ paddingBottom: '6px' }}
+                item
+                xs={Math.min(w * 4, 12)}
+                sm={Math.min(w * 2, 12)}
+                md={Math.min(w * 2, 12)}
+                lg={Math.min(w, 12)}
+                xl={Math.min(w, 12)}
+            >
+              <Grid container spacing={2}>
+              {[...Array(10)].map((x, i) =>
+                  <Grid item xs={4} key={i}>
+                  <Card style={{margin: '20px'}} key={i}><Typography>Hello world!</Typography></Card>
+                  </Grid>
+              )}
+              </Grid>
+            </Grid>
+          }
           // @ts-ignore
           return (
             <Grid

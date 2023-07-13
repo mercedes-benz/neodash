@@ -32,6 +32,55 @@
       "title": "SW version details",
       "reports": [
         {
+          "title": "asdfasdf",
+          "type": "panel",
+          "width": 12,
+          "height": 4,
+          "x": 0,
+          "y": 0,
+          "selection": {},
+          "settings": {},
+          "subReports": [
+            {
+              "title": "Subreport 1",
+              "query": "MATCH (n:`NTG6_HU_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 3,
+              "height": 4,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "type": "Node Property",
+                "entityType": "NTG6_HU_SW",
+                "helperText": "SW version to be shown",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg6_hu_sw_title_100"
+              },
+              "id": "55f2379f-769a-44b6-ae7d-asdfasdfcxv"
+            },
+            {
+              "title": "Sub report 2",
+              "query": "MATCH (n:`NTG6_HU_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 3,
+              "height": 4,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "type": "Node Property",
+                "entityType": "NTG6_HU_SW",
+                "helperText": "SW version to be shown",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg6_hu_sw_title_100"
+              },
+              "id": "55f2379f-769a-44b6-ae7d-asdfsadfv"
+            }
+          ],
+          "id": "55f2379f-769a-44b6-ae7d-2f6cb5ac59asdfsadf"
+        },
+        {
           "title": "Select SW version",
           "query": "MATCH (n:`NTG6_HU_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
           "width": 3,
