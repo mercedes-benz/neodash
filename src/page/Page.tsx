@@ -9,7 +9,8 @@ import { getDashboardIsEditable, getPageNumber } from '../settings/SettingsSelec
 import { getDashboardSettings } from '../dashboard/DashboardSelectors';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { GRID_COMPACTION_TYPE } from '../config/PageConfig';
-import {Card, Stack, Typography} from "@mui/material";
+import {Card, Paper, Stack, Typography} from "@mui/material";
+import Box from "@mui/material/Box";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -27,7 +28,10 @@ export const NeoPage = ({
   isLoaded = true, // Whether the page is loaded and the cards can be displayed.
   onPageLayoutUpdate = () => {}, // action to take when the page layout is updated.
 }) => {
-  const getReportKey = (pagenumber: number, id: string) => {
+  const getReportKey = (pagenumber: number, id: string, subReportSearch?: boolean) => {
+    if(subReportSearch === true) {
+      return `${pagenumber}:${id}`;
+    }
     return `${pagenumber}:${id}`;
   };
 
@@ -184,27 +188,6 @@ export const NeoPage = ({
         {reports.map((report) => {
           const w = 12;
           const { id } = report;
-
-          if(report.type === 'panel') {
-            return   <Grid
-                key={getReportKey(pagenumber, id)}
-                style={{ paddingBottom: '6px' }}
-                item
-                xs={Math.min(w * 4, 12)}
-                sm={Math.min(w * 2, 12)}
-                md={Math.min(w * 2, 12)}
-                lg={Math.min(w, 12)}
-                xl={Math.min(w, 12)}
-            >
-              <Grid container spacing={2}>
-              {[...Array(10)].map((x, i) =>
-                  <Grid item xs={4} key={i}>
-                  <Card style={{margin: '20px'}} key={i}><Typography>Hello world!</Typography></Card>
-                  </Grid>
-              )}
-              </Grid>
-            </Grid>
-          }
           // @ts-ignore
           return (
             <Grid
@@ -217,6 +200,36 @@ export const NeoPage = ({
               lg={Math.min(w, 12)}
               xl={Math.min(w, 12)}
             >
+              {
+                report.type === 'panel'?
+              <Card sx={{alignContent:'center',  border: 1, borderColor: 'red'}}>
+                <Grid container
+                      spacing={1}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      xs={Math.min(w * 4, 12)}
+                      sm={Math.min(w * 2, 12)}
+                      md={Math.min(w * 2, 12)}
+                      lg={Math.min(w, 12)}
+                      xl={Math.min(w, 12)}
+                      style={{padding: '4px'}}
+                      zIndex={1000}
+                >
+                  {[...Array(10)].map((x, i) =>
+                      <Grid item
+                            xs={Math.min(w * 2, 6)}
+                            sm={Math.min(w, 6)}
+                            md={Math.min(w, 6)}
+                            lg={Math.min(w/2, 6)}
+                            xl={Math.min(w/2, 6)}
+                            key={i}
+                            alignItems={"center"}
+                            justifyContent={"center"}>
+                        <Card><Typography>Mercedes-Benz, commonly referred to as Mercedes and sometimes as Benz, is a German luxury and commercial vehicle automotive brand established in 1926. Mercedes-Benz AG is headquartered in Stuttgart, Baden-Württemberg, Germany. Wikipedia</Typography></Card>
+                      </Grid>
+                  )}
+                </Grid>
+              </Card> :
               <NeoCard
                 id={id}
                 key={getReportKey(pagenumber, id)}
@@ -227,6 +240,7 @@ export const NeoPage = ({
                   onClonePressed(id, x, y);
                 }}
               />
+              }
             </Grid>
           );
         })}
