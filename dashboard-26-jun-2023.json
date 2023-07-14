@@ -1853,6 +1853,210 @@
           "id": "666f85b6-0dad-4573-b829-77131edadaa0"
         }
       ]
+    },
+    {
+      "title": "Main Page",
+      "reports": [
+        {
+          "id": "a6cdd746-c832-4cfe-8793-sdafasdf",
+          "title": "Hi there 👋",
+          "settings": {
+            "heightDivisor": 1,
+            "widthDivisor": 1,
+            "border": 4,
+            "borderColor": "purple"
+          },
+          "x": 0,
+          "y": 0,
+          "width": 12,
+          "height": 3,
+          "type": "panel",
+          "subReports": [
+            {
+              "title": "Runs on HW",
+              "query": "MATCH (n:NTG6_HU_SW {title:$neodash_ntg6_hu_sw_title_100})-[e:RUNS_ON]-(m:NTG6_HU_HW) RETURN n, e, m",
+              "width": 6,
+              "height": 3,
+              "x": 0,
+              "y": 0,
+              "type": "graph",
+              "selection": {
+                "NTG6_HU_SW": "title",
+                "NTG6_HU_HW": "title"
+              },
+              "settings": {
+                "nodePositions": {},
+                "nodeLabelFontSize": 3,
+                "relLabelFontSize": 2,
+                "backgroundColor": "#ffffff",
+                "hideSelections": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true,
+                "downloadImageEnabled": true,
+                "legendDefinition": [
+                  {
+                    "enabled": true,
+                    "entries": [
+                      { "type": "node", "color": "#EFE289", "meaning": "SW version", "textColor": "#000000" },
+                      { "type": "edge", "color": "#4caf50", "meaning": "HW version", "textColor": "#000000" }
+                    ]
+                  }
+                ],
+                "styleRules": [
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "SOP",
+                    "customization": "node color",
+                    "customizationValue": "#A6CAD8"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP1",
+                    "customization": "node color",
+                    "customizationValue": "#79AEBF"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP2",
+                    "customization": "node color",
+                    "customizationValue": "#5097AB"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node color",
+                    "customizationValue": "#007A93"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node label color",
+                    "customizationValue": "#ffffff"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node color",
+                    "customizationValue": "#00677F"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node label color",
+                    "customizationValue": "#ffffff"
+                  },
+                  {
+                    "field": "RUNS_ON.hwPartNumbersHigh",
+                    "condition": "contains",
+                    "value": "HEADUNIT",
+                    "customization": "relationship color",
+                    "customizationValue": "#79AEBF"
+                  }
+                ]
+              },
+              "id": "02a27662-34ba-asdfsdaf-b14b-0cc92705a0a8"
+            },
+            {
+              "title": "Runs on HW",
+              "query": "MATCH (n:NTG6_HU_SW {title:$neodash_ntg6_hu_sw_title_100})-[e:RUNS_ON]-(m:NTG6_HU_HW) RETURN n, e, m",
+              "width": 6,
+              "height": 3,
+              "x": 6,
+              "y": 0,
+              "type": "graph",
+              "selection": {
+                "NTG6_HU_SW": "title",
+                "NTG6_HU_HW": "title"
+              },
+              "settings": {
+                "nodePositions": {},
+                "nodeLabelFontSize": 3,
+                "relLabelFontSize": 2,
+                "backgroundColor": "#ffffff",
+                "hideSelections": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true,
+                "downloadImageEnabled": true,
+                "legendDefinition": [
+                  {
+                    "enabled": true,
+                    "entries": [
+                      { "type": "node", "color": "#EFE289", "meaning": "SW version", "textColor": "#000000" },
+                      { "type": "edge", "color": "#4caf50", "meaning": "HW version", "textColor": "#000000" }
+                    ]
+                  }
+                ],
+                "styleRules": [
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "SOP",
+                    "customization": "node color",
+                    "customizationValue": "#A6CAD8"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP1",
+                    "customization": "node color",
+                    "customizationValue": "#79AEBF"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP2",
+                    "customization": "node color",
+                    "customizationValue": "#5097AB"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node color",
+                    "customizationValue": "#007A93"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node label color",
+                    "customizationValue": "#ffffff"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node color",
+                    "customizationValue": "#00677F"
+                  },
+                  {
+                    "field": "NTG6_HU_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node label color",
+                    "customizationValue": "#ffffff"
+                  },
+                  {
+                    "field": "RUNS_ON.hwPartNumbersHigh",
+                    "condition": "contains",
+                    "value": "HEADUNIT",
+                    "customization": "relationship color",
+                    "customizationValue": "#79AEBF"
+                  }
+                ]
+              },
+              "id": "02a27662-asdfasdf-b14b-0cc92705a0a8"
+            }
+          ]
+        }
+      ]
     }
   ],
   "parameters": {},
