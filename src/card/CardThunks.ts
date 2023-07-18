@@ -74,7 +74,6 @@ export const updateReportTypeThunk = (id, type) => (dispatch: any, getState: any
 };
 
 export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) => {
-
   try {
     const state = getState();
     const { pagenumber } = state.dashboard.settings;
@@ -90,8 +89,8 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const selectables = selectableFields ? Object.keys(selectableFields) : [];
 
     // To handle the case where panel reports will not have these fields populated
-    if(!oldFields || !oldSelection) {
-      return
+    if (!oldFields || !oldSelection) {
+      return;
     }
     // If the new set of fields is not equal to the current set of fields, we ned to update the field selection.
     if (!isEqual(oldFields, fields) || Object.keys(oldSelection).length === 0) {
@@ -128,6 +127,7 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
       dispatch(updateFields(pagenumber, id, fields));
     }
   } catch (e) {
+    console.log(e);
     dispatch(createNotificationThunk('Cannot update report fields', e));
   }
 };
