@@ -89,7 +89,7 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const selectables = selectableFields ? Object.keys(selectableFields) : [];
 
     // To handle the case where panel reports will not have these fields populated
-    if (!oldFields || !oldSelection) {
+    if (!oldFields || !oldSelection || !fields) {
       return;
     }
     // If the new set of fields is not equal to the current set of fields, we ned to update the field selection.
