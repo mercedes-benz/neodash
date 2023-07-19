@@ -1,4 +1,4 @@
-import { Card, Collapse, debounce, Grid } from '@mui/material';
+import { Box, Card, Collapse, debounce, Grid, Paper } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import NeoCardSettings from './settings/CardSettings';
 import NeoCardView from './view/CardView';
@@ -121,11 +121,12 @@ const NeoCard = ({
   }, [report.collapseTimeout]);
 
   useEffect(() => {
-    if (!report.settings.legendDefinition) {
-      return;
-    }
-    setLegendDefinition(report.settings?.legendDefinition);
-  }, [report.settings.legendDefinition]);
+    setLegendDefinition(
+      report && report.settings && report.settings.legendDefinition !== undefined
+        ? report.settings.legendDefinition
+        : {}
+    );
+  }, [report.settings]);
 
   // TODO - get rid of some of the props-drilling here...
   const component = (
@@ -139,7 +140,10 @@ const NeoCard = ({
         <Card
           ref={ref}
           style={{ height: '100%' }}
-          sx={{ border: report.settings?.border, borderColor: report.settings?.borderColor }}
+          sx={{
+            border: report.settings?.border,
+            borderColor: report.settings?.borderColor,
+          }}
         >
           {report.type === 'panel' ? (
             <Grid container spacing={2}>
@@ -147,8 +151,9 @@ const NeoCard = ({
                 <Grid
                   item
                   sm={Math.min(subReport.width / report.settings.widthDivisor, 12)}
-                  xs={Math.min(subReport.width * 2 * report.settings.widthDivisor, 12)}
+                  xs={Math.min((subReport.width / report.settings.widthDivisor) * 2, 12)}
                   key={subReport.id}
+                  className='bg-light-neutral-bg-weak overflow-hidden n-shadow-l4 border-2 border-light-neutral-border-strong min-w-max rounded-lg px-4 py-5 sm:p-6'
                 >
                   <NeoCardView
                     legendDefinition={legendDefinition}
@@ -168,8 +173,8 @@ const NeoCard = ({
                     globalParameters={globalParameters}
                     fields={subReport.fields ? subReport.fields : []}
                     selection={subReport.selection}
-                    widthPx={width / report.settings.heightDivisor}
-                    heightPx={height / report.settings.widthDivisor}
+                    widthPx={subReport.width / report.settings.heightDivisor}
+                    heightPx={subReport.height / report.settings.widthDivisor}
                     title={subReport.title}
                     expanded={expanded}
                     onToggleCardExpand={onToggleCardExpand}

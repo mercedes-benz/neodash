@@ -80,18 +80,24 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const extensions = Object.fromEntries(Object.entries(state.dashboard.extensions).filter(([_, v]) => v.active));
     const oldReport = state.dashboard.pages[pagenumber].reports.find((o) => o.id === id);
 
-    const oldFields = oldReport.fields;
-    const reportType = oldReport.type;
-    const oldSelection = oldReport.selection;
+    if (!oldReport || oldReport?.type === 'panel') {
+      // Don't apply below logic for panel type reports, or when oldReport is not found
+      return;
+    }
+
+    const oldFields = oldReport?.fields;
+    const reportType = oldReport?.type;
+    const oldSelection = oldReport?.selection;
+
+    if (!oldFields || !oldSelection) {
+      return; //Don't apply below logic when fields or selections are not populated
+    }
+
     const reportTypes = getReportTypes(extensions);
     const selectableFields = reportTypes[reportType].selection; // The dictionary of selectable fields as defined in the config.
     const { autoAssignSelectedProperties } = reportTypes[reportType];
     const selectables = selectableFields ? Object.keys(selectableFields) : [];
 
-    // To handle the case where panel reports will not have these fields populated
-    if (!oldFields || !oldSelection || !fields) {
-      return;
-    }
     // If the new set of fields is not equal to the current set of fields, we ned to update the field selection.
     if (!isEqual(oldFields, fields) || Object.keys(oldSelection).length === 0) {
       selectables.forEach((selection, i) => {

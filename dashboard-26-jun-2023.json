@@ -2057,6 +2057,232 @@
           ]
         }
       ]
+    },
+    {
+      "title": "SW modules",
+      "reports": [
+        {
+          "id": "1b19f252-53b9-4efb-a46b-889d2a8966c2",
+          "title": "Frame 1",
+          "settings": {
+            "heightDivisor": 1,
+            "widthDivisor": 1,
+            "border": 3,
+            "borderColor": "gray"
+          },
+          "x": 0,
+          "y": 0,
+          "width": 12,
+          "height": 5,
+          "type": "panel",
+          "subReports": [
+            {
+              "id": "574a6cec-e5fc-4691-a300-5c062800a214",
+              "title": "Select SW version",
+              "query": "MATCH (n:`NTG7_IC_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 6,
+              "height": 1,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "type": "Node Property",
+                "entityType": "NTG7_IC_SW",
+                "helperText": "SW version to show modules",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg7_ic_sw_title_500"
+              }
+            },
+            {
+              "id": "fb3d12f1-e5b6-4e26-90b6-7700c31d3167",
+              "title": "Select IC line",
+              "query": "MATCH (n:`NTG7_IC_LINE`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 2",
+              "width": 6,
+              "height": 1,
+              "x": 6,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "type": "Node Property",
+                "entityType": "NTG7_IC_LINE",
+                "helperText": "IC line to show modules (Entry or High)",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg7_ic_line_title_501"
+              }
+            },
+            {
+              "id": "0d73ce67-9c07-4ed3-8fc0-4a64d2b95878",
+              "title": "BOOTLOADER",
+              "query": "MATCH (n:NTG7_IC_MODULE_BOOTLOADER)-[e:HAS_MODULE_BOOTLOADER_PARTNUMBER]->(m:NTG7_IC_MODULE_BOOTLOADER_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 1,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "384f08ec-d2a6-4ef0-9301-aac87fb6fe1c",
+              "title": "SOC_APPLICATION",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_APPLICATION)-[e:HAS_MODULE_SOC_APPLICATION_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_APPLICATION_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 4,
+              "y": 1,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "f3d1e4cc-8581-436f-a9b2-8b2b2f39c0e6",
+              "title": "SOC_HMI",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_HMI)-[e:HAS_MODULE_SOC_HMI_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_HMI_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 2,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "584f3fc5-47fd-414f-b38d-048c9cf2a971",
+              "title": "SOC_HMI_HUD",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_HMI_HUD)-[e:HAS_MODULE_SOC_HMI_HUD_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_HMI_HUD_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m. icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 4,
+              "y": 2,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "c8352b0f-d75c-49a5-b9fc-1ea089b4a847",
+              "title": "VIP_APPLICATION",
+              "query": "MATCH (n:NTG7_IC_MODULE_VIP_APPLICATION)-[e:HAS_MODULE_VIP_APPLICATION_PARTNUMBER]->(m:NTG7_IC_MODULE_VIP_APPLICATION_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 3,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "d98adfcf-a51b-4dc1-891d-d503297e1fee",
+              "title": "VIP_SW_SPECIFIC_DATA_SET",
+              "query": "MATCH (n:NTG7_IC_MODULE_VIP_SW_SPECIFIC_DATA_SET)-[e:HAS_MODULE_VIP_SW_SPECIFIC_DATA_SET_PARTNUMBER]->(m:NTG7_IC_MODULE_VIP_SW_SPECIFIC_DATA_SET_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 4,
+              "y": 3,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "7a4d8c16-fddc-4517-8f23-9238961e6803",
+              "title": "SOC_AR_HUD",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_AR_HUD)-[e:HAS_MODULE_SOC_AR_HUD_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_AR_HUD_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 4,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "a6bcced5-4039-430f-9762-23177f498105",
+              "title": "SOC_HMI_MODEL_SPECIFIC",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_HMI_MODEL_SPECIFIC)-[e:HAS_MODULE_SOC_HMI_MODEL_SPECIFIC_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_HMI_MODEL_SPECIFIC_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `YWP`, m.icLines AS `IC lines`, m.priority AS `Flash priority`, m.modelLine AS `Model line` ORDER BY m.modelLine",
+              "width": 4,
+              "height": 4,
+              "x": 8,
+              "y": 1,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[2, 1, 2, 1, 3]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "parameters": {},

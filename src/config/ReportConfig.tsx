@@ -28,7 +28,7 @@ export const DEFAULT_ROW_LIMIT = 100;
 export const REPORT_TYPES = {
   panel: {
     label: 'Panel',
-    helperText: 'A panel is group of several charts under 1 card'
+    helperText: 'A panel is group of several charts under 1 card',
   },
   table: {
     label: 'Table',
