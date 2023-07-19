@@ -43,6 +43,7 @@ export const NeoGraphChartLegendButton = (props: GraphChartVisualizationProps) =
         {legendEntries.map((entry) => {
           return (
             <ListItem
+              key={entry}
               alignItems='center'
               disablePadding={true}
               disableGutters={true}
@@ -139,6 +140,7 @@ export const NeoGraphChartLegendButton = (props: GraphChartVisualizationProps) =
               borderWidth: '1pt',
               typography: 'subtitle2',
               textTransform: 'capitalize',
+              color: '#535B66',
             }}
           >
             Legend

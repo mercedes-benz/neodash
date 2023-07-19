@@ -1,4 +1,4 @@
-import { Card, Collapse, debounce } from '@mui/material';
+import { Card, Collapse, debounce, Grid } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import NeoCardSettings from './settings/CardSettings';
 import NeoCardView from './view/CardView';
@@ -136,76 +136,175 @@ const NeoCard = ({
     >
       {/* The front of the card, referred to as the 'view' */}
       <Collapse disablestrictmodecompat='true' in={!settingsOpen} timeout={collapseTimeout} style={{ height: '100%' }}>
-        <Card ref={ref} style={{ height: '100%' }}>
-          <NeoCardView
-            legendDefinition={legendDefinition}
-            settingsOpen={settingsOpen}
-            editable={editable}
-            dashboardSettings={dashboardSettings}
-            extensions={extensions}
-            settings={report.settings ? report.settings : {}}
-            updateReportSetting={(name, value) => onReportSettingUpdate(id, name, value)}
-            createNotification={(title, message) => createNotification(title, message)}
-            type={report.type}
-            database={database}
-            active={active}
-            setActive={setActive}
-            onDownloadImage={() => downloadComponentAsImage(ref)}
-            query={report.query}
-            globalParameters={globalParameters}
-            fields={report.fields ? report.fields : []}
-            selection={report.selection}
-            widthPx={width}
-            heightPx={height}
-            title={report.title}
-            expanded={expanded}
-            onToggleCardExpand={onToggleCardExpand}
-            onGlobalParameterUpdate={onGlobalParameterUpdate}
-            onSelectionUpdate={(selectable, field) => onSelectionUpdate(id, selectable, field)}
-            onTitleUpdate={(title) => onTitleUpdate(id, title)}
-            onFieldsUpdate={(fields) => onFieldsUpdate(id, fields)}
-            onToggleCardSettings={() => {
-              setSettingsOpen(true);
-              setCollapseTimeout('auto');
-              debouncedOnToggleCardSettings(id, true);
-            }}
-          />
+        <Card
+          ref={ref}
+          style={{ height: '100%' }}
+          sx={{ border: report.settings?.border, borderColor: report.settings?.borderColor }}
+        >
+          {report.type === 'panel' ? (
+            <Grid container spacing={2}>
+              {report.subReports.map((subReport) => (
+                <Grid
+                  item
+                  sm={Math.min(subReport.width / report.settings.widthDivisor, 12)}
+                  xs={Math.min(subReport.width * 2 * report.settings.widthDivisor, 12)}
+                  key={subReport.id}
+                >
+                  <NeoCardView
+                    legendDefinition={legendDefinition}
+                    settingsOpen={settingsOpen}
+                    editable={editable}
+                    dashboardSettings={dashboardSettings}
+                    extensions={extensions}
+                    settings={subReport.settings ? subReport.settings : {}}
+                    updateReportSetting={(name, value) => onReportSettingUpdate(id, name, value)}
+                    createNotification={(title, message) => createNotification(title, message)}
+                    type={subReport.type}
+                    database={database}
+                    active={active}
+                    setActive={setActive}
+                    onDownloadImage={() => downloadComponentAsImage(ref)}
+                    query={subReport.query}
+                    globalParameters={globalParameters}
+                    fields={subReport.fields ? subReport.fields : []}
+                    selection={subReport.selection}
+                    widthPx={width / report.settings.heightDivisor}
+                    heightPx={height / report.settings.widthDivisor}
+                    title={subReport.title}
+                    expanded={expanded}
+                    onToggleCardExpand={onToggleCardExpand}
+                    onGlobalParameterUpdate={onGlobalParameterUpdate}
+                    onSelectionUpdate={(selectable, field) => onSelectionUpdate(id, selectable, field)}
+                    onTitleUpdate={(title) => onTitleUpdate(id, title)}
+                    onFieldsUpdate={(fields) => onFieldsUpdate(id, fields)}
+                    onToggleCardSettings={() => {
+                      setSettingsOpen(true);
+                      setCollapseTimeout('auto');
+                      debouncedOnToggleCardSettings(id, true);
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <NeoCardView
+              legendDefinition={legendDefinition}
+              settingsOpen={settingsOpen}
+              editable={editable}
+              dashboardSettings={dashboardSettings}
+              extensions={extensions}
+              settings={report.settings ? report.settings : {}}
+              updateReportSetting={(name, value) => onReportSettingUpdate(id, name, value)}
+              createNotification={(title, message) => createNotification(title, message)}
+              type={report.type}
+              database={database}
+              active={active}
+              setActive={setActive}
+              onDownloadImage={() => downloadComponentAsImage(ref)}
+              query={report.query}
+              globalParameters={globalParameters}
+              fields={report.fields ? report.fields : []}
+              selection={report.selection}
+              widthPx={width}
+              heightPx={height}
+              title={report.title}
+              expanded={expanded}
+              onToggleCardExpand={onToggleCardExpand}
+              onGlobalParameterUpdate={onGlobalParameterUpdate}
+              onSelectionUpdate={(selectable, field) => onSelectionUpdate(id, selectable, field)}
+              onTitleUpdate={(title) => onTitleUpdate(id, title)}
+              onFieldsUpdate={(fields) => onFieldsUpdate(id, fields)}
+              onToggleCardSettings={() => {
+                setSettingsOpen(true);
+                setCollapseTimeout('auto');
+                debouncedOnToggleCardSettings(id, true);
+              }}
+            />
+          )}
         </Card>
       </Collapse>
       {/* The back of the card, referred to as the 'settings' */}
       <Collapse disablestrictmodecompat='true' in={settingsOpen} timeout={collapseTimeout}>
-        <Card style={{ height: '100%' }}>
-          <NeoCardSettings
-            settingsOpen={settingsOpen}
-            query={report.query}
-            database={database}
-            databaseList={databaseList}
-            width={report.width}
-            height={report.height}
-            heightPx={height}
-            fields={report.fields}
-            type={report.type}
-            expanded={expanded}
-            extensions={extensions}
-            dashboardSettings={dashboardSettings}
-            onToggleCardExpand={onToggleCardExpand}
-            setActive={setActive}
-            reportSettings={report.settings}
-            reportSettingsOpen={report.advancedSettingsOpen}
-            onQueryUpdate={(query) => onQueryUpdate(id, query)}
-            onDatabaseChanged={(database) => onDatabaseChanged(id, database)}
-            onReportSettingUpdate={(setting, value) => onReportSettingUpdate(id, setting, value)}
-            onTypeUpdate={(type) => onTypeUpdate(id, type)}
-            onReportHelpButtonPressed={() => onReportHelpButtonPressed()}
-            onRemovePressed={() => onRemovePressed(id)}
-            onClonePressed={() => onClonePressed(id)}
-            onToggleCardSettings={() => {
-              setSettingsOpen(false);
-              setCollapseTimeout('auto');
-              debouncedOnToggleCardSettings(id, false);
-            }}
-            onToggleReportSettings={() => onToggleReportSettings(id)}
-          />
+        <Card
+          style={{ height: '100%' }}
+          sx={{ border: report.settings?.border, borderColor: report.settings?.borderColor }}
+        >
+          {report.type === 'panel' ? (
+            <Grid container spacing={2}>
+              {report.subReports.map((subReport) => (
+                <Grid
+                  item
+                  sm={Math.min(subReport.width / report.settings.widthDivisor, 12)}
+                  xs={Math.min(subReport.width * 2 * report.settings.widthDivisor, 12)}
+                  key={subReport.id}
+                >
+                  <NeoCardSettings
+                    settingsOpen={settingsOpen}
+                    query={subReport.query}
+                    database={database}
+                    databaseList={databaseList}
+                    width={subReport.width / report.settings.widthDivisor}
+                    height={subReport.height / report.settings.heightDivisor}
+                    heightPx={height / report.settings.heightDivisor}
+                    fields={subReport.fields}
+                    type={subReport.type}
+                    expanded={expanded}
+                    extensions={extensions}
+                    dashboardSettings={dashboardSettings}
+                    onToggleCardExpand={onToggleCardExpand}
+                    setActive={setActive}
+                    reportSettings={subReport.settings}
+                    reportSettingsOpen={subReport.advancedSettingsOpen}
+                    onQueryUpdate={(query) => onQueryUpdate(subReport.id, query)}
+                    onDatabaseChanged={(database) => onDatabaseChanged(subReport.id, database)}
+                    onReportSettingUpdate={(setting, value) => onReportSettingUpdate(subReport.id, setting, value)}
+                    onTypeUpdate={(type) => onTypeUpdate(subReport.id, type)}
+                    onReportHelpButtonPressed={() => onReportHelpButtonPressed()}
+                    onRemovePressed={() => onRemovePressed(subReport.id)}
+                    onClonePressed={() => onClonePressed(subReport.id)}
+                    onToggleCardSettings={() => {
+                      setSettingsOpen(false);
+                      setCollapseTimeout('auto');
+                      debouncedOnToggleCardSettings(subReport.id, false);
+                    }}
+                    onToggleReportSettings={() => onToggleReportSettings(subReport.id)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <NeoCardSettings
+              settingsOpen={settingsOpen}
+              query={report.query}
+              database={database}
+              databaseList={databaseList}
+              width={report.width}
+              height={report.height}
+              heightPx={height}
+              fields={report.fields}
+              type={report.type}
+              expanded={expanded}
+              extensions={extensions}
+              dashboardSettings={dashboardSettings}
+              onToggleCardExpand={onToggleCardExpand}
+              setActive={setActive}
+              reportSettings={report.settings}
+              reportSettingsOpen={report.advancedSettingsOpen}
+              onQueryUpdate={(query) => onQueryUpdate(id, query)}
+              onDatabaseChanged={(database) => onDatabaseChanged(id, database)}
+              onReportSettingUpdate={(setting, value) => onReportSettingUpdate(id, setting, value)}
+              onTypeUpdate={(type) => onTypeUpdate(id, type)}
+              onReportHelpButtonPressed={() => onReportHelpButtonPressed()}
+              onRemovePressed={() => onRemovePressed(id)}
+              onClonePressed={() => onClonePressed(id)}
+              onToggleCardSettings={() => {
+                setSettingsOpen(false);
+                setCollapseTimeout('auto');
+                debouncedOnToggleCardSettings(id, false);
+              }}
+              onToggleReportSettings={() => onToggleReportSettings(id)}
+            />
+          )}
         </Card>
       </Collapse>
     </div>

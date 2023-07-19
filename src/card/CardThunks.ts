@@ -80,9 +80,6 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const extensions = Object.fromEntries(Object.entries(state.dashboard.extensions).filter(([_, v]) => v.active));
     const oldReport = state.dashboard.pages[pagenumber].reports.find((o) => o.id === id);
 
-    if (!oldReport) {
-      return;
-    }
     const oldFields = oldReport.fields;
     const reportType = oldReport.type;
     const oldSelection = oldReport.selection;
@@ -91,6 +88,10 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const { autoAssignSelectedProperties } = reportTypes[reportType];
     const selectables = selectableFields ? Object.keys(selectableFields) : [];
 
+    // To handle the case where panel reports will not have these fields populated
+    if (!oldFields || !oldSelection) {
+      return;
+    }
     // If the new set of fields is not equal to the current set of fields, we ned to update the field selection.
     if (!isEqual(oldFields, fields) || Object.keys(oldSelection).length === 0) {
       selectables.forEach((selection, i) => {
@@ -126,6 +127,7 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
       dispatch(updateFields(pagenumber, id, fields));
     }
   } catch (e) {
+    console.log(e);
     dispatch(createNotificationThunk('Cannot update report fields', e));
   }
 };
