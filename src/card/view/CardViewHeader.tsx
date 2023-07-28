@@ -16,6 +16,7 @@ import {
   ShrinkIcon,
   CameraIconSolid,
   InformationCircleIconOutline,
+  MinusIconOutline,
 } from '@neo4j-ndl/react/icons';
 
 const NeoCardViewHeader = ({
@@ -32,6 +33,7 @@ const NeoCardViewHeader = ({
   onToggleCardExpand,
   expanded,
   parameters,
+  onHandleMinimize,
 }) => {
   const [text, setText] = React.useState(title);
   const [parsedText, setParsedText] = React.useState(title);
@@ -125,6 +127,14 @@ const NeoCardViewHeader = ({
     </Tooltip>
   );
 
+  const minimizeButton = (
+    <Tooltip title='Minimize' aria-label='minimize'>
+      <IconButton aria-label='minimize' onClick={onHandleMinimize} clean size='medium'>
+        <MinusIconOutline />
+      </IconButton>
+    </Tooltip>
+  );
+
   const maximizeButton = (
     <Tooltip title='Maximize' aria-label='maximize'>
       <IconButton aria-label='maximize' onClick={onToggleCardExpand} clean size='medium'>
@@ -187,6 +197,7 @@ const NeoCardViewHeader = ({
           <>
             {downloadImageEnabled ? downloadImageButton : <></>}
             {fullscreenEnabled ? expanded ? unMaximizeButton : maximizeButton : <></>}
+            {minimizeButton}
             {descriptionEnabled ? descriptionButton : <></>}
             {refreshButtonEnabled ? refreshButton : <></>}
             {editable ? settingsButton : <></>}

@@ -1,6 +1,6 @@
 import { createNotification } from '../application/ApplicationActions';
 import { CARD_INITIAL_STATE } from '../card/CardReducer';
-import { createReport, removeReport, updateAllCardPositionsInPage } from './PageActions';
+import { createReport, removeReport, updateAllCardPositionsInPage, temporarilyRemoveReport, revertBackReport } from './PageActions';
 import { createUUID } from '../dashboard/DashboardThunks';
 
 export const createNotificationThunk = (title: any, message: any) => (dispatch: any) => {
@@ -29,6 +29,29 @@ export const removeReportThunk = (id: string) => (dispatch: any, getState: any) 
     dispatch(createNotificationThunk('Cannot remove report', e));
   }
 };
+
+export const temporarilyRemoveReportThunk = (id: string) => (dispatch: any, getState: any) => {
+  try {
+    const state = getState()
+    const { pagenumber } = state.dashboard.settings;
+    dispatch(temporarilyRemoveReport(pagenumber, id));
+  } catch (error) {
+    dispatch(createNotificationThunk('Cannot move to toolbox report', error));
+  }
+}
+
+
+export const moveReportFromToolboxThunk = (id: string) => (dispatch: any, getState: any) => {
+  try {
+    const state = getState()
+    const { pagenumber } = state.dashboard.settings;
+    dispatch(revertBackReport(pagenumber, id));
+  } catch (error) {
+    dispatch(createNotificationThunk('Cannot revert back to report', error));
+  }
+}
+
+
 
 export const cloneReportThunk = (id: string, x: number, y: number) => (dispatch: any, getState: any) => {
   try {

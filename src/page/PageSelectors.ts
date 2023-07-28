@@ -3,6 +3,10 @@ export const getReports = (state: any) => {
   const { pagenumber } = state.dashboard.settings;
   return state.dashboard.pages[pagenumber].reports;
 };
+export const getToolBox = (state: any) => {
+  const { pagenumber } = state.dashboard.settings;
+  return state.dashboard.pages[pagenumber].toolbox;
+};
 export const getReportsLoading = (state: any) => state.dashboard.isLoading;
 
 // TODO: Investigate to define what is the expected behavior => current filter is useless

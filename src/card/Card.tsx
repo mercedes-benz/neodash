@@ -54,6 +54,7 @@ const NeoCard = ({
   onDatabaseChanged, // action to take when the user changes the database related to the card
   loadDatabaseListFromNeo4j, // Thunk to get the list of databases
   createNotification, // Thunk to create a global notification pop-up.
+  onPutItem,
 }) => {
   // Will be used to fetch the list of current databases
   const { driver } = useContext<Neo4jContextState>(Neo4jContext);
@@ -105,6 +106,10 @@ const NeoCard = ({
   const [legendDefinition, setLegendDefinition] = React.useState(
     report.settings && report.settings.legendDefinition !== undefined ? report.settings.legendDefinition : {}
   );
+
+  const onHandleMinimize = () => {
+    onPutItem(report);
+  };
 
   useEffect(() => {
     if (!report.settingsOpen) {
@@ -165,6 +170,7 @@ const NeoCard = ({
                     setActive={setActive}
                     onDownloadImage={() => downloadComponentAsImage(ref)}
                     query={subReport.query}
+                    onHandleMinimize={onHandleMinimize}
                     globalParameters={globalParameters}
                     fields={subReport.fields ? subReport.fields : []}
                     selection={subReport.selection}
@@ -203,6 +209,7 @@ const NeoCard = ({
               onDownloadImage={() => downloadComponentAsImage(ref)}
               query={report.query}
               globalParameters={globalParameters}
+              onHandleMinimize={onHandleMinimize}
               fields={report.fields ? report.fields : []}
               selection={report.selection}
               widthPx={width}
