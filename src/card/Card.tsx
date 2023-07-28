@@ -181,12 +181,12 @@ const NeoCard = ({
                   >
                     <NeoCardView
                       legendDefinition={subReport?.settings?.legendDefinition}
-                      settingsOpen={settingsOpen}
+                      settingsOpen={false}
                       editable={editable}
                       dashboardSettings={dashboardSettings}
                       extensions={extensions}
                       settings={subReport.settings ? subReport.settings : {}}
-                      updateReportSetting={(name, value) => onReportSettingUpdate(id, name, value)}
+                      updateReportSetting={(name, value) => onReportSettingUpdate(subReport.id, name, value)}
                       createNotification={(title, message) => createNotification(title, message)}
                       type={subReport.type}
                       database={database}
@@ -207,9 +207,9 @@ const NeoCard = ({
                       onTitleUpdate={(title) => onTitleUpdate(subReport.id, title)}
                       onFieldsUpdate={(fields) => onFieldsUpdate(subReport.id, fields)}
                       onToggleCardSettings={() => {
-                        setSettingsOpen(true);
+                        setSettingsOpen(false);
                         setCollapseTimeout('auto');
-                        debouncedOnToggleCardSettings(subReport.id, true);
+                        debouncedOnToggleCardSettings(subReport.id, false);
                       }}
                     />
                   </Item>

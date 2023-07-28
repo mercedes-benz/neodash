@@ -78,12 +78,16 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const state = getState();
     const { pagenumber } = state.dashboard.settings;
     const extensions = Object.fromEntries(Object.entries(state.dashboard.extensions).filter(([_, v]) => v.active));
-    const oldReport = state.dashboard.pages[pagenumber].reports.find((o) => o.id === id);
-
-    if (!oldReport || oldReport?.type === 'panel') {
-      // Don't apply below logic for panel type reports, or when oldReport is not found
-      return;
-    }
+    const oldReport =
+      state.dashboard.pages[pagenumber].reports.find((o) => o.id === id) ||
+      state.dashboard.pages[pagenumber].reports.forEach((report) => {
+        if (report.subReports !== undefined) {
+          const reportFound = report.subReports.find((o) => o.id === id);
+          if (reportFound) {
+            return reportFound;
+          }
+        }
+      });
 
     const oldFields = oldReport?.fields;
     const reportType = oldReport?.type;
@@ -166,7 +170,17 @@ export const updateReportSettingThunk = (id, setting, value) => (dispatch: any, 
 
     // If we disable optional selections (e.g. grouping), we reset these selections to their none value.
     if (setting == 'showOptionalSelections' && value == false) {
-      const reportType = state.dashboard.pages[pagenumber].reports.find((o) => o.id === id).type;
+      const reportType =
+        state.dashboard.pages[pagenumber].reports.find((o) => o.id === id).type ||
+        state.dashboard.pages[pagenumber].reports.forEach((report) => {
+          if (report.subReports !== undefined) {
+            const reportTypeFound = report.subReports.find((o) => o.id === id).type;
+            if (reportTypeFound) {
+              return reportTypeFound;
+            }
+          }
+        });
+
       const reportTypes = getReportTypes(extensions);
       const selectableFields = reportTypes[reportType].selection;
       const optionalSelectables = selectableFields
