@@ -10,6 +10,18 @@ export const removeReport = (pagenumber: number, id: any) => ({
   payload: { pagenumber, id },
 });
 
+export const TEMPORARILY_REMOVE_REPORT = 'PAGE/TEMPORARILY_REMOVE_REPORT'
+export const temporarilyRemoveReport = (pagenumber: number, id: any) => ({
+  type: TEMPORARILY_REMOVE_REPORT,
+  payload: { pagenumber, id },
+});
+
+export const REVERT_BACK_REPORT = 'PAGE/REVERT_BACK_REPORT'
+export const revertBackReport = (pagenumber: number, id: any) => ({
+  type: REVERT_BACK_REPORT,
+  payload: { pagenumber, id },
+});
+
 export const UPDATE_ALL_CARD_POSITIONS_IN_PAGE = 'PAGE/UPDATE_ALL_CARD_POSITIONS_IN_PAGE';
 export const updateAllCardPositionsInPage = (pagenumber: number, positions: any) => ({
   type: UPDATE_ALL_CARD_POSITIONS_IN_PAGE,
