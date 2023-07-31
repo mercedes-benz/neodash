@@ -2,8 +2,8 @@ import cardReducer from '../card/CardReducer';
 import {
   CREATE_REPORT,
   REMOVE_REPORT,
-  TEMPORARILY_REMOVE_REPORT,
-  REVERT_BACK_REPORT,
+  MOVE_REPORT_TO_TOOLBOX,
+  REMOVE_REPORT_FROM_TOOLBOX,
   SET_PAGE_TITLE,
   FORCE_REFRESH_PAGE,
   UPDATE_ALL_CARD_POSITIONS_IN_PAGE,
@@ -95,7 +95,7 @@ export const pageReducer = (state = PAGE_INITIAL_STATE, action: { type: any; pay
         reports: cards,
       };
     }
-    case TEMPORARILY_REMOVE_REPORT: {
+    case MOVE_REPORT_TO_TOOLBOX: {
       const { id } = payload;
       let cards = state.reports.filter((o) => o.id !== id);
       let item = state.reports.filter((o) => o.id === id);
@@ -109,7 +109,7 @@ export const pageReducer = (state = PAGE_INITIAL_STATE, action: { type: any; pay
         toolbox: temp
       }
     }
-    case REVERT_BACK_REPORT: {
+    case REMOVE_REPORT_FROM_TOOLBOX: {
       const { id } = payload;
       const revertReport = state.toolbox.filter(item => item.id === id)
       

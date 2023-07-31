@@ -8,8 +8,8 @@ import {
   removeReportThunk,
   updatePageLayoutThunk,
   cloneReportThunk,
-  temporarilyRemoveReportThunk,
-  moveReportFromToolboxThunk,
+  moveReportToToolboxThunk,
+  removeReportFromToolboxThunk,
 } from './PageThunks';
 import { getDashboardIsEditable, getPageNumber } from '../settings/SettingsSelectors';
 import { getDashboardSettings } from '../dashboard/DashboardSelectors';
@@ -33,6 +33,8 @@ import {
 } from '@mui/material';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const truncateString = (str) => (str.length > 25 ? str.slice(0, 25) + '...' : str);
 
 const ToolBox = ({ items, onTakeItem, isListOpen, handleButtonClick }) => (
   <Box position='fixed' bottom={16} right={16} zIndex={1}>
@@ -59,7 +61,9 @@ const ToolBox = ({ items, onTakeItem, isListOpen, handleButtonClick }) => (
                   </IconButton>
                 }
               >
-                <ListItemText primary={`${index + 1}. ${item.title}`} />
+                <Tooltip title={item.title} placement='left' arrow>
+                  <ListItemText primary={`${index + 1}. ${truncateString(item.title)}`} />
+                </Tooltip>
               </ListItem>
             ))}
           </List>
@@ -323,8 +327,8 @@ const mapDispatchToProps = (dispatch) => ({
   onClonePressed: (id, x, y) => dispatch(cloneReportThunk(id, x, y)),
   onCreatePressed: (x, y, width, height) => dispatch(addReportThunk(x, y, width, height, undefined)),
   onPageLayoutUpdate: (layout) => dispatch(updatePageLayoutThunk(layout)),
-  onMinimizeClick: (reportId) => dispatch(temporarilyRemoveReportThunk(reportId)),
-  onMaximizeClick: (reportId) => dispatch(moveReportFromToolboxThunk(reportId)),
+  onMinimizeClick: (reportId) => dispatch(moveReportToToolboxThunk(reportId)),
+  onMaximizeClick: (reportId) => dispatch(removeReportFromToolboxThunk(reportId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NeoPage);
