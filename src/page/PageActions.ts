@@ -10,15 +10,15 @@ export const removeReport = (pagenumber: number, id: any) => ({
   payload: { pagenumber, id },
 });
 
-export const TEMPORARILY_REMOVE_REPORT = 'PAGE/TEMPORARILY_REMOVE_REPORT'
-export const temporarilyRemoveReport = (pagenumber: number, id: any) => ({
-  type: TEMPORARILY_REMOVE_REPORT,
+export const MOVE_REPORT_TO_TOOLBOX = 'PAGE/MOVE_REPORT_TO_TOOLBOX'
+export const moveReportToToolbox = (pagenumber: number, id: any) => ({
+  type: MOVE_REPORT_TO_TOOLBOX,
   payload: { pagenumber, id },
 });
 
-export const REVERT_BACK_REPORT = 'PAGE/REVERT_BACK_REPORT'
-export const revertBackReport = (pagenumber: number, id: any) => ({
-  type: REVERT_BACK_REPORT,
+export const REMOVE_REPORT_FROM_TOOLBOX = 'PAGE/REMOVE_REPORT_FROM_TOOLBOX'
+export const removeReportFromToolbox = (pagenumber: number, id: any) => ({
+  type: REMOVE_REPORT_FROM_TOOLBOX,
   payload: { pagenumber, id },
 });
 
