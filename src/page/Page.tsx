@@ -2,15 +2,84 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import NeoAddCard from '../card/CardAddButton';
 import NeoCard from '../card/Card';
-import { getReports } from './PageSelectors';
-import { addReportThunk, removeReportThunk, updatePageLayoutThunk, cloneReportThunk } from './PageThunks';
-import Grid from '@mui/material/Grid';
+import { getReports, getToolBox } from './PageSelectors';
+import {
+  addReportThunk,
+  removeReportThunk,
+  updatePageLayoutThunk,
+  cloneReportThunk,
+  temporarilyRemoveReportThunk,
+  moveReportFromToolboxThunk,
+} from './PageThunks';
 import { getDashboardIsEditable, getPageNumber } from '../settings/SettingsSelectors';
 import { getDashboardSettings } from '../dashboard/DashboardSelectors';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { GRID_COMPACTION_TYPE } from '../config/PageConfig';
+import AspectRatioIcon from '@mui/icons-material/AspectRatio';
+import UpIcon from '@mui/icons-material/KeyboardArrowUp';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Badge,
+  Box,
+  Card,
+  CardContent,
+  Fab,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Grid,
+} from '@mui/material';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const ToolBox = ({ items, onTakeItem, isListOpen, handleButtonClick }) => (
+  <Box position='fixed' bottom={16} right={16} zIndex={1}>
+    {!isListOpen && (
+      <Tooltip title='Minimized reports will appear here' placement='left' arrow>
+        <Badge badgeContent={items.length} color='success'>
+          <Fab color='primary' aria-label='up' onClick={handleButtonClick}>
+            <UpIcon />
+          </Fab>
+        </Badge>
+      </Tooltip>
+    )}
+    {isListOpen && (
+      <Card variant='outlined' sx={{ minWidth: 275 }}>
+        <CardContent>
+          <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            {items.map((item, index) => (
+              <ListItem
+                key={item.i}
+                disableGutters={false}
+                secondaryAction={
+                  <IconButton aria-label='comment' onClick={() => onTakeItem(item)}>
+                    <AspectRatioIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemText primary={`${index + 1}. ${item.title}`} />
+              </ListItem>
+            ))}
+          </List>
+          <IconButton
+            onClick={handleButtonClick}
+            size='small'
+            style={{
+              position: 'absolute',
+              top: '-15px',
+              right: '-15px',
+              backgroundColor: 'red',
+            }}
+          >
+            <CloseIcon fontSize='small' style={{ color: 'white' }} />
+          </IconButton>
+        </CardContent>
+      </Card>
+    )}
+  </Box>
+);
 
 /**
  * A component responsible for rendering the **current** page, a collection of reports.
@@ -25,6 +94,9 @@ export const NeoPage = ({
   onRemovePressed = () => {}, // action to take when a report gets removed.
   isLoaded = true, // Whether the page is loaded and the cards can be displayed.
   onPageLayoutUpdate = () => {}, // action to take when the page layout is updated.
+  onMinimizeClick = () => {},
+  onMaximizeClick = () => {},
+  toolbox,
 }) => {
   const getReportKey = (pagenumber: number, id: string) => {
     return `${pagenumber}:${id}`;
@@ -48,12 +120,25 @@ export const NeoPage = ({
   const [layouts, setLayouts] = React.useState(defaultLayouts);
   const [lastElement, setLastElement] = React.useState(<div key={getReportKey(pagenumber, '999999')}></div>);
   const [animated, setAnimated] = React.useState(false); // To turn off animations when cards are dragged around.
+  const [isListOpen, setListOpen] = React.useState(true);
+
+  const handleButtonClick = () => {
+    setListOpen(!isListOpen);
+  };
 
   const availableHandles = () => {
     if (dashboardSettings.resizing && dashboardSettings.resizing == 'all') {
       return ['s', 'w', 'e', 'sw', 'se'];
     }
     return ['se'];
+  };
+
+  const onTakeItem = (item) => {
+    onMaximizeClick(item.id);
+  };
+
+  const onPutItem = (item) => {
+    onMinimizeClick(item.id);
   };
 
   /**
@@ -148,6 +233,14 @@ export const NeoPage = ({
 
   const content = (
     <div style={{ paddingTop: '52px' }}>
+      {toolbox && toolbox.length > 0 && (
+        <ToolBox
+          items={toolbox || []}
+          onTakeItem={onTakeItem}
+          handleButtonClick={handleButtonClick}
+          isListOpen={isListOpen}
+        />
+      )}
       <ResponsiveGridLayout
         draggableHandle='.drag-handle'
         layouts={layouts}
@@ -200,6 +293,7 @@ export const NeoPage = ({
                 key={getReportKey(pagenumber, id)}
                 dashboardSettings={dashboardSettings}
                 onRemovePressed={onRemovePressed}
+                onPutItem={onPutItem}
                 onClonePressed={(id) => {
                   const { x, y } = getAddCardButtonPosition();
                   onClonePressed(id, x, y);
@@ -208,7 +302,7 @@ export const NeoPage = ({
             </Grid>
           );
         })}
-        {editable && !isDragging ? lastElement : <div key={getReportKey(pagenumber, '999999')}></div>}
+        {editable && !isDragging ? lastElement : null}
       </ResponsiveGridLayout>
     </div>
   );
@@ -221,6 +315,7 @@ const mapStateToProps = (state) => ({
   editable: getDashboardIsEditable(state),
   dashboardSettings: getDashboardSettings(state),
   reports: getReports(state),
+  toolbox: getToolBox(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -228,6 +323,8 @@ const mapDispatchToProps = (dispatch) => ({
   onClonePressed: (id, x, y) => dispatch(cloneReportThunk(id, x, y)),
   onCreatePressed: (x, y, width, height) => dispatch(addReportThunk(x, y, width, height, undefined)),
   onPageLayoutUpdate: (layout) => dispatch(updatePageLayoutThunk(layout)),
+  onMinimizeClick: (reportId) => dispatch(temporarilyRemoveReportThunk(reportId)),
+  onMaximizeClick: (reportId) => dispatch(moveReportFromToolboxThunk(reportId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NeoPage);

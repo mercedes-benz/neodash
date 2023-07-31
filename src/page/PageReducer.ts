@@ -2,6 +2,8 @@ import cardReducer from '../card/CardReducer';
 import {
   CREATE_REPORT,
   REMOVE_REPORT,
+  TEMPORARILY_REMOVE_REPORT,
+  REVERT_BACK_REPORT,
   SET_PAGE_TITLE,
   FORCE_REFRESH_PAGE,
   UPDATE_ALL_CARD_POSITIONS_IN_PAGE,
@@ -45,6 +47,7 @@ export const FIRST_PAGE_INITIAL_STATE = {
 export const PAGE_INITIAL_STATE = {
   title: '',
   reports: [],
+  toolbox: []
 };
 
 /**
@@ -91,6 +94,30 @@ export const pageReducer = (state = PAGE_INITIAL_STATE, action: { type: any; pay
         ...state,
         reports: cards,
       };
+    }
+    case TEMPORARILY_REMOVE_REPORT: {
+      const { id } = payload;
+      let cards = state.reports.filter((o) => o.id !== id);
+      let item = state.reports.filter((o) => o.id === id);
+      let temp = [...item]
+      if(state.toolbox) {
+         temp = [...temp, ...state.toolbox]
+      }
+      return {
+        ...state,
+        reports: cards,
+        toolbox: temp
+      }
+    }
+    case REVERT_BACK_REPORT: {
+      const { id } = payload;
+      const revertReport = state.toolbox.filter(item => item.id === id)
+      
+      return {
+        ...state,
+        reports: [...state.reports, ...revertReport],
+        toolbox: state.toolbox.filter(item => item.id !== id)
+      }
     }
     case UPDATE_ALL_CARD_POSITIONS_IN_PAGE: {
       // Updates the layout for the entire page (all positions of all cards in that page).

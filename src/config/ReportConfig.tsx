@@ -105,6 +105,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   graph: {
@@ -325,6 +331,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   bar: {
@@ -497,6 +509,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   pie: {
@@ -660,6 +678,12 @@ export const REPORT_TYPES = {
         label: 'Report Description',
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
+      },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
       },
     },
   },
@@ -847,6 +871,12 @@ export const REPORT_TYPES = {
         label: 'Report Description',
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
+      },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
       },
     },
   },
@@ -1135,6 +1165,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   value: {
@@ -1216,6 +1252,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   json: {
@@ -1269,6 +1311,12 @@ export const REPORT_TYPES = {
         label: 'Report Description',
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
+      },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
       },
     },
   },
@@ -1359,6 +1407,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   iframe: {
@@ -1400,6 +1454,12 @@ export const REPORT_TYPES = {
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
       },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   text: {
@@ -1439,6 +1499,12 @@ export const REPORT_TYPES = {
         label: 'Report Description',
         type: SELECTION_TYPES.MULTILINE_TEXT,
         default: 'Enter markdown here...',
+      },
+      minimizable: {
+        label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
       },
     },
   },
