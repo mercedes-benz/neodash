@@ -199,7 +199,7 @@ const NeoCard = ({
                       setActive={setActive}
                       onDownloadImage={() => downloadComponentAsImage(ref)}
                       query={subReport.query}
-		      onHandleMinimize={onHandleMinimize}
+                      onHandleMinimize={onHandleMinimize}
                       globalParameters={globalParameters}
                       fields={subReport.fields ? subReport.fields : []}
                       selection={subReport.selection}
