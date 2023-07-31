@@ -1,4 +1,4 @@
-import { Card, Collapse, debounce, Grid } from '@mui/material';
+import { Box, BoxProps, Card, Collapse, debounce, Grid } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import NeoCardSettings from './settings/CardSettings';
 import NeoCardView from './view/CardView';
@@ -30,6 +30,27 @@ import { getDashboardExtensions } from '../dashboard/DashboardSelectors';
 import { downloadComponentAsImage } from '../chart/ChartUtils';
 import { Dialog } from '@neo4j-ndl/react';
 import { createNotificationThunk } from '../page/PageThunks';
+
+function Item(props: BoxProps) {
+  const { sx, ...other } = props;
+  return (
+    <Box
+      sx={{
+        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
+        color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
+        border: '1px solid',
+        borderColor: (theme) => (theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300'),
+        p: 1,
+        borderRadius: 2,
+        textAlign: 'center',
+        fontSize: '0.875rem',
+        fontWeight: '700',
+        ...sx,
+      }}
+      {...other}
+    />
+  );
+}
 
 const NeoCard = ({
   id, // id of the card.
@@ -141,57 +162,66 @@ const NeoCard = ({
     >
       {/* The front of the card, referred to as the 'view' */}
       <Collapse disablestrictmodecompat='true' in={!settingsOpen} timeout={collapseTimeout} style={{ height: '100%' }}>
-        <Card
-          ref={ref}
-          style={{ height: '100%' }}
-          sx={{ border: report.settings?.border, borderColor: report.settings?.borderColor }}
-        >
+        <Card ref={ref} style={{ height: '100%' }}>
           {report.type === 'panel' ? (
-            <Grid container spacing={2}>
-              {report.subReports.map((subReport) => (
-                <Grid
-                  item
-                  sm={Math.min(subReport.width / report.settings.widthDivisor, 12)}
-                  xs={Math.min(subReport.width * 2 * report.settings.widthDivisor, 12)}
-                  key={subReport.id}
-                >
-                  <NeoCardView
-                    legendDefinition={legendDefinition}
-                    settingsOpen={settingsOpen}
-                    editable={editable}
-                    dashboardSettings={dashboardSettings}
-                    extensions={extensions}
-                    settings={subReport.settings ? subReport.settings : {}}
-                    updateReportSetting={(name, value) => onReportSettingUpdate(id, name, value)}
-                    createNotification={(title, message) => createNotification(title, message)}
-                    type={subReport.type}
-                    database={database}
-                    active={active}
-                    setActive={setActive}
-                    onDownloadImage={() => downloadComponentAsImage(ref)}
-                    query={subReport.query}
-                    onHandleMinimize={onHandleMinimize}
-                    globalParameters={globalParameters}
-                    fields={subReport.fields ? subReport.fields : []}
-                    selection={subReport.selection}
-                    widthPx={width / report.settings.heightDivisor}
-                    heightPx={height / report.settings.widthDivisor}
-                    title={subReport.title}
-                    expanded={expanded}
-                    onToggleCardExpand={onToggleCardExpand}
-                    onGlobalParameterUpdate={onGlobalParameterUpdate}
-                    onSelectionUpdate={(selectable, field) => onSelectionUpdate(id, selectable, field)}
-                    onTitleUpdate={(title) => onTitleUpdate(id, title)}
-                    onFieldsUpdate={(fields) => onFieldsUpdate(id, fields)}
-                    onToggleCardSettings={() => {
-                      setSettingsOpen(true);
-                      setCollapseTimeout('auto');
-                      debouncedOnToggleCardSettings(id, true);
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+                gridAutoFlow: 'row',
+                gap: 1,
+                border: report.settings?.border,
+                borderColor: report.settings?.borderColor,
+                padding: 2,
+              }}
+            >
+              {report.subReports.map((subReport) => {
+                return (
+                  <Item
+                    sx={{
+                      gridColumn: subReport.x + 1 + '/' + (subReport.x + subReport.width + 1),
+                      gridRow: subReport.y + 1 + '/' + (subReport.y + subReport.height + 1),
                     }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+                    key={subReport.id}
+                  >
+                    <NeoCardView
+                      legendDefinition={subReport?.settings?.legendDefinition}
+                      settingsOpen={false}
+                      editable={editable}
+                      dashboardSettings={dashboardSettings}
+                      extensions={extensions}
+                      settings={subReport.settings ? subReport.settings : {}}
+                      updateReportSetting={(name, value) => onReportSettingUpdate(subReport.id, name, value)}
+                      createNotification={(title, message) => createNotification(title, message)}
+                      type={subReport.type}
+                      database={database}
+                      active={active}
+                      setActive={setActive}
+                      onDownloadImage={() => downloadComponentAsImage(ref)}
+                      query={subReport.query}
+		      onHandleMinimize={onHandleMinimize}
+                      globalParameters={globalParameters}
+                      fields={subReport.fields ? subReport.fields : []}
+                      selection={subReport.selection}
+                      widthPx={subReport.width}
+                      heightPx={subReport.height * 210}
+                      title={subReport.title}
+                      expanded={expanded}
+                      onToggleCardExpand={onToggleCardExpand}
+                      onGlobalParameterUpdate={onGlobalParameterUpdate}
+                      onSelectionUpdate={(selectable, field) => onSelectionUpdate(subReport.id, selectable, field)}
+                      onTitleUpdate={(title) => onTitleUpdate(subReport.id, title)}
+                      onFieldsUpdate={(fields) => onFieldsUpdate(subReport.id, fields)}
+                      onToggleCardSettings={() => {
+                        setSettingsOpen(false);
+                        setCollapseTimeout('auto');
+                        debouncedOnToggleCardSettings(subReport.id, false);
+                      }}
+                    />
+                  </Item>
+                );
+              })}
+            </Box>
           ) : (
             <NeoCardView
               legendDefinition={legendDefinition}
@@ -239,20 +269,15 @@ const NeoCard = ({
           {report.type === 'panel' ? (
             <Grid container spacing={2}>
               {report.subReports.map((subReport) => (
-                <Grid
-                  item
-                  sm={Math.min(subReport.width / report.settings.widthDivisor, 12)}
-                  xs={Math.min(subReport.width * 2 * report.settings.widthDivisor, 12)}
-                  key={subReport.id}
-                >
+                <Grid item xs={Math.min(subReport.width, 12)} key={subReport.id}>
                   <NeoCardSettings
                     settingsOpen={settingsOpen}
                     query={subReport.query}
                     database={database}
                     databaseList={databaseList}
-                    width={subReport.width / report.settings.widthDivisor}
-                    height={subReport.height / report.settings.heightDivisor}
-                    heightPx={height / report.settings.heightDivisor}
+                    width={subReport.width}
+                    height={subReport.height}
+                    heightPx={height}
                     fields={subReport.fields}
                     type={subReport.type}
                     expanded={expanded}

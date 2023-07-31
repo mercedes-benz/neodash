@@ -78,20 +78,30 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const state = getState();
     const { pagenumber } = state.dashboard.settings;
     const extensions = Object.fromEntries(Object.entries(state.dashboard.extensions).filter(([_, v]) => v.active));
-    const oldReport = state.dashboard.pages[pagenumber].reports.find((o) => o.id === id);
+    const oldReport =
+      state.dashboard.pages[pagenumber].reports.find((o) => o.id === id) ||
+      state.dashboard.pages[pagenumber].reports.forEach((report) => {
+        if (report.subReports !== undefined) {
+          const reportFound = report.subReports.find((o) => o.id === id);
+          if (reportFound) {
+            return reportFound;
+          }
+        }
+      });
 
-    const oldFields = oldReport.fields;
-    const reportType = oldReport.type;
-    const oldSelection = oldReport.selection;
+    const oldFields = oldReport?.fields;
+    const reportType = oldReport?.type;
+    const oldSelection = oldReport?.selection;
+
+    if (!oldFields || !oldSelection) {
+      return; //Don't apply below logic when fields or selections are not populated
+    }
+
     const reportTypes = getReportTypes(extensions);
     const selectableFields = reportTypes[reportType].selection; // The dictionary of selectable fields as defined in the config.
     const { autoAssignSelectedProperties } = reportTypes[reportType];
     const selectables = selectableFields ? Object.keys(selectableFields) : [];
 
-    // To handle the case where panel reports will not have these fields populated
-    if (!oldFields || !oldSelection) {
-      return;
-    }
     // If the new set of fields is not equal to the current set of fields, we ned to update the field selection.
     if (!isEqual(oldFields, fields) || Object.keys(oldSelection).length === 0) {
       selectables.forEach((selection, i) => {
@@ -160,7 +170,17 @@ export const updateReportSettingThunk = (id, setting, value) => (dispatch: any, 
 
     // If we disable optional selections (e.g. grouping), we reset these selections to their none value.
     if (setting == 'showOptionalSelections' && value == false) {
-      const reportType = state.dashboard.pages[pagenumber].reports.find((o) => o.id === id).type;
+      const reportType =
+        state.dashboard.pages[pagenumber].reports.find((o) => o.id === id).type ||
+        state.dashboard.pages[pagenumber].reports.forEach((report) => {
+          if (report.subReports !== undefined) {
+            const reportTypeFound = report.subReports.find((o) => o.id === id).type;
+            if (reportTypeFound) {
+              return reportTypeFound;
+            }
+          }
+        });
+
       const reportTypes = getReportTypes(extensions);
       const selectableFields = reportTypes[reportType].selection;
       const optionalSelectables = selectableFields

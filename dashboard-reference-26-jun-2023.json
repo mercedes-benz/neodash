@@ -45,7 +45,8 @@
             "entityType": "NTG6_HU_SW",
             "helperText": "SW version to be shown",
             "propertyType": "title",
-            "parameterName": "neodash_ntg6_hu_sw_title_100"
+            "parameterName": "neodash_ntg6_hu_sw_title_100",
+            "minimizable": "on"
           },
           "id": "55f2379f-769a-44b6-ae7d-2f6cb5ac5983"
         },
@@ -62,6 +63,7 @@
             "NTG6_HU_HW": "title"
           },
           "settings": {
+            "minimizable": "on",
             "nodePositions": {},
             "nodeLabelFontSize": 3,
             "relLabelFontSize": 2,
@@ -74,8 +76,18 @@
               {
                 "enabled": true,
                 "entries": [
-                  { "type": "node", "color": "#EFE289", "meaning": "SW version", "textColor": "#000000" },
-                  { "type": "edge", "color": "#4caf50", "meaning": "HW version", "textColor": "#000000" }
+                  {
+                    "type": "node",
+                    "color": "#EFE289",
+                    "meaning": "SW version",
+                    "textColor": "#000000"
+                  },
+                  {
+                    "type": "edge",
+                    "color": "#4caf50",
+                    "meaning": "HW version",
+                    "textColor": "#000000"
+                  }
                 ]
               }
             ],
@@ -422,9 +434,24 @@
               {
                 "enabled": true,
                 "entries": [
-                  { "type": "node", "color": "#00677F", "meaning": "SW version", "textColor": "#000000" },
-                  { "type": "edge", "color": "#00ff00", "meaning": "Updates Qualified", "textColor": "#000000" },
-                  { "type": "edge", "color": "#ffff00", "meaning": "Qualification in Progress", "textColor": "#000000" }
+                  {
+                    "type": "node",
+                    "color": "#00677F",
+                    "meaning": "SW version",
+                    "textColor": "#000000"
+                  },
+                  {
+                    "type": "edge",
+                    "color": "#00ff00",
+                    "meaning": "Updates Qualified",
+                    "textColor": "#000000"
+                  },
+                  {
+                    "type": "edge",
+                    "color": "#ffff00",
+                    "meaning": "Qualification in Progress",
+                    "textColor": "#000000"
+                  }
                 ]
               }
             ],
@@ -1861,22 +1888,20 @@
           "id": "a6cdd746-c832-4cfe-8793-sdafasdf",
           "title": "Hi there 👋",
           "settings": {
-            "heightDivisor": 1,
-            "widthDivisor": 1,
             "border": 4,
             "borderColor": "purple"
           },
           "x": 0,
           "y": 0,
           "width": 12,
-          "height": 3,
+          "height": 1,
           "type": "panel",
           "subReports": [
             {
               "title": "Runs on HW",
               "query": "MATCH (n:NTG6_HU_SW {title:$neodash_ntg6_hu_sw_title_100})-[e:RUNS_ON]-(m:NTG6_HU_HW) RETURN n, e, m",
               "width": 6,
-              "height": 3,
+              "height": 2,
               "x": 0,
               "y": 0,
               "type": "graph",
@@ -1897,8 +1922,18 @@
                   {
                     "enabled": true,
                     "entries": [
-                      { "type": "node", "color": "#EFE289", "meaning": "SW version", "textColor": "#000000" },
-                      { "type": "edge", "color": "#4caf50", "meaning": "HW version", "textColor": "#000000" }
+                      {
+                        "type": "node",
+                        "color": "#EFE289",
+                        "meaning": "SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#4caf50",
+                        "meaning": "HW version",
+                        "textColor": "#000000"
+                      }
                     ]
                   }
                 ],
@@ -1967,7 +2002,7 @@
               "title": "Runs on HW",
               "query": "MATCH (n:NTG6_HU_SW {title:$neodash_ntg6_hu_sw_title_100})-[e:RUNS_ON]-(m:NTG6_HU_HW) RETURN n, e, m",
               "width": 6,
-              "height": 3,
+              "height": 2,
               "x": 6,
               "y": 0,
               "type": "graph",
@@ -1988,8 +2023,18 @@
                   {
                     "enabled": true,
                     "entries": [
-                      { "type": "node", "color": "#EFE289", "meaning": "SW version", "textColor": "#000000" },
-                      { "type": "edge", "color": "#4caf50", "meaning": "HW version", "textColor": "#000000" }
+                      {
+                        "type": "node",
+                        "color": "#EFE289",
+                        "meaning": "SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#4caf50",
+                        "meaning": "HW version",
+                        "textColor": "#000000"
+                      }
                     ]
                   }
                 ],
@@ -2053,6 +2098,865 @@
                 ]
               },
               "id": "02a27662-asdfasdf-b14b-0cc92705a0a8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "SW modules",
+      "reports": [
+        {
+          "id": "1b19f252-53b9-4efb-a46b-889d2a8966c2",
+          "title": "Frame 1",
+          "settings": {
+            "border": 3,
+            "borderColor": "gray"
+          },
+          "x": 0,
+          "y": 0,
+          "width": 12,
+          "height": 3,
+          "type": "panel",
+          "subReports": [
+            {
+              "id": "574a6cec-e5fc-4691-a300-5c062800a214",
+              "title": "Select SW version",
+              "query": "MATCH (n:`NTG7_IC_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 6,
+              "height": 1,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "type": "Node Property",
+                "entityType": "NTG7_IC_SW",
+                "helperText": "SW version to show modules",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg7_ic_sw_title_500"
+              }
+            },
+            {
+              "id": "fb3d12f1-e5b6-4e26-90b6-7700c31d3167",
+              "title": "Select IC line",
+              "query": "MATCH (n:`NTG7_IC_LINE`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 2",
+              "width": 6,
+              "height": 1,
+              "x": 6,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "type": "Node Property",
+                "entityType": "NTG7_IC_LINE",
+                "helperText": "IC line to show modules (Entry or High)",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg7_ic_line_title_501"
+              }
+            },
+            {
+              "id": "0d73ce67-9c07-4ed3-8fc0-4a64d2b95878",
+              "title": "BOOTLOADER",
+              "query": "MATCH (n:NTG7_IC_MODULE_BOOTLOADER)-[e:HAS_MODULE_BOOTLOADER_PARTNUMBER]->(m:NTG7_IC_MODULE_BOOTLOADER_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 1,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "384f08ec-d2a6-4ef0-9301-aac87fb6fe1c",
+              "title": "SOC_APPLICATION",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_APPLICATION)-[e:HAS_MODULE_SOC_APPLICATION_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_APPLICATION_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 4,
+              "y": 1,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "f3d1e4cc-8581-436f-a9b2-8b2b2f39c0e6",
+              "title": "SOC_HMI",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_HMI)-[e:HAS_MODULE_SOC_HMI_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_HMI_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 2,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "584f3fc5-47fd-414f-b38d-048c9cf2a971",
+              "title": "SOC_HMI_HUD",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_HMI_HUD)-[e:HAS_MODULE_SOC_HMI_HUD_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_HMI_HUD_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m. icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 4,
+              "y": 2,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "c8352b0f-d75c-49a5-b9fc-1ea089b4a847",
+              "title": "VIP_APPLICATION",
+              "query": "MATCH (n:NTG7_IC_MODULE_VIP_APPLICATION)-[e:HAS_MODULE_VIP_APPLICATION_PARTNUMBER]->(m:NTG7_IC_MODULE_VIP_APPLICATION_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 3,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "d98adfcf-a51b-4dc1-891d-d503297e1fee",
+              "title": "VIP_SW_SPECIFIC_DATA_SET",
+              "query": "MATCH (n:NTG7_IC_MODULE_VIP_SW_SPECIFIC_DATA_SET)-[e:HAS_MODULE_VIP_SW_SPECIFIC_DATA_SET_PARTNUMBER]->(m:NTG7_IC_MODULE_VIP_SW_SPECIFIC_DATA_SET_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 4,
+              "y": 3,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "7a4d8c16-fddc-4517-8f23-9238961e6803",
+              "title": "SOC_AR_HUD",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_AR_HUD)-[e:HAS_MODULE_SOC_AR_HUD_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_AR_HUD_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `Year/week.patch`, m.icLines AS `IC lines`, m.priority AS `Flash priority` ORDER BY m.priority",
+              "width": 4,
+              "height": 1,
+              "x": 0,
+              "y": 4,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[1, 1, 1]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            },
+            {
+              "id": "a6bcced5-4039-430f-9762-23177f498105",
+              "title": "SOC_HMI_MODEL_SPECIFIC",
+              "query": "MATCH (n:NTG7_IC_MODULE_SOC_HMI_MODEL_SPECIFIC)-[e:HAS_MODULE_SOC_HMI_MODEL_SPECIFIC_PARTNUMBER]->(m:NTG7_IC_MODULE_SOC_HMI_MODEL_SPECIFIC_PARTNUMBER) WHERE n.title = $neodash_ntg7_ic_sw_title_500 AND $neodash_ntg7_ic_line_title_501 IN m.icLines RETURN m.partNumber AS `Part number`, m.ywp AS `YWP`, m.icLines AS `IC lines`, m.priority AS `Flash priority`, m.modelLine AS `Model line` ORDER BY m.modelLine",
+              "width": 4,
+              "height": 4,
+              "x": 8,
+              "y": 1,
+              "type": "table",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "fontSize": 20,
+                "type": "Node Property",
+                "columnWidths": "[2, 1, 2, 1, 3]",
+                "compact": true,
+                "allowDownload": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HW & SW dependencies",
+      "reports": [
+        {
+          "id": "efc1ee99-9ef3-4d09-8fd8-959f6d3d81e2",
+          "title": "Frame 1",
+          "settings": {
+            "border": 3,
+            "borderColor": "gray"
+          },
+          "x": 0,
+          "y": 0,
+          "width": 12,
+          "height": 2,
+          "type": "panel",
+          "subReports": [
+            {
+              "id": "a1667089-26f4-4d8b-a769-d88cfb53d03a",
+              "title": "Select NTG7 HU SW version",
+              "query": "MATCH (n:`NTG7_HU_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 3,
+              "height": 1,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "type": "Node Property",
+                "entityType": "NTG7_HU_SW",
+                "helperText": "NTG7 HU SW version to show update relationships requiring it",
+                "propertyType": "title",
+                "parameterName": "neodash_ntg7_hu_sw_title_300"
+              }
+            },
+            {
+              "id": "f3d858a0-9a96-4c2c-a59c-56c0ca8bdac9",
+              "title": "All update relationships requiring the NTG7 HU SW",
+              "query": "MATCH (n:NTG7_IC_SW)-[e:UPDATES_TO]->(m:NTG7_IC_SW) WHERE $neodash_ntg7_hu_sw_title_300 IN e.requiredNTG7HUSW RETURN n, e, m",
+              "width": 9,
+              "height": 1.75,
+              "x": 3,
+              "y": 0,
+              "type": "graph",
+              "selection": {
+                "NTG7_IC_SW": "title"
+              },
+              "settings": {
+                "nodePositions": {},
+                "nodeLabelFontSize": 3,
+                "relLabelFontSize": 3,
+                "backgroundColor": "#ffffff",
+                "hideSelections": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true,
+                "downloadImageEnabled": true,
+                "legendDefinition": [
+                  {
+                    "enabled": true,
+                    "entries": [
+                      {
+                        "type": "node",
+                        "color": "#A6CAD8",
+                        "meaning": "SOP SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#79AEBF",
+                        "meaning": "FUP2 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#5097AB",
+                        "meaning": "FUP3 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#007A93",
+                        "meaning": "FUP4 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#00677F",
+                        "meaning": "FUP5 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#04CC82",
+                        "meaning": "Update qualified",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#7FFF00",
+                        "meaning": "Update qualified but not necessary",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#E6E600",
+                        "meaning": "Qualification in progress",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#FF0000",
+                        "meaning": "Showstopper detected",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#000000",
+                        "meaning": "Wired update",
+                        "textColor": "#000000"
+                      }
+                    ]
+                  }
+                ],
+                "styleRules": [
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "SOP",
+                    "customization": "node color",
+                    "customizationValue": "#A6CAD8"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP2",
+                    "customization": "node color",
+                    "customizationValue": "#79AEBF"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node color",
+                    "customizationValue": "#5097AB"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node color",
+                    "customizationValue": "#007A93"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node label color",
+                    "customizationValue": "#C8C8C8"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP5",
+                    "customization": "node color",
+                    "customizationValue": "#00677F"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP5",
+                    "customization": "node label color",
+                    "customizationValue": "#C8C8C8"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Update qualified",
+                    "customization": "relationship color",
+                    "customizationValue": "#04CC82"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Update qualified but not necessary",
+                    "customization": "relationship color",
+                    "customizationValue": "#7FFF00"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Qualification in progress",
+                    "customization": "relationship color",
+                    "customizationValue": "#E6E600"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Showstopper detected",
+                    "customization": "relationship color",
+                    "customizationValue": "#FF0000"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Wired update",
+                    "customization": "relationship color",
+                    "customizationValue": "#000000"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "6633430d-8718-4cdd-8119-636cf2100169",
+          "title": "Frame 2",
+          "settings": {
+            "border": 3,
+            "borderColor": "gray"
+          },
+          "x": 0,
+          "y": 2,
+          "width": 12,
+          "height": 2,
+          "type": "panel",
+          "subReports": [
+            {
+              "id": "556e8800-92d4-4da9-ba71-ad7ece9f1b6c",
+              "title": "Select TCU SW version",
+              "query": "MATCH (n:`TCU_SW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 3,
+              "height": 1,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "type": "Node Property",
+                "entityType": "TCU_SW",
+                "helperText": "TCU SW version to show update relationships requiring it",
+                "propertyType": "title",
+                "parameterName": "neodash_tcu_sw_title_301"
+              }
+            },
+            {
+              "id": "a0e21a31-39f4-49fa-86a8-687bc5637e3a",
+              "title": "All update relationships requiring the TCU SW",
+              "query": "MATCH (n:NTG7_IC_SW)-[e:UPDATES_TO]->(m:NTG7_IC_SW) WHERE $neodash_tcu_sw_title_301 IN e.requiredTCUSW RETURN n, e, m",
+              "width": 9,
+              "height": 1.75,
+              "x": 3,
+              "y": 0,
+              "type": "graph",
+              "selection": {
+                "NTG7_IC_SW": "title"
+              },
+              "settings": {
+                "nodePositions": {},
+                "nodeLabelFontSize": 3,
+                "relLabelFontSize": 2,
+                "backgroundColor": "#ffffff",
+                "hideSelections": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true,
+                "downloadImageEnabled": true,
+                "legendDefinition": [
+                  {
+                    "enabled": true,
+                    "entries": [
+                      {
+                        "type": "node",
+                        "color": "#A6CAD8",
+                        "meaning": "SOP SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#79AEBF",
+                        "meaning": "FUP2 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#5097AB",
+                        "meaning": "FUP3 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#007A93",
+                        "meaning": "FUP4 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#00677F",
+                        "meaning": "FUP5 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#04CC82",
+                        "meaning": "Update qualified",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#7FFF00",
+                        "meaning": "Update qualified but not necessary",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#E6E600",
+                        "meaning": "Qualification in progress",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#FF0000",
+                        "meaning": "Showstopper detected",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#000000",
+                        "meaning": "Wired update",
+                        "textColor": "#000000"
+                      }
+                    ]
+                  }
+                ],
+                "styleRules": [
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "SOP",
+                    "customization": "node color",
+                    "customizationValue": "#A6CAD8"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP2",
+                    "customization": "node color",
+                    "customizationValue": "#79AEBF"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node color",
+                    "customizationValue": "#5097AB"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node color",
+                    "customizationValue": "#007A93"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node label color",
+                    "customizationValue": "#C8C8C8"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP5",
+                    "customization": "node color",
+                    "customizationValue": "#00677F"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP5",
+                    "customization": "node label color",
+                    "customizationValue": "#C8C8C8"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Update qualified",
+                    "customization": "relationship color",
+                    "customizationValue": "#04CC82"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Update qualified but not necessary",
+                    "customization": "relationship color",
+                    "customizationValue": "#7FFF00"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Qualification in progress",
+                    "customization": "relationship color",
+                    "customizationValue": "#E6E600"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Showstopper detected",
+                    "customization": "relationship color",
+                    "customizationValue": "#FF0000"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Wired update",
+                    "customization": "relationship color",
+                    "customizationValue": "#000000"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "ab7c5587-8352-4021-a7a1-cf45bc53df88",
+          "title": "Frame 3",
+          "settings": {
+            "border": 3,
+            "borderColor": "gray"
+          },
+          "x": 0,
+          "y": 4,
+          "width": 12,
+          "height": 2,
+          "type": "panel",
+          "subReports": [
+            {
+              "id": "15b0fa87-8aa6-42a8-8973-fc1afbf00140",
+              "title": "Select TCU HW version",
+              "query": "MATCH (n:`TCU_HW`) WHERE toLower(toString(n.`title`)) CONTAINS toLower($input) RETURN DISTINCT n.`title` as value LIMIT 5",
+              "width": 3,
+              "height": 1,
+              "x": 0,
+              "y": 0,
+              "type": "select",
+              "selection": {},
+              "settings": {
+                "nodePositions": {},
+                "type": "Node Property",
+                "entityType": "TCU_HW",
+                "propertyType": "title",
+                "parameterName": "neodash_tcu_hw_title_302",
+                "helperText": "TCU HW version to show update relationships requiring it"
+              }
+            },
+            {
+              "id": "741d1e18-c83a-45a5-9890-7bea1676ac6b",
+              "title": "All update relationships requiring the TCU HW",
+              "query": "MATCH (n:NTG7_IC_SW)-[e:UPDATES_TO]->(m:NTG7_IC_SW) WHERE $neodash_tcu_hw_title_302 IN e.requiredTCUHW RETURN n, e, m",
+              "width": 9,
+              "height": 1.75,
+              "x": 3,
+              "y": 0,
+              "type": "graph",
+              "selection": {
+                "NTG7_IC_SW": "title"
+              },
+              "settings": {
+                "nodePositions": {},
+                "nodeLabelFontSize": 3,
+                "relLabelFontSize": 2,
+                "backgroundColor": "#ffffff",
+                "hideSelections": true,
+                "refreshButtonEnabled": true,
+                "fullscreenEnabled": true,
+                "downloadImageEnabled": true,
+                "legendDefinition": [
+                  {
+                    "enabled": true,
+                    "entries": [
+                      {
+                        "type": "node",
+                        "color": "#A6CAD8",
+                        "meaning": "SOP SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#79AEBF",
+                        "meaning": "FUP2 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#5097AB",
+                        "meaning": "FUP3 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#007A93",
+                        "meaning": "FUP4 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "node",
+                        "color": "#00677F",
+                        "meaning": "FUP5 SW version",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#04CC82",
+                        "meaning": "Update qualified",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#7FFF00",
+                        "meaning": "Update qualified but not necessary",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#E6E600",
+                        "meaning": "Qualification in progress",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#FF0000",
+                        "meaning": "Showstopper detected",
+                        "textColor": "#000000"
+                      },
+                      {
+                        "type": "edge",
+                        "color": "#000000",
+                        "meaning": "Wired update",
+                        "textColor": "#000000"
+                      }
+                    ]
+                  }
+                ],
+                "styleRules": [
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "SOP",
+                    "customization": "node color",
+                    "customizationValue": "#A6CAD8"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP2",
+                    "customization": "node color",
+                    "customizationValue": "#79AEBF"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP3",
+                    "customization": "node color",
+                    "customizationValue": "#5097AB"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node color",
+                    "customizationValue": "#007A93"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP4",
+                    "customization": "node label color",
+                    "customizationValue": "#C8C8C8"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP5",
+                    "customization": "node color",
+                    "customizationValue": "#00677F"
+                  },
+                  {
+                    "field": "NTG7_IC_SW.release",
+                    "condition": "contains",
+                    "value": "FUP5",
+                    "customization": "node label color",
+                    "customizationValue": "#C8C8C8"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Update qualified",
+                    "customization": "relationship color",
+                    "customizationValue": "#04CC82"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Update qualified but not necessary",
+                    "customization": "relationship color",
+                    "customizationValue": "#7FFF00"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Qualification in progress",
+                    "customization": "relationship color",
+                    "customizationValue": "#E6E600"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Showstopper detected",
+                    "customization": "relationship color",
+                    "customizationValue": "#FF0000"
+                  },
+                  {
+                    "field": "UPDATES_TO.updateStatus",
+                    "condition": "=",
+                    "value": "Wired update",
+                    "customization": "relationship color",
+                    "customizationValue": "#000000"
+                  }
+                ]
+              }
             }
           ]
         }

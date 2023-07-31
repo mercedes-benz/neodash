@@ -280,7 +280,7 @@ export const NeoPage = ({
           return (
             <Grid
               key={getReportKey(pagenumber, id)}
-              style={{ paddingBottom: '6px' }}
+              style={{ paddingBottom: '10px', marginBottom: '10px' }}
               item
               xs={Math.min(w * 4, 12)}
               sm={Math.min(w * 2, 12)}
