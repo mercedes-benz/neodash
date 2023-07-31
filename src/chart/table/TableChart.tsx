@@ -29,7 +29,7 @@ import { renderCellExpand } from '../../component/misc/DataGridExpandedRenderer'
 
 const TABLE_HEADER_HEIGHT = 32;
 const TABLE_FOOTER_HEIGHT = 52;
-const TABLE_ROW_HEIGHT = 52;
+const TABLE_ROW_HEIGHT = 78;
 const HIDDEN_COLUMN_PREFIX = '__';
 
 const theme = createTheme({
@@ -189,9 +189,10 @@ export const NeoTableChart = (props: ChartProps) => {
       });
 
   const availableRowHeight = (props.dimensions.height - TABLE_HEADER_HEIGHT - TABLE_FOOTER_HEIGHT) / tableRowHeight;
-  const tablePageSize = compact
-    ? Math.round(availableRowHeight) - pageSizeReducer
-    : Math.floor(availableRowHeight) - pageSizeReducer;
+  // const tablePageSize = compact
+  //   ? Math.round(availableRowHeight) - pageSizeReducer
+  //   : Math.floor(availableRowHeight) - pageSizeReducer;
+  const tablePageSize = Math.floor(availableRowHeight) - pageSizeReducer; // TODO: Once the compact is fixed. We can use the above formula.
 
   const pageNames = getPageNumbersAndNamesList();
 
@@ -254,7 +255,7 @@ export const NeoTableChart = (props: ChartProps) => {
               navigator.clipboard.writeText(e.value);
             }
           }}
-          pageSize={tablePageSize > 0 ? tablePageSize : 5}
+          pageSize={tablePageSize > 0 ? tablePageSize : 1}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           components={{
