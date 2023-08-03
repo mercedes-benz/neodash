@@ -60,6 +60,7 @@ const NeoCard = ({
   extensions, // A set of enabled extensions.
   globalParameters, // Query parameters that are globally set for the entire dashboard.
   dashboardSettings, // Dictionary of settings for the entire dashboard.
+  enableSaveButtonForIds, // Reports will have save buttons to execute cypher queries
   onRemovePressed, // action to take when the card is removed. (passed from parent)
   onClonePressed, // action to take when user presses the clone button
   onReportHelpButtonPressed, // action to take when someone clicks the 'help' button in the report settings.
@@ -185,10 +186,12 @@ const NeoCard = ({
                     key={subReport.id}
                   >
                     <NeoCardView
+                      id={id}
                       legendDefinition={subReport?.settings?.legendDefinition}
                       settingsOpen={false}
                       editable={editable}
                       dashboardSettings={dashboardSettings}
+                      enableSaveButtonForIds={enableSaveButtonForIds}
                       extensions={extensions}
                       settings={subReport.settings ? subReport.settings : {}}
                       updateReportSetting={(name, value) => onReportSettingUpdate(subReport.id, name, value)}
@@ -224,10 +227,12 @@ const NeoCard = ({
             </Box>
           ) : (
             <NeoCardView
+              id={id}
               legendDefinition={legendDefinition}
               settingsOpen={settingsOpen}
               editable={editable}
               dashboardSettings={dashboardSettings}
+              enableSaveButtonForIds={enableSaveButtonForIds}
               extensions={extensions}
               settings={report.settings ? report.settings : {}}
               updateReportSetting={(name, value) => onReportSettingUpdate(id, name, value)}

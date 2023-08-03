@@ -125,7 +125,9 @@ export const NeoPage = ({
   const [lastElement, setLastElement] = React.useState(<div key={getReportKey(pagenumber, '999999')}></div>);
   const [animated, setAnimated] = React.useState(false); // To turn off animations when cards are dragged around.
   const [isListOpen, setListOpen] = React.useState(true);
-
+  const enableSaveButtonForIds = reports.filter(
+    (report: any) => report.settings.hideQueryEditorInAutoRunOnMode === 'on'
+  );
   const handleButtonClick = () => {
     setListOpen(!isListOpen);
   };
@@ -295,6 +297,7 @@ export const NeoPage = ({
               <NeoCard
                 id={id}
                 key={getReportKey(pagenumber, id)}
+                enableSaveButtonForIds={enableSaveButtonForIds}
                 dashboardSettings={dashboardSettings}
                 onRemovePressed={onRemovePressed}
                 onPutItem={onPutItem}
