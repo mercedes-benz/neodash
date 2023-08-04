@@ -111,6 +111,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   graph: {
@@ -337,6 +343,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   bar: {
@@ -515,6 +527,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   pie: {
@@ -681,6 +699,12 @@ export const REPORT_TYPES = {
       },
       minimizable: {
         label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
         type: SELECTION_TYPES.LIST,
         values: [true, false],
         default: false,
@@ -874,6 +898,12 @@ export const REPORT_TYPES = {
       },
       minimizable: {
         label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
         type: SELECTION_TYPES.LIST,
         values: [true, false],
         default: false,
@@ -1171,6 +1201,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   value: {
@@ -1258,6 +1294,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   json: {
@@ -1314,6 +1356,12 @@ export const REPORT_TYPES = {
       },
       minimizable: {
         label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
         type: SELECTION_TYPES.LIST,
         values: [true, false],
         default: false,
@@ -1413,6 +1461,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   iframe: {
@@ -1460,6 +1514,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
     },
   },
   text: {
@@ -1502,6 +1562,12 @@ export const REPORT_TYPES = {
       },
       minimizable: {
         label: 'Minimize Button',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
+      hideQueryEditorInAutoRunOnMode: {
+        label: 'Hide query editor on auto run on mode',
         type: SELECTION_TYPES.LIST,
         values: [true, false],
         default: false,

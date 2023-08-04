@@ -94,7 +94,7 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
     const oldSelection = oldReport?.selection;
 
     if (!oldFields || !oldSelection) {
-      return; //Don't apply below logic when fields or selections are not populated
+      return; // Don't apply below logic when fields or selections are not populated
     }
 
     const reportTypes = getReportTypes(extensions);
