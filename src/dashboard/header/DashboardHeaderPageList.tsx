@@ -146,12 +146,14 @@ export const NeoDashboardHeaderPageList = ({
           <div
             key={i}
             style={{
+              background: DASHBOARD_PAGE_LIST_COLOR,
               backgroundColor: page.tabBackgroundColor
                 ? page.tabBackgroundColor
                 : pagenumber == i
                 ? DASHBOARD_PAGE_LIST_ACTIVE_COLOR
                 : 'inherit',
-              display: 'inline-block',
+              display: 'flex',
+              alignItems: 'center',
               height: '100%',
               padding: 0,
               margin: 0,
@@ -159,6 +161,17 @@ export const NeoDashboardHeaderPageList = ({
               borderLeft: '1px solid #ddd',
             }}
           >
+            {pagenumber == i && (
+              <span
+                style={{
+                  width: 5,
+                  height: '100%',
+                  borderRadius: '1px',
+                  marginRight: '8px',
+                  backgroundColor: page.tabTextColor ? page.tabTextColor : 'blue',
+                }}
+              />
+            )}
             <NeoPageButton
               title={page.title}
               titleColor={page.tabTextColor}
