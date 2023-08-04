@@ -126,7 +126,7 @@ export const NeoPage = ({
   const [animated, setAnimated] = React.useState(false); // To turn off animations when cards are dragged around.
   const [isListOpen, setListOpen] = React.useState(true);
   const enableSaveButtonForIds = reports.filter(
-    (report: any) => report.settings.hideQueryEditorInAutoRunOnMode === 'on'
+    (report: any) => report.settings?.hideQueryEditorInAutoRunOnMode === 'on'
   );
   const handleButtonClick = () => {
     setListOpen(!isListOpen);
