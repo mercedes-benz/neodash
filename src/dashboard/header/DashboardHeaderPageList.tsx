@@ -146,8 +146,11 @@ export const NeoDashboardHeaderPageList = ({
           <div
             key={i}
             style={{
-              background: DASHBOARD_PAGE_LIST_COLOR,
-              backgroundColor: pagenumber == i ? DASHBOARD_PAGE_LIST_ACTIVE_COLOR : 'inherit',
+              backgroundColor: page.tabBackgroundColor
+                ? page.tabBackgroundColor
+                : pagenumber == i
+                ? DASHBOARD_PAGE_LIST_ACTIVE_COLOR
+                : 'inherit',
               display: 'inline-block',
               height: '100%',
               padding: 0,
@@ -158,6 +161,7 @@ export const NeoDashboardHeaderPageList = ({
           >
             <NeoPageButton
               title={page.title}
+              titleColor={page.tabTextColor}
               selected={pagenumber == i}
               disabled={!editable}
               onSelect={() => (canSwitchPages ? selectPage(i) : null)}

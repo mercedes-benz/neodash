@@ -5,7 +5,15 @@ import { NeoDeletePageModal } from '../../modal/DeletePageModal';
 import { XMarkIconOutline } from '@neo4j-ndl/react/icons';
 import { DASHBOARD_PAGE_LIST_COLOR } from '../../config/ApplicationConfig';
 
-export const NeoPageButton = ({ title, disabled = false, selected = false, onSelect, onRemove, onTitleUpdate }) => {
+export const NeoPageButton = ({
+  title,
+  disabled = false,
+  selected = false,
+  onSelect,
+  onRemove,
+  onTitleUpdate,
+  titleColor,
+}) => {
   // TODO - debounce page title update
   const [modalOpen, setModalOpen] = React.useState(false);
 
@@ -46,7 +54,7 @@ export const NeoPageButton = ({ title, disabled = false, selected = false, onSel
               height: '36px',
               width: '100%',
               paddingLeft: '10px',
-              color: selected ? 'black' : '#888',
+              color: selected ? (titleColor ? titleColor : 'black') : '#888',
               textAlign: 'center',
               textTransform: 'uppercase',
             }}
@@ -68,7 +76,7 @@ export const NeoPageButton = ({ title, disabled = false, selected = false, onSel
           onClick={() => {
             selected && !disabled && setModalOpen(true);
           }}
-          style={{ opacity: selected && !disabled ? 1 : 0 }}
+          style={{ opacity: selected && !disabled ? 1 : 0, color: selected ? titleColor : 'inherit' }}
           clean
         >
           <XMarkIconOutline aria-label='move left mark' />
