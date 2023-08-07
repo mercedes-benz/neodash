@@ -16,4 +16,5 @@ echo " \
     \"standaloneDashboardName\": \"${standaloneDashboardName:='My Dashboard'}\", \
     \"standaloneDashboardDatabase\": \"${standaloneDashboardDatabase:='neo4j'}\",  \
     \"standaloneDashboardURL\": \"${standaloneDashboardURL:=}\"  \
+    \"skipConfirmation\": "${skipConfirmation:=true}"  \
     }" > /usr/share/nginx/html/config.json
