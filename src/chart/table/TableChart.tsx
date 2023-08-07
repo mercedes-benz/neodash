@@ -12,7 +12,6 @@ import { getRendererForValue, rendererForType, RenderSubValue } from '../../repo
 
 import { Close } from '@mui/icons-material';
 import { extensionEnabled } from '../../extensions/ExtensionUtils';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
 import {
   getRule,
@@ -28,8 +27,8 @@ import Button from '@mui/material/Button';
 import { renderCellExpand } from '../../component/misc/DataGridExpandedRenderer';
 
 const TABLE_HEADER_HEIGHT = 32;
-const TABLE_FOOTER_HEIGHT = 52;
-const TABLE_ROW_HEIGHT = 78;
+const TABLE_FOOTER_HEIGHT = 62;
+const TABLE_ROW_HEIGHT = 52;
 const HIDDEN_COLUMN_PREFIX = '__';
 
 const theme = createTheme({
@@ -117,6 +116,7 @@ export const NeoTableChart = (props: ChartProps) => {
   const lineBreakColumns: string[] = props.settings?.lineBreaksAfterListEntry;
 
   const actionableFields = actionsRules.map((r) => r.field);
+
   const columns = transposed
     ? ['Field'].concat(records.map((r, j) => `Value${j == 0 ? '' : ` ${(j + 1).toString()}`}`)).map((key, i) => {
         const value = key;
@@ -188,12 +188,6 @@ export const NeoTableChart = (props: ChartProps) => {
         );
       });
 
-  const availableRowHeight = (props.dimensions.height - TABLE_HEADER_HEIGHT - TABLE_FOOTER_HEIGHT) / tableRowHeight;
-  // const tablePageSize = compact
-  //   ? Math.round(availableRowHeight) - pageSizeReducer
-  //   : Math.floor(availableRowHeight) - pageSizeReducer;
-  const tablePageSize = Math.floor(availableRowHeight) - pageSizeReducer; // TODO: Once the compact is fixed. We can use the above formula.
-
   const pageNames = getPageNumbersAndNamesList();
 
   return (
@@ -235,11 +229,8 @@ export const NeoTableChart = (props: ChartProps) => {
         )}
 
         <DataGrid
-          getRowHeight={() => 'auto'}
           key={'tableKey'}
-          // autoHeight={true} // Only use autoheight if compact is not specified
-          // rowHeight={compact ? tableRowHeight : undefined}
-          headerHeight={32}
+          headerHeight={TABLE_HEADER_HEIGHT}
           rows={rows}
           columns={columns}
           columnVisibilityModel={hiddenColumns}
@@ -255,7 +246,8 @@ export const NeoTableChart = (props: ChartProps) => {
               navigator.clipboard.writeText(e.value);
             }
           }}
-          pageSize={tablePageSize > 0 ? tablePageSize : 1}
+          autoPageSize
+          pagination
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           components={{
