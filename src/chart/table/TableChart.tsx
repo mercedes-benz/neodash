@@ -233,6 +233,7 @@ export const NeoTableChart = (props: ChartProps) => {
           headerHeight={TABLE_HEADER_HEIGHT}
           rows={rows}
           columns={columns}
+          density={compact === 'on' || compact === true ? 'compact' : 'standard'}
           columnVisibilityModel={hiddenColumns}
           onCellClick={(e) =>
             performActionOnElement(e, actionsRules, { ...props, pageNames: pageNames }, 'Click', 'Table')
