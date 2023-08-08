@@ -9,10 +9,11 @@ WORKDIR /usr/local/src/neodash
 #RUN git clone https://github.com/neo4j-labs/neodash.git /usr/local/src/neodash
 
 # Copy sources and install/build
-COPY ./package.json /usr/local/src/neodash/package.json
+COPY ./package.json ./yarn.lock /usr/local/src/neodash/
 
 RUN yarn install
 COPY --chown=101:101 ./ /usr/local/src/neodash
+
 RUN yarn run build-minimal
 
 # production stage
