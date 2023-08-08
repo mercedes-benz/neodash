@@ -42,11 +42,15 @@ export default function NeoConnectionModal({
   }, [JSON.stringify(ssoSettings)]);
 
   useEffect(() => {
+    if (standaloneSettings.skipConfirmation) {
+      setSkipConfirmation(standaloneSettings.skipConfirmation);
+    }
+
     if (skipConfirmation && protocol && url && port && database && username && password) {
       onConnectionModalClose();
       createConnection(protocol, url, port, database, username, password);
     }
-  }, [skipConfirmation, protocol, url, port, database, username, password]);
+  }, [standaloneSettings.skipConfirmation, protocol, url, port, database, username, password]);
 
   const discoveryAPIUrl = ssoSettings && ssoSettings.ssoDiscoveryUrl;
 

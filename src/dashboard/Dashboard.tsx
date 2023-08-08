@@ -51,7 +51,7 @@ const Dashboard = ({ pagenumber, connection, applicationSettings, onConnectionUp
       ></NeoDashboardHeader>
       <main style={{ flexGrow: 1, height: '100vh', overflow: 'auto', backgroundColor: '#fafafa' }}>
         <Container maxWidth='xl' style={{ marginTop: '60px' }}>
-          {applicationSettings.standalonePassword ? (
+          {applicationSettings.standalonePassword && applicationSettings.skipConfirmation !== true ? (
             <div style={{ textAlign: 'center', color: 'red', zIndex: 999, paddingTop: 60, marginBottom: -50 }}>
               Warning: NeoDash is running with a plaintext password in config.json.
             </div>
