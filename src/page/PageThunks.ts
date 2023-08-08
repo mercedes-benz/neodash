@@ -30,11 +30,11 @@ export const removeReportThunk = (id: string) => (dispatch: any, getState: any) 
   }
 };
 
-export const moveReportToToolboxThunk = (id: string) => (dispatch: any, getState: any) => {
+export const moveReportToToolboxThunk = (report: any) => (dispatch: any, getState: any) => {
   try {
     const state = getState()
     const { pagenumber } = state.dashboard.settings;
-    dispatch(moveReportToToolbox(pagenumber, id));
+    dispatch(moveReportToToolbox(pagenumber, report));
   } catch (error) {
     dispatch(createNotificationThunk('Cannot move to toolbox report', error));
   }

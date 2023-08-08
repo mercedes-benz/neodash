@@ -143,8 +143,8 @@ export const NeoPage = ({
     onMaximizeClick(item.id);
   };
 
-  const onPutItem = (item) => {
-    onMinimizeClick(item.id);
+  const onPutItem = (report) => {
+    onMinimizeClick(report);
   };
 
   /**
@@ -330,7 +330,7 @@ const mapDispatchToProps = (dispatch) => ({
   onClonePressed: (id, x, y) => dispatch(cloneReportThunk(id, x, y)),
   onCreatePressed: (x, y, width, height) => dispatch(addReportThunk(x, y, width, height, undefined)),
   onPageLayoutUpdate: (layout) => dispatch(updatePageLayoutThunk(layout)),
-  onMinimizeClick: (reportId) => dispatch(moveReportToToolboxThunk(reportId)),
+  onMinimizeClick: (report) => dispatch(moveReportToToolboxThunk(report)),
   onMaximizeClick: (reportId) => dispatch(removeReportFromToolboxThunk(reportId)),
 });
 

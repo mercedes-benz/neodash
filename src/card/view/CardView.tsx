@@ -48,6 +48,7 @@ const NeoCardView = ({
   expanded,
   onToggleCardExpand,
   onHandleMinimize,
+  report,
 }) => {
   const reportHeight = heightPx - CARD_FOOTER_HEIGHT - CARD_HEADER_HEIGHT + 22;
   const cardHeight = heightPx - CARD_FOOTER_HEIGHT + 23;
@@ -91,6 +92,7 @@ const NeoCardView = ({
       }
     >
       <NeoCardViewHeader
+        report={report}
         title={title}
         editable={editable}
         description={settings.description}

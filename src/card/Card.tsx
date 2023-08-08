@@ -129,7 +129,7 @@ const NeoCard = ({
     report.settings && report.settings.legendDefinition !== undefined ? report.settings.legendDefinition : {}
   );
 
-  const onHandleMinimize = () => {
+  const onHandleMinimize = (report) => {
     onPutItem(report);
   };
 
@@ -187,6 +187,7 @@ const NeoCard = ({
                   >
                     <NeoCardView
                       id={id}
+                      report={subReport}
                       legendDefinition={subReport?.settings?.legendDefinition}
                       settingsOpen={false}
                       editable={editable}
@@ -228,6 +229,7 @@ const NeoCard = ({
           ) : (
             <NeoCardView
               id={id}
+              report={report}
               legendDefinition={legendDefinition}
               settingsOpen={settingsOpen}
               editable={editable}

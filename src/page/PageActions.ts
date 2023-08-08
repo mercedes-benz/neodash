@@ -11,9 +11,9 @@ export const removeReport = (pagenumber: number, id: any) => ({
 });
 
 export const MOVE_REPORT_TO_TOOLBOX = 'PAGE/MOVE_REPORT_TO_TOOLBOX'
-export const moveReportToToolbox = (pagenumber: number, id: any) => ({
+export const moveReportToToolbox = (pagenumber: number, report: any) => ({
   type: MOVE_REPORT_TO_TOOLBOX,
-  payload: { pagenumber, id },
+  payload: { pagenumber, report },
 });
 
 export const REMOVE_REPORT_FROM_TOOLBOX = 'PAGE/REMOVE_REPORT_FROM_TOOLBOX'

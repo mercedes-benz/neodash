@@ -20,6 +20,7 @@ import {
 } from '@neo4j-ndl/react/icons';
 
 const NeoCardViewHeader = ({
+  report,
   title,
   description,
   editable,
@@ -130,7 +131,7 @@ const NeoCardViewHeader = ({
 
   const minimizeButton = (
     <Tooltip title='Minimize' aria-label='minimize'>
-      <IconButton aria-label='minimize' onClick={onHandleMinimize} clean size='medium'>
+      <IconButton aria-label='minimize' onClick={() => onHandleMinimize(report)} clean size='medium'>
         <MinusIconOutline />
       </IconButton>
     </Tooltip>

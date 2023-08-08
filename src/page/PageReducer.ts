@@ -96,13 +96,32 @@ export const pageReducer = (state = PAGE_INITIAL_STATE, action: { type: any; pay
       };
     }
     case MOVE_REPORT_TO_TOOLBOX: {
-      const { id } = payload;
-      let cards = state.reports.filter((o) => o.id !== id);
-      let item = state.reports.filter((o) => o.id === id);
-      let temp = [...item]
-      if(state.toolbox) {
-         temp = [...temp, ...state.toolbox]
+      const { report, pagenumber } = payload;
+      let cards: any = []
+      let cardsList = []
+      let tempItem = []
+      let temp = []
+      const reportsPage: any = state.reports[pagenumber]
+      let item = state.reports.filter((o) => o.id === report.id);
+      if (item.length === 0) {
+        cardsList = reportsPage.subReports.filter((o) => o.id !== report.id);
+        item = reportsPage.subReports.filter((o) => o.id === report.id);
+        temp = [{ ...item[0], subReportId: reportsPage.id }]
+        if (state.toolbox) {
+          cards = [{ ...reportsPage, subReports: cardsList }]
+          temp = [...temp, ...state.toolbox]
+        } else {
+          cards = [{ ...reportsPage, subReports: cardsList }]
+        }
+      } else {
+        cards = state.reports.filter((o) => o.id !== report.id);
+        tempItem = state.reports.filter((o) => o.id === report.id);
+        temp = [...tempItem]
+        if (state.toolbox) {
+          temp = [...temp, ...state.toolbox]
+        }
       }
+
       return {
         ...state,
         reports: cards,
@@ -112,10 +131,15 @@ export const pageReducer = (state = PAGE_INITIAL_STATE, action: { type: any; pay
     case REMOVE_REPORT_FROM_TOOLBOX: {
       const { id } = payload;
       const revertReport = state.toolbox.filter(item => item.id === id)
-      
+      let subReportCard: any = []
+      if (revertReport[0]?.subReportId) {
+        const getParentReport: any = state.reports.find(_x => _x.id === revertReport[0]?.subReportId)
+        subReportCard = [{ ...getParentReport, subReports: [...getParentReport.subReports, ...revertReport] }]
+      }
+
       return {
         ...state,
-        reports: [...state.reports, ...revertReport],
+        reports: [...subReportCard],
         toolbox: state.toolbox.filter(item => item.id !== id)
       }
     }
