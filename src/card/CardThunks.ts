@@ -137,7 +137,6 @@ export const updateFieldsThunk = (id, fields) => (dispatch: any, getState: any) 
       dispatch(updateFields(pagenumber, id, fields));
     }
   } catch (e) {
-    console.log(e);
     dispatch(createNotificationThunk('Cannot update report fields', e));
   }
 };

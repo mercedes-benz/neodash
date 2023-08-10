@@ -124,7 +124,7 @@ export const createConnectionThunk =
         query,
         parameters,
         1,
-        () => {},
+        () => { },
         (records) => validateConnection(records)
       );
     } catch (e) {
@@ -506,6 +506,7 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
       dispatch(initializeApplicationAsEditorThunk(config, paramsToSetAfterConnecting));
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(e);
     dispatch(setWelcomeScreenOpen(false));
     dispatch(
