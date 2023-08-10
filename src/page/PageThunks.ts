@@ -1,6 +1,6 @@
 import { createNotification } from '../application/ApplicationActions';
 import { CARD_INITIAL_STATE } from '../card/CardReducer';
-import { createReport, removeReport, updateAllCardPositionsInPage, moveReportToToolbox, removeReportFromToolbox } from './PageActions';
+import { createReport, removeReport, updateAllCardPositionsInPage, moveReportToToolbox, removeReportFromToolbox, moveSubReportToToolbox } from './PageActions';
 import { createUUID } from '../dashboard/DashboardThunks';
 
 export const createNotificationThunk = (title: any, message: any) => (dispatch: any) => {
@@ -37,6 +37,16 @@ export const moveReportToToolboxThunk = (id: string) => (dispatch: any, getState
     dispatch(moveReportToToolbox(pagenumber, id));
   } catch (error) {
     dispatch(createNotificationThunk('Cannot move to toolbox report', error));
+  }
+}
+
+export const moveSubReportToToolboxThunk = (id: string) => (dispatch: any, getState: any) => {
+  try {
+    const state = getState()
+    const { pagenumber } = state.dashboard.settings;
+    dispatch(moveSubReportToToolbox(pagenumber, id));
+  } catch (error) {
+    dispatch(createNotificationThunk('Cannot move sub report to toolbox report', error));
   }
 }
 

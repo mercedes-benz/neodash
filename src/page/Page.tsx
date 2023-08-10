@@ -10,6 +10,7 @@ import {
   cloneReportThunk,
   moveReportToToolboxThunk,
   removeReportFromToolboxThunk,
+  moveSubReportToToolboxThunk,
 } from './PageThunks';
 import { getDashboardIsEditable, getPageNumber } from '../settings/SettingsSelectors';
 import { getDashboardSettings } from '../dashboard/DashboardSelectors';
@@ -100,6 +101,7 @@ export const NeoPage = ({
   onPageLayoutUpdate = () => {}, // action to take when the page layout is updated.
   onMinimizeClick = () => {},
   onMaximizeClick = () => {},
+  onMinimizeSubReportClick = () => {},
   toolbox,
 }) => {
   const getReportKey = (pagenumber: number, id: string) => {
@@ -143,8 +145,12 @@ export const NeoPage = ({
     onMaximizeClick(item.id);
   };
 
-  const onPutItem = (item) => {
-    onMinimizeClick(item.id);
+  const onMinimizeReport = (report) => {
+    onMinimizeClick(report.id);
+  };
+
+  const onMinimizeSubReport = (report) => {
+    onMinimizeSubReportClick(report.id);
   };
 
   /**
@@ -300,7 +306,8 @@ export const NeoPage = ({
                 enableSaveButtonForIds={enableSaveButtonForIds}
                 dashboardSettings={dashboardSettings}
                 onRemovePressed={onRemovePressed}
-                onPutItem={onPutItem}
+                onMinimizeReport={onMinimizeReport}
+                onMinimizeSubReport={onMinimizeSubReport}
                 onClonePressed={(id) => {
                   const { x, y } = getAddCardButtonPosition();
                   onClonePressed(id, x, y);
@@ -332,6 +339,7 @@ const mapDispatchToProps = (dispatch) => ({
   onPageLayoutUpdate: (layout) => dispatch(updatePageLayoutThunk(layout)),
   onMinimizeClick: (reportId) => dispatch(moveReportToToolboxThunk(reportId)),
   onMaximizeClick: (reportId) => dispatch(removeReportFromToolboxThunk(reportId)),
+  onMinimizeSubReportClick: (reportId) => dispatch(moveSubReportToToolboxThunk(reportId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NeoPage);
