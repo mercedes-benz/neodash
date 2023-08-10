@@ -16,6 +16,12 @@ export const moveReportToToolbox = (pagenumber: number, id: any) => ({
   payload: { pagenumber, id },
 });
 
+export const MOVE_SUB_REPORT_TO_TOOLBOX = 'PAGE/MOVE_SUB_REPORT_TO_TOOLBOX'
+export const moveSubReportToToolbox = (pagenumber: number, id: any) => ({
+  type: MOVE_SUB_REPORT_TO_TOOLBOX,
+  payload: { pagenumber, id },
+});
+
 export const REMOVE_REPORT_FROM_TOOLBOX = 'PAGE/REMOVE_REPORT_FROM_TOOLBOX'
 export const removeReportFromToolbox = (pagenumber: number, id: any) => ({
   type: REMOVE_REPORT_FROM_TOOLBOX,
