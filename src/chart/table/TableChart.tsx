@@ -27,7 +27,7 @@ import Button from '@mui/material/Button';
 import { renderCellExpand } from '../../component/misc/DataGridExpandedRenderer';
 
 const TABLE_HEADER_HEIGHT = 32;
-const TABLE_FOOTER_HEIGHT = 62;
+// const TABLE_FOOTER_HEIGHT = 52;
 const TABLE_ROW_HEIGHT = 52;
 const HIDDEN_COLUMN_PREFIX = '__';
 

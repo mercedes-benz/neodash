@@ -180,8 +180,8 @@ const NeoCard = ({
                 return (
                   <Item
                     sx={{
-                      gridColumn: subReport.x + 1 + '/' + (subReport.x + subReport.width + 1),
-                      gridRow: subReport.y + 1 + '/' + (subReport.y + subReport.height + 1),
+                      gridColumn: `${subReport.x + 1}/${subReport.x + subReport.width + 1}`,
+                      gridRow: `${subReport.y + 1}/${subReport.y + subReport.height + 1}`,
                     }}
                     key={subReport.id}
                   >
