@@ -9,19 +9,27 @@ WORKDIR /usr/local/src/neodash
 #RUN git clone https://github.com/neo4j-labs/neodash.git /usr/local/src/neodash
 
 # Copy sources and install/build
-COPY ./package.json /usr/local/src/neodash/package.json
+COPY ./package.json ./yarn.lock /usr/local/src/neodash/
 
 RUN yarn install
-COPY ./ /usr/local/src/neodash
+COPY --chown=101:101 ./ /usr/local/src/neodash
+
 RUN yarn run build-minimal
 
 # production stage
 FROM nginxinc/nginx-unprivileged:latest AS neodash
 
-COPY --chown=nginx:nginx --from=build-stage /usr/local/src/neodash/dist /usr/share/nginx/html
+COPY --chown=101:101 --from=build-stage /usr/local/src/neodash/dist /usr/share/nginx/html
 
-COPY --chown=nginx:nginx ./conf/default.conf /etc/nginx/conf.d/
+USER root
+RUN chown -R 101:101 /usr/share/nginx/html
+COPY --chown=101:101 ./conf/default.conf /etc/nginx/conf.d/
+COPY --chown=101:101 ./scripts/config-entrypoint.sh /docker-entrypoint.d/config-entrypoint.sh
+COPY --chown=101:101 ./scripts/message-entrypoint.sh /docker-entrypoint.d/message-entrypoint.sh
+RUN chmod +x /docker-entrypoint.d/config-entrypoint.sh
+RUN chmod +x /docker-entrypoint.d/message-entrypoint.sh
 
+USER 101
 EXPOSE 5005
 
 ## Launch webserver as non-root user.
