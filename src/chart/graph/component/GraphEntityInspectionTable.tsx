@@ -18,9 +18,16 @@ export const GraphEntityInspectionTable = ({
     console.log('undefined function in GraphEntityInspectionTable');
   },
   checklistEnabled = false,
+  customizedOrderingOfAttributesInDetailView,
 }) => {
   const [checkedParameters, setCheckedParameters] = React.useState<string[]>([]);
   const hasPropertyToShow = Object.keys(entity.properties).length > 0;
+  const orderedAttributeList = customizedOrderingOfAttributesInDetailView?.ordering || [];
+  const unOrderedAttributeList =
+    Object.keys(entity.properties).filter(
+      (p) => !(customizedOrderingOfAttributesInDetailView?.ordering || []).includes(p)
+    ) || [];
+
   if (!entity) {
     return <></>;
   }
@@ -68,30 +75,65 @@ export const GraphEntityInspectionTable = ({
               </TableCell>
             </TableRow>
           ) : (
-            Object.keys(entity.properties)
-              .sort()
-              .map((key) => (
-                <TableRow key={key}>
-                  <TableCell component='th' scope='row'>
-                    {key}
-                  </TableCell>
-                  <TableCell align={'left'}>
-                    <ShowMoreText lines={2}>{formatProperty(entity && entity.properties[key].toString())}</ShowMoreText>
-                  </TableCell>
-                  {checklistEnabled ? (
-                    <TableCell align={'center'}>
-                      <Checkbox
-                        color='default'
-                        onChange={(event) => {
-                          handleCheckboxClick(key, event.target.checked);
-                        }}
-                      />
+            <>
+              {orderedAttributeList
+                .filter((attr: string) => !(customizedOrderingOfAttributesInDetailView.hide || []).includes(attr))
+                .map((key: string) => (
+                  <>
+                    {entity && entity.properties[key] && (
+                      <TableRow key={key}>
+                        <TableCell component='th' scope='row'>
+                          {key}
+                        </TableCell>
+                        <TableCell align={'left'}>
+                          <ShowMoreText lines={2}>
+                            {formatProperty(entity && entity.properties[key].toString())}
+                          </ShowMoreText>
+                        </TableCell>
+                        {checklistEnabled ? (
+                          <TableCell align={'center'}>
+                            <Checkbox
+                              color='default'
+                              onChange={(event) => {
+                                handleCheckboxClick(key, event.target.checked);
+                              }}
+                            />
+                          </TableCell>
+                        ) : (
+                          <></>
+                        )}
+                      </TableRow>
+                    )}
+                  </>
+                ))}
+              {unOrderedAttributeList
+                .filter((attr: string) => !(customizedOrderingOfAttributesInDetailView?.hide || []).includes(attr))
+                .sort()
+                .map((key: string) => (
+                  <TableRow key={key}>
+                    <TableCell component='th' scope='row'>
+                      {key}
                     </TableCell>
-                  ) : (
-                    <></>
-                  )}
-                </TableRow>
-              ))
+                    <TableCell align={'left'}>
+                      <ShowMoreText lines={2}>
+                        {formatProperty(entity && entity.properties[key].toString())}
+                      </ShowMoreText>
+                    </TableCell>
+                    {checklistEnabled ? (
+                      <TableCell align={'center'}>
+                        <Checkbox
+                          color='default'
+                          onChange={(event) => {
+                            handleCheckboxClick(key, event.target.checked);
+                          }}
+                        />
+                      </TableCell>
+                    ) : (
+                      <></>
+                    )}
+                  </TableRow>
+                ))}
+            </>
           )}
         </TableBody>
       </Table>

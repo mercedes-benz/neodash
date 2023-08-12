@@ -204,6 +204,7 @@ const NeoGraphChart = (props: ChartProps) => {
       clickPosition: clickPosition,
       setClickPosition: setClickPosition,
       createNotification: props.createNotification,
+      customizedOrderingOfAttributesInDetailView: settings.customizedOrderingOfAttributesInDetailView,
     },
     extensions: {
       styleRules: settings.styleRules,

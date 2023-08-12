@@ -349,6 +349,12 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      customizedOrderingOfAttributesInDetailView: {
+        label: 'Customized Ordering Of Attributes In Modal',
+        type: SELECTION_TYPES.LIST,
+        values: ['node', 'edge'],
+        default: 'node',
+      },
     },
   },
   bar: {

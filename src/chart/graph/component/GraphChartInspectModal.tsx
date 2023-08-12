@@ -8,6 +8,13 @@ import GraphEntityInspectionTable from './GraphEntityInspectionTable';
  * Renders a pop-up window to inspect a node/relationship properties in a read-only table.
  */
 export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) => {
+  const tableDataCustomSettings = Array.isArray(props.interactivity?.customizedOrderingOfAttributesInDetailView)
+    ? props.interactivity?.customizedOrderingOfAttributesInDetailView?.find(
+        (setting) =>
+          setting.entityType ===
+          (props.interactivity.selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : '')
+      )
+    : {};
   return (
     <div>
       <Dialog
@@ -17,10 +24,13 @@ export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) =
         aria-labelledby='form-dialog-title'
       >
         <Dialog.Header id='form-dialog-title'>
-          {props.interactivity.selectedEntity ? getEntityHeader(props.interactivity.selectedEntity) : ''}
+          {props.interactivity.selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : ''}
         </Dialog.Header>
         <Dialog.Content>
-          <GraphEntityInspectionTable entity={props.interactivity.selectedEntity}></GraphEntityInspectionTable>
+          <GraphEntityInspectionTable
+            entity={props.interactivity.selectedEntity}
+            customizedOrderingOfAttributesInDetailView={tableDataCustomSettings}
+          ></GraphEntityInspectionTable>
         </Dialog.Content>
       </Dialog>
     </div>
