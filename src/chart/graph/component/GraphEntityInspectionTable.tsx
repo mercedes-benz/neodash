@@ -29,7 +29,7 @@ export const GraphEntityInspectionTable = ({
   const orderedAttributeList = customTableDataSettingsForEntityType?.ordering || [];
 
   /**
-   * Set rest of the keys in asc order which shoulc renders after the orderedAttributeList
+   * Set rest of the keys in asc order which should render after the orderedAttributeList
    */
   const unOrderedAttributeList = Object.keys(entity.properties).filter(
     (value: string) => !orderedAttributeList.includes(value)
