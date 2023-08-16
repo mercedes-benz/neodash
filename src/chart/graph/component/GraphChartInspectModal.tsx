@@ -8,13 +8,26 @@ import GraphEntityInspectionTable from './GraphEntityInspectionTable';
  * Renders a pop-up window to inspect a node/relationship properties in a read-only table.
  */
 export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) => {
-  const tableDataCustomSettings = Array.isArray(props.interactivity?.customizedOrderingOfAttributesInDetailView)
-    ? props.interactivity?.customizedOrderingOfAttributesInDetailView?.find(
-        (setting) =>
-          setting.entityType ===
-          (props.interactivity.selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : '')
-      )
+  /**
+   * Get header name for dialog box from the clicked node or edge
+   */
+  const headerName = props.interactivity.selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : '';
+  const customTablePropertiesOfModal = props.interactivity?.customTablePropertiesOfModal;
+
+  /**
+   * @param properties
+   * @returns custom settings of selected node/edge from settings if specified.
+   */
+  const getSettingsByEntityType = (properties: any[]) =>
+    properties.find((setting) => setting.entityType === headerName);
+
+  /**
+   * check if customTablePropertiesOfModal is an array orelse return empty object.
+   */
+  const customTableDataSettingsForEntityType = Array.isArray(customTablePropertiesOfModal)
+    ? getSettingsByEntityType(customTablePropertiesOfModal)
     : {};
+
   return (
     <div>
       <Dialog
@@ -23,13 +36,11 @@ export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) =
         onClose={() => props.interactivity.setPropertyInspectorOpen(false)}
         aria-labelledby='form-dialog-title'
       >
-        <Dialog.Header id='form-dialog-title'>
-          {props.interactivity.selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : ''}
-        </Dialog.Header>
+        <Dialog.Header id='form-dialog-title'>{headerName}</Dialog.Header>
         <Dialog.Content>
           <GraphEntityInspectionTable
             entity={props.interactivity.selectedEntity}
-            customizedOrderingOfAttributesInDetailView={tableDataCustomSettings}
+            customTableDataSettingsForEntityType={customTableDataSettingsForEntityType}
           ></GraphEntityInspectionTable>
         </Dialog.Content>
       </Dialog>

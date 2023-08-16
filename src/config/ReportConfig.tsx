@@ -349,8 +349,8 @@ export const REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
-      customizedOrderingOfAttributesInDetailView: {
-        label: 'Customized Ordering Of Attributes In Modal',
+      customTablePropertiesOfModal: {
+        label: 'Customized Ordering and Hide Features Of Attributes In Detailed Modal',
         type: SELECTION_TYPES.LIST,
         values: ['node', 'edge'],
         default: 'node',

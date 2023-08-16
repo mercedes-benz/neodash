@@ -18,15 +18,22 @@ export const GraphEntityInspectionTable = ({
     console.log('undefined function in GraphEntityInspectionTable');
   },
   checklistEnabled = false,
-  customizedOrderingOfAttributesInDetailView,
+  customTableDataSettingsForEntityType,
 }) => {
   const [checkedParameters, setCheckedParameters] = React.useState<string[]>([]);
   const hasPropertyToShow = Object.keys(entity.properties).length > 0;
-  const orderedAttributeList = customizedOrderingOfAttributesInDetailView?.ordering || [];
-  const unOrderedAttributeList =
-    Object.keys(entity.properties).filter(
-      (p) => !(customizedOrderingOfAttributesInDetailView?.ordering || []).includes(p)
-    ) || [];
+
+  /**
+   * Set keys which needs to be displayed first in defined order
+   */
+  const orderedAttributeList = customTableDataSettingsForEntityType?.ordering || [];
+
+  /**
+   * Set rest of the keys in asc order which shoulc renders after the orderedAttributeList
+   */
+  const unOrderedAttributeList = Object.keys(entity.properties).filter(
+    (value: string) => !orderedAttributeList.includes(value)
+  );
 
   if (!entity) {
     return <></>;
@@ -77,7 +84,7 @@ export const GraphEntityInspectionTable = ({
           ) : (
             <>
               {orderedAttributeList
-                .filter((attr: string) => !(customizedOrderingOfAttributesInDetailView.hide || []).includes(attr))
+                .filter((attr: string) => !(customTableDataSettingsForEntityType.hide || []).includes(attr))
                 .map((key: string) => (
                   <>
                     {entity && entity.properties[key] && (
@@ -107,7 +114,7 @@ export const GraphEntityInspectionTable = ({
                   </>
                 ))}
               {unOrderedAttributeList
-                .filter((attr: string) => !(customizedOrderingOfAttributesInDetailView?.hide || []).includes(attr))
+                .filter((attr: string) => !(customTableDataSettingsForEntityType?.hide || []).includes(attr))
                 .sort()
                 .map((key: string) => (
                   <TableRow key={key}>
