@@ -3,7 +3,6 @@ import { InputBase, Grid } from '@mui/material';
 import { IconButton } from '@neo4j-ndl/react';
 import { NeoDeletePageModal } from '../../modal/DeletePageModal';
 import { XMarkIconOutline } from '@neo4j-ndl/react/icons';
-import { DASHBOARD_PAGE_LIST_COLOR } from '../../config/ApplicationConfig';
 
 export const NeoPageButton = ({
   title,
@@ -54,7 +53,7 @@ export const NeoPageButton = ({
               height: '36px',
               width: '100%',
               paddingLeft: '10px',
-              color: selected ? (titleColor ? titleColor : 'black') : '#888',
+              color: selected ? (titleColor ? titleColor : 'black') : '#1e272e',
               textAlign: 'center',
               textTransform: 'uppercase',
             }}

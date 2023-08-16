@@ -152,8 +152,7 @@ export const NeoDashboardHeaderPageList = ({
                 : pagenumber == i
                 ? DASHBOARD_PAGE_LIST_ACTIVE_COLOR
                 : 'inherit',
-              display: 'flex',
-              alignItems: 'center',
+              display: 'block',
               height: '100%',
               padding: 0,
               margin: 0,
@@ -161,17 +160,6 @@ export const NeoDashboardHeaderPageList = ({
               borderLeft: '1px solid #ddd',
             }}
           >
-            {pagenumber == i && (
-              <span
-                style={{
-                  width: 5,
-                  height: '100%',
-                  borderRadius: '1px',
-                  marginRight: '8px',
-                  backgroundColor: page.tabTextColor ? page.tabTextColor : 'blue',
-                }}
-              />
-            )}
             <NeoPageButton
               title={page.title}
               titleColor={page.tabTextColor}
@@ -180,6 +168,22 @@ export const NeoDashboardHeaderPageList = ({
               onSelect={() => (canSwitchPages ? selectPage(i) : null)}
               onRemove={() => removePage(i)}
               onTitleUpdate={(e) => debouncedSetPageTitle(i, e.target.value)}
+            />
+            {pagenumber == i && (
+              <div
+                style={{
+                  width: '100%',
+                  height: '8px',
+                  backgroundColor: page.activeTabColor ? page.activeTabColor : 'blue',
+                }}
+              />
+            )}
+            <div
+              style={{
+                width: '100%',
+                height: '8px',
+                backgroundColor: page.inactiveTabColor ? page.inactiveTabColor : '#1976d2',
+              }}
             />
           </div>
         ))}
