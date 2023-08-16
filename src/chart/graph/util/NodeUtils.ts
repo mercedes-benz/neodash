@@ -24,8 +24,13 @@ export const parseNodeIconConfig = (iconStyle) => {
   }
 };
 
+const getTitleOfNodes = (entity: any, sourceOrTarget: string) => {
+  return entity[sourceOrTarget]?.properties?.title
+}
+
 export const getEntityHeader = (entity) => {
-  return (entity.labels && entity.labels.join(', ')) || entity.type;
+  return entity.labels && `${getTitleOfNodes(entity, 'source')} >> ${entity.labels.join(', ')} >> ${getTitleOfNodes(entity, 'target')}`
+    || `${entity.type} (${getTitleOfNodes(entity, 'source')} --> ${getTitleOfNodes(entity, 'target')})`;
 };
 
 export const drawDataURIOnCanvas = (node, strDataURI, canvas, defaultNodeSize) => {
