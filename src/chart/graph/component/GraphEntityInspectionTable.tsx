@@ -18,9 +18,23 @@ export const GraphEntityInspectionTable = ({
     console.log('undefined function in GraphEntityInspectionTable');
   },
   checklistEnabled = false,
+  customTableDataSettingsForEntityType,
 }) => {
   const [checkedParameters, setCheckedParameters] = React.useState<string[]>([]);
   const hasPropertyToShow = Object.keys(entity.properties).length > 0;
+
+  /**
+   * Set keys which needs to be displayed first in defined order
+   */
+  const orderedAttributeList = customTableDataSettingsForEntityType?.ordering || [];
+
+  /**
+   * Set rest of the keys in asc order which should render after the orderedAttributeList
+   */
+  const unorderedAttributeList = Object.keys(entity.properties).filter(
+    (value: string) => !orderedAttributeList.includes(value)
+  );
+
   if (!entity) {
     return <></>;
   }
@@ -68,30 +82,65 @@ export const GraphEntityInspectionTable = ({
               </TableCell>
             </TableRow>
           ) : (
-            Object.keys(entity.properties)
-              .sort()
-              .map((key) => (
-                <TableRow key={key}>
-                  <TableCell component='th' scope='row'>
-                    {key}
-                  </TableCell>
-                  <TableCell align={'left'}>
-                    <ShowMoreText lines={2}>{formatProperty(entity && entity.properties[key].toString())}</ShowMoreText>
-                  </TableCell>
-                  {checklistEnabled ? (
-                    <TableCell align={'center'}>
-                      <Checkbox
-                        color='default'
-                        onChange={(event) => {
-                          handleCheckboxClick(key, event.target.checked);
-                        }}
-                      />
+            <>
+              {orderedAttributeList
+                .filter((attr: string) => !(customTableDataSettingsForEntityType.hide || []).includes(attr))
+                .map((key: string) => (
+                  <>
+                    {entity && entity.properties[key] && (
+                      <TableRow key={key}>
+                        <TableCell component='th' scope='row'>
+                          {key}
+                        </TableCell>
+                        <TableCell align={'left'}>
+                          <ShowMoreText lines={2}>
+                            {formatProperty(entity && entity.properties[key].toString())}
+                          </ShowMoreText>
+                        </TableCell>
+                        {checklistEnabled ? (
+                          <TableCell align={'center'}>
+                            <Checkbox
+                              color='default'
+                              onChange={(event) => {
+                                handleCheckboxClick(key, event.target.checked);
+                              }}
+                            />
+                          </TableCell>
+                        ) : (
+                          <></>
+                        )}
+                      </TableRow>
+                    )}
+                  </>
+                ))}
+              {unorderedAttributeList
+                .filter((attr: string) => !(customTableDataSettingsForEntityType?.hide || []).includes(attr))
+                .sort()
+                .map((key: string) => (
+                  <TableRow key={key}>
+                    <TableCell component='th' scope='row'>
+                      {key}
                     </TableCell>
-                  ) : (
-                    <></>
-                  )}
-                </TableRow>
-              ))
+                    <TableCell align={'left'}>
+                      <ShowMoreText lines={2}>
+                        {formatProperty(entity && entity.properties[key].toString())}
+                      </ShowMoreText>
+                    </TableCell>
+                    {checklistEnabled ? (
+                      <TableCell align={'center'}>
+                        <Checkbox
+                          color='default'
+                          onChange={(event) => {
+                            handleCheckboxClick(key, event.target.checked);
+                          }}
+                        />
+                      </TableCell>
+                    ) : (
+                      <></>
+                    )}
+                  </TableRow>
+                ))}
+            </>
           )}
         </TableBody>
       </Table>
