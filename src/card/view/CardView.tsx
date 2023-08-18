@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ReportItemContainer } from '../CardStyle';
 import NeoCardViewHeader from './CardViewHeader';
 import NeoCardViewFooter from './CardViewFooter';
-import { CardContent, Fab } from '@mui/material';
+import { CardContent, Dialog, DialogContent, Fab } from '@mui/material';
 import NeoCodeEditorComponent from '../../component/editor/CodeEditorComponent';
 
 import { CARD_FOOTER_HEIGHT, CARD_HEADER_HEIGHT } from '../../config/CardConfig';
@@ -16,6 +16,7 @@ import { lightTheme, darkHeaderTheme, luma } from '../../component/theme/Themes'
 import { IconButton } from '@neo4j-ndl/react';
 import { PlayCircleIconSolid } from '@neo4j-ndl/react/icons';
 import { PlayArrowOutlined } from '@mui/icons-material';
+import { CardFullScreenTransition } from '../CardFullScreenTransition';
 
 const NeoCardView = ({
   id,
@@ -253,23 +254,44 @@ const NeoCardView = ({
   );
 
   return (
-    <div
-      className={`card-view ${expanded ? 'expanded' : ''}`}
-      style={settings && settings.backgroundColor ? { backgroundColor: settings.backgroundColor } : {}}
-    >
-      {reportHeader}
-      {/* if there's no selection for this report, we don't have a footer, so the report can be taller. */}
-      <ReportItemContainer
-        style={{ height: expanded ? (withoutFooter ? 'calc(100% - 69px)' : 'calc(100% - 49px)') : cardHeight }}
-      >
-        {reportTypes[type] ? (
-          reportContent
-        ) : (
-          <NeoCodeViewerComponent value={'Invalid report type. Are you missing an extension?'} />
-        )}
-        {reportTypes[type] ? reportFooter : <></>}
-      </ReportItemContainer>
-    </div>
+    <>
+      {expanded ? (
+        <Dialog fullScreen open={expanded} onClose={onToggleCardExpand} TransitionComponent={CardFullScreenTransition}>
+          <DialogContent>
+            {reportHeader}
+            {/* if there's no selection for this report, we don't have a footer, so the report can be taller. */}
+            <ReportItemContainer
+              style={{ height: expanded ? (withoutFooter ? 'calc(100% - 69px)' : 'calc(100% - 49px)') : cardHeight }}
+            >
+              {reportTypes[type] ? (
+                reportContent
+              ) : (
+                <NeoCodeViewerComponent value={'Invalid report type. Are you missing an extension?'} />
+              )}
+              {reportTypes[type] ? reportFooter : <></>}
+            </ReportItemContainer>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <div
+          className='card-view'
+          style={settings && settings.backgroundColor ? { backgroundColor: settings.backgroundColor } : {}}
+        >
+          {reportHeader}
+          {/* if there's no selection for this report, we don't have a footer, so the report can be taller. */}
+          <ReportItemContainer
+            style={{ height: expanded ? (withoutFooter ? 'calc(100% - 69px)' : 'calc(100% - 49px)') : cardHeight }}
+          >
+            {reportTypes[type] ? (
+              reportContent
+            ) : (
+              <NeoCodeViewerComponent value={'Invalid report type. Are you missing an extension?'} />
+            )}
+            {reportTypes[type] ? reportFooter : <></>}
+          </ReportItemContainer>
+        </div>
+      )}
+    </>
   );
 };
 

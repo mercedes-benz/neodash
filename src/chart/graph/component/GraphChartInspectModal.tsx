@@ -1,6 +1,6 @@
 import React from 'react';
 import { GraphChartVisualizationProps } from '../GraphChartVisualization';
-import { getEntityHeader } from '../util/NodeUtils';
+import { getEntityHeader, getEntityHeaderForEdge } from '../util/NodeUtils';
 import { Dialog } from '@neo4j-ndl/react';
 import GraphEntityInspectionTable from './GraphEntityInspectionTable';
 
@@ -8,10 +8,8 @@ import GraphEntityInspectionTable from './GraphEntityInspectionTable';
  * Renders a pop-up window to inspect a node/relationship properties in a read-only table.
  */
 export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) => {
-  /**
-   * Get header name for dialog box from the clicked node or edge
-   */
-  const headerName = props.interactivity.selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : '';
+  let headerName = '';
+  const selectedEntity = props.interactivity?.selectedEntity;
   const customTablePropertiesOfModal = props.interactivity?.customTablePropertiesOfModal;
 
   /**
@@ -27,6 +25,13 @@ export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) =
   const customTableDataSettingsForEntityType = Array.isArray(customTablePropertiesOfModal)
     ? getSettingsByEntityType(customTablePropertiesOfModal)
     : {};
+
+  // Check if the user clicked relationship or edge
+  const isRelationShipTypeExists = selectedEntity ? Object.getOwnPropertyNames(selectedEntity).includes('type') : false;
+  if (selectedEntity) {
+    // Get header name of modal based on the node or edge clicked by user
+    headerName = isRelationShipTypeExists ? getEntityHeaderForEdge(selectedEntity) : getEntityHeader(selectedEntity);
+  }
 
   return (
     <div>
