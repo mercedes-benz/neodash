@@ -182,7 +182,7 @@ export const NeoDashboardHeaderPageList = ({
               style={{
                 width: '100%',
                 height: '8px',
-                backgroundColor: page.inactiveTabColor ? page.inactiveTabColor : '#1976d2',
+                backgroundColor: page.inactiveTabColor ? page.inactiveTabColor : '#ecf0f1',
               }}
             />
           </div>

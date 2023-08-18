@@ -3,8 +3,9 @@ import { ReportItemContainer } from '../CardStyle';
 import NeoCardSettingsHeader from './CardSettingsHeader';
 import NeoCardSettingsContent from './CardSettingsContent';
 import NeoCardSettingsFooter from './CardSettingsFooter';
-import { CardContent } from '@mui/material';
+import { CardContent, Dialog, DialogContent } from '@mui/material';
 import { CARD_HEADER_HEIGHT } from '../../config/CardConfig';
+import { CardFullScreenTransition } from '../CardFullScreenTransition';
 
 const NeoCardSettings = ({
   settingsOpen,
@@ -85,13 +86,32 @@ const NeoCardSettings = ({
   );
 
   return (
-    <div className={`card-view ${expanded ? 'expanded' : ''}`} style={{ overflowY: 'auto', height: '100%' }}>
-      {cardSettingsHeader}
-      <ReportItemContainer style={{ height: reportHeight }} className='-n-mt-2'>
-        {cardSettingsContent}
-        {cardSettingsFooter}
-      </ReportItemContainer>
-    </div>
+    <>
+      {expanded ? (
+        <Dialog
+          fullScreen
+          open={settingsOpen}
+          onClose={onToggleCardExpand}
+          TransitionComponent={CardFullScreenTransition}
+        >
+          <DialogContent>
+            {cardSettingsHeader}
+            <ReportItemContainer style={{ height: reportHeight }} className='-n-mt-2'>
+              {cardSettingsContent}
+              {cardSettingsFooter}
+            </ReportItemContainer>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <div className='card-view' style={{ overflowY: 'auto', height: '100%' }}>
+          {cardSettingsHeader}
+          <ReportItemContainer style={{ height: reportHeight }} className='-n-mt-2'>
+            {cardSettingsContent}
+            {cardSettingsFooter}
+          </ReportItemContainer>
+        </div>
+      )}
+    </>
   );
 };
 
