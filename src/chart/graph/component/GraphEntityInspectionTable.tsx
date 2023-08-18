@@ -31,7 +31,7 @@ export const GraphEntityInspectionTable = ({
   /**
    * Set rest of the keys in asc order which should render after the orderedAttributeList
    */
-  const unOrderedAttributeList = Object.keys(entity.properties).filter(
+  const unorderedAttributeList = Object.keys(entity.properties).filter(
     (value: string) => !orderedAttributeList.includes(value)
   );
 
@@ -113,7 +113,7 @@ export const GraphEntityInspectionTable = ({
                     )}
                   </>
                 ))}
-              {unOrderedAttributeList
+              {unorderedAttributeList
                 .filter((attr: string) => !(customTableDataSettingsForEntityType?.hide || []).includes(attr))
                 .sort()
                 .map((key: string) => (
