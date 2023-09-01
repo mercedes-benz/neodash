@@ -10,7 +10,16 @@ import { NeoDeletePageModal } from '../../modal/DeletePageModal';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-export const DashboardHeaderPageTitle = ({ title, tabIndex, removePage, setPageTitle, disabled = false }) => {
+export const DashboardHeaderPageTitle = ({
+  active,
+  title,
+  tabIndex,
+  removePage,
+  setPageTitle,
+  disabled = false,
+  tabTextColor = '',
+  tabBackgroundColor = '',
+}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const menuOpen = Boolean(anchorEl);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
@@ -59,7 +68,14 @@ export const DashboardHeaderPageTitle = ({ title, tabIndex, removePage, setPageT
 
   const content = (
     <div className='n-inline-flex' ref={setNodeRef} style={style} id={`tab_${tabIndex}`} {...attributes} {...listeners}>
-      <Tab tabId={tabIndex} key={tabIndex}>
+      <Tab
+        tabId={tabIndex}
+        key={tabIndex}
+        style={{
+          color: active ? tabTextColor : 'inherit',
+          backgroundColor: tabBackgroundColor ? tabBackgroundColor : active ? '#ffffff' : 'inherit',
+        }}
+      >
         {!editing ? (
           title
         ) : (

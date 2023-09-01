@@ -76,7 +76,10 @@ export const NeoDashboardHeaderPageList = ({
           <SortableContext items={pages} strategy={horizontalListSortingStrategy}>
             {pages.map((page, i) => (
               <DashboardHeaderPageTitle
+                active={pagenumber === i}
                 title={page.title}
+                tabTextColor={page?.tabTextColor}
+                tabBackgroundColor={page?.tabBackgroundColor}
                 tabIndex={i}
                 key={`DashboardHeaderPageTitle_${i}`}
                 disabled={!editable}
