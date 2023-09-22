@@ -134,6 +134,8 @@ export interface GraphChartVisualizationProps {
     setClickPosition: (pos) => void;
     setPageNumber: any;
     pageNames: [];
+    customTablePropertiesOfModal: any[],
+    pageIdAndParameterName: string
   };
   /**
    * entries in 'extensions' let users plug in extra functionality into the visualization based on enabled plugins.
