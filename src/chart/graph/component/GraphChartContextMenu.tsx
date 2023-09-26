@@ -64,7 +64,7 @@ export const GraphChartContextMenu = (props: GraphChartVisualizationProps) => {
           }
         />
 
-        {/* Start of Show details: clicking on this redirects to the pageId and sets the global parameter */}
+        {/* clicking on this redirects to the pageId and sets the global parameter */}
         {isShowDetailsValid && (
           <IconMenuItem
             rightIcon={<InfoOutlinedIcon className='btn-icon-base-r' />}
@@ -85,7 +85,6 @@ export const GraphChartContextMenu = (props: GraphChartVisualizationProps) => {
             }}
           ></IconMenuItem>
         )}
-        {/* End of Show details: clicking on this redirects to the pageId and sets the global parameter */}
 
         <IconMenuItem
           rightIcon={<MagnifyingGlassCircleIconOutline className='btn-icon-base-r' />}
