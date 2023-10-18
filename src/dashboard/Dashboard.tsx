@@ -1,6 +1,5 @@
 import React from 'react';
 import NeoPage from '../page/Page';
-import NeoDashboardHeader from './header/DashboardHeader';
 import NeoDashboardTitle from './header/DashboardTitle';
 import NeoDashboardHeaderPageList from './header/DashboardHeaderPageList';
 import { createDriver, Neo4jProvider } from 'use-neo4j';
@@ -12,15 +11,7 @@ import { getPageNumber } from '../settings/SettingsSelectors';
 import { createNotificationThunk } from '../page/PageThunks';
 import { version } from '../modal/AboutModal';
 
-const Dashboard = ({
-  pagenumber,
-  connection,
-  applicationSettings,
-  onConnectionUpdate,
-  onDownloadDashboardAsImage,
-  onAboutModalOpen,
-  resetApplication,
-}) => {
+const Dashboard = ({ pagenumber, connection, applicationSettings, onConnectionUpdate, resetApplication }) => {
   const [driver, setDriver] = React.useState(undefined);
 
   // If no driver is yet instantiated, create a new one.
@@ -52,7 +43,7 @@ const Dashboard = ({
           resetApplication={resetApplication}
         ></NeoDashboardHeader> */}
         <div className='n-w-full n-mx-8 n-my-6'>
-          <NeoDashboardTitle />
+          <NeoDashboardTitle resetApplication={resetApplication} />
           <NeoDashboardHeaderPageList />
         </div>
       </div>

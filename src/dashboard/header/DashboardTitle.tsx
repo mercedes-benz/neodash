@@ -14,9 +14,9 @@ import NeoLoadModal from '../../modal/LoadModal';
 import NeoShareModal from '../../modal/ShareModal';
 import NeoExtensionsModal from '../../extensions/ExtensionsModal';
 import { EXTENSIONS_DRAWER_BUTTONS } from '../../extensions/ExtensionConfig';
-
 import { Tooltip } from '@mui/material';
 import PageHeader from '../../component/page/PageHeader';
+import NeoDashboardHeaderLogo from './DashboardHeaderLogo';
 
 export const NeoDashboardTitle = ({
   dashboardTitle,
@@ -27,6 +27,7 @@ export const NeoDashboardTitle = ({
   extensions,
   updateDashboardSetting,
   connection,
+  resetApplication,
 }) => {
   const [dashboardTitleText, setDashboardTitleText] = React.useState(dashboardTitle);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -70,6 +71,9 @@ export const NeoDashboardTitle = ({
   }, [dashboardTitle]);
   return (
     <div className='n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'>
+      <div className='n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'>
+        <NeoDashboardHeaderLogo resetApplication={resetApplication} />
+      </div>
       {/* TODO : Replace with editable field if dashboard is editable */}
       {editing ? (
         <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
