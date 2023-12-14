@@ -11,7 +11,6 @@ import { forceRefreshPage } from '../page/PageActions';
 import { getPageNumber } from '../settings/SettingsSelectors';
 import { createNotificationThunk } from '../page/PageThunks';
 import { version } from '../modal/AboutModal';
-import NeoDashboardSidebar from './sidebar/DashboardSidebar';
 
 const Dashboard = ({
   pagenumber,
@@ -47,7 +46,7 @@ const Dashboard = ({
 
       {/* Navigation Bar */}
       <div
-        className='n-w-screen n-flex n-flex-row n-bg-neutral-bg-weak n-border-b'
+        className='n-w-screen n-flex n-flex-row n-bg-neutral-bg-weak n-border-b n-my-6 n-mx-2 n-px-1'
         style={{ borderColor: 'lightgrey' }}
       >
         <NeoDashboardHeader
@@ -55,7 +54,7 @@ const Dashboard = ({
           onDownloadImage={onDownloadDashboardAsImage}
           onAboutModalOpen={onAboutModalOpen}
         ></NeoDashboardHeader>
-        <div className='n-w-full n-mx-8 n-my-6'>
+        <div className='n-w-full'>
           <NeoDashboardTitle />
           <NeoDashboardHeaderPageList />
         </div>
@@ -71,26 +70,25 @@ const Dashboard = ({
           position: 'relative',
         }}
       >
-        <div>
-          <NeoDashboardSidebar />
-        </div>
-        <div className='n-w-full n-h-full n-overflow-y-scroll n-flex n-flex-row'>
-          {/* Main Content */}
-          <main className='n-flex-1 n-relative n-z-0 n-scroll-smooth n-w-full'>
-            <div className='n-absolute n-inset-0 page-spacing'>
-              <div className='page-spacing-overflow'>
-                {/* The main content of the page */}
-                {applicationSettings.standalonePassword && applicationSettings.skipConfirmation !== true ? (
-                  <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
-                    Warning: NeoDash is running with a plaintext password in config.json.
-                  </div>
-                ) : (
-                  <></>
-                )}
-                <NeoPage></NeoPage>
+        <div className='n-w-full n-h-full n-flex n-flex-col n-items-center n-justify-center n-rounded-md'>
+          <div className='n-w-full n-h-full n-overflow-y-scroll n-flex n-flex-row'>
+            {/* Main Content */}
+            <main className='n-flex-1 n-relative n-z-0 n-scroll-smooth n-w-full'>
+              <div className='n-absolute n-inset-0 page-spacing'>
+                <div className='page-spacing-overflow'>
+                  {/* The main content of the page */}
+                  {applicationSettings.standalonePassword && applicationSettings.skipConfirmation !== true ? (
+                    <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
+                      Warning: NeoDash is running with a plaintext password in config.json.
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                  <NeoPage></NeoPage>
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
+          </div>
         </div>
       </div>
     </Neo4jProvider>

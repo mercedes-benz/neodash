@@ -9,18 +9,15 @@ import GraphEntityInspectionTable from './GraphEntityInspectionTable';
  */
 export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) => {
   let headerName = '';
-  const selectedEntity = props.interactivity?.selectedEntity;
+  const selectedEntity: any = props.interactivity?.selectedEntity;
   const propertySelections = props?.engine.selection ? props.engine.selection : {};
   const customTablePropertiesOfModal = props.interactivity?.customTablePropertiesOfModal;
-  const entityName = selectedEntity ? getEntityHeader(props.interactivity?.selectedEntity) : '';
 
   // Check if the user clicked relationship or edge
   const isRelationShipTypeExists = selectedEntity ? Object.getOwnPropertyNames(selectedEntity).includes('type') : false;
   if (selectedEntity) {
     // Get header name of modal based on the node or edge clicked by user
-    headerName = isRelationShipTypeExists
-      ? getEntityHeaderForEdge(selectedEntity, propertySelections)
-      : getEntityHeader(selectedEntity);
+    headerName = isRelationShipTypeExists ? selectedEntity?.type : getEntityHeader(selectedEntity, propertySelections);
   }
 
   /**
@@ -28,7 +25,7 @@ export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) =
    * @returns custom settings of selected node/edge from settings if specified.
    */
   const getSettingsByEntityType = (properties: any[]) =>
-    properties.find((setting) => setting.entityType === entityName);
+    properties.find((setting) => setting.entityType === headerName);
 
   /**
    * check if customTablePropertiesOfModal is an array or else return empty object.
