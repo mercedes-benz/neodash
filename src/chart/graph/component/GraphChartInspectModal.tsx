@@ -50,6 +50,7 @@ export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) =
         <Dialog.Content>
           <GraphEntityInspectionTable
             entity={selectedEntity}
+            theme={props.style.theme}
             customTableDataSettingsForEntityType={customTableDataSettingsForEntityType}
           />
         </Dialog.Content>

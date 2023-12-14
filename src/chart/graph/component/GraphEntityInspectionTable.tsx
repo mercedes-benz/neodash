@@ -19,6 +19,7 @@ export const formatProperty = (property) => {
  */
 export const GraphEntityInspectionTable = ({
   entity,
+  theme,
   setSelectedParameters = (_value) => {
     console.log('undefined function in GraphEntityInspectionTable');
   },
@@ -64,12 +65,14 @@ export const GraphEntityInspectionTable = ({
     }
   }
 
+  const tableTextColor = theme === 'dark' ? 'var(--palette-dark-neutral-border-strong)' : 'rgba(0, 0, 0, 0.6)';
+
   const attributesList = (key: any) => (
     <TableRow key={key}>
-      <TableCell component='th' scope='row'>
+      <TableCell component='th' scope='row' style={{ color: tableTextColor }}>
         {key}
       </TableCell>
-      <TableCell align={'left'}>
+      <TableCell align={'left'} style={{ color: tableTextColor }}>
         <ShowMoreText lines={2}>{formatProperty(entity && entity.properties[key].toString())}</ShowMoreText>
       </TableCell>
       {checklistEnabled ? (
@@ -96,8 +99,12 @@ export const GraphEntityInspectionTable = ({
         {hasPropertyToShow ? (
           <TableHead>
             <TableRow>
-              <TableCell align='left'>Property</TableCell>
-              <TableCell align='left'>Value</TableCell>
+              <TableCell align='left' style={{ color: tableTextColor }}>
+                Property
+              </TableCell>
+              <TableCell align='left' style={{ color: tableTextColor }}>
+                Value
+              </TableCell>
               {checklistEnabled ? <TableCell align='center'>Select Property</TableCell> : <></>}
             </TableRow>
           </TableHead>

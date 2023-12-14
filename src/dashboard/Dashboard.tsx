@@ -15,7 +15,7 @@ import { version } from '../modal/AboutModal';
 const Dashboard = ({
   pagenumber,
   connection,
-  applicationSettings,
+  standaloneSettings,
   onConnectionUpdate,
   onDownloadDashboardAsImage,
   onAboutModalOpen,
@@ -77,7 +77,7 @@ const Dashboard = ({
               <div className='n-absolute n-inset-0 page-spacing'>
                 <div className='page-spacing-overflow'>
                   {/* The main content of the page */}
-                  {applicationSettings.standalonePassword && applicationSettings.skipConfirmation !== true ? (
+                  {standaloneSettings.standalonePassword && standaloneSettings.skipConfirmation !== true ? (
                     <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
                       Warning: NeoDash is running with a plaintext password in config.json.
                     </div>
@@ -99,7 +99,7 @@ const Dashboard = ({
 const mapStateToProps = (state) => ({
   connection: applicationGetConnection(state),
   pagenumber: getPageNumber(state),
-  applicationSettings: applicationGetStandaloneSettings(state),
+  standaloneSettings: applicationGetStandaloneSettings(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

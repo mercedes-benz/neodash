@@ -10,5 +10,11 @@
   "standaloneDashboardName": "My Dashboard",
   "standaloneDashboardDatabase": "dashboards",
   "standaloneDashboardURL": "",
-  "skipAddDashErrorPopup": true
+  "standaloneAllowLoad": false,
+  "standaloneLoadFromOtherDatabases": false,
+  "standaloneMultiDatabase": false,
+  "standaloneDatabaseList": "neo4j",
+  "loggingMode": "0",
+  "loggingDatabase": "logs",
+  "customHeader": ""
 }

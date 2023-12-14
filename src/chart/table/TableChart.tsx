@@ -193,6 +193,17 @@ export const NeoTableChart = (props: ChartProps) => {
   if (props.records == null || props.records.length == 0 || props.records[0].keys == null) {
     return <>No data, re-run the report.</>;
   }
+  useEffect(() => {
+    const hiddenColumns = Object.assign(
+      {},
+      ...columns.filter((x) => x.field.startsWith(HIDDEN_COLUMN_PREFIX)).map((x) => ({ [x.field]: false }))
+    );
+    setColumnVisibilityModel(hiddenColumns);
+  }, [records]);
+
+  if (props.records == null || props.records.length == 0 || props.records[0].keys == null) {
+    return <>No data, re-run the report.</>;
+  }
   const getTransposedRows = (records) => {
     // Skip first key
     const rowKeys = [...records[0].keys];
@@ -267,7 +278,7 @@ export const NeoTableChart = (props: ChartProps) => {
                 downloadCSV(rows);
               }}
               aria-label='download csv'
-              className='n-absolute n-z-10 n-bottom-4 n-left-1'
+              className='n-absolute n-z-10 n-bottom-7 n-left-1'
               clean
             >
               <CloudArrowDownIconOutline />

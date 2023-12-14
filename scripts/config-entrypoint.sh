@@ -7,7 +7,7 @@ echo " \
     \"ssoEnabled\": ${ssoEnabled:=false}, \
     \"ssoProviders\": ${ssoProviders:=[]}, \
     \"ssoDiscoveryUrl\": \"${ssoDiscoveryUrl:='https://example.com'}\",  \
-    \"standalone\": "${standalone:=false}", \
+    \"standalone\": ${standalone:=false}, \
     \"standaloneProtocol\": \"${standaloneProtocol:='neo4j+s'}\", \
     \"standaloneHost\": \"${standaloneHost:='test.databases.neo4j.io'}\", \
     \"standalonePort\": ${standalonePort:=7687}, \
@@ -17,6 +17,13 @@ echo " \
     \"standaloneDashboardName\": \"${standaloneDashboardName:='My Dashboard'}\", \
     \"standaloneDashboardDatabase\": \"${standaloneDashboardDatabase:='neo4j'}\",  \
     \"standaloneDashboardURL\": \"${standaloneDashboardURL:=}\",  \
-    \"skipConfirmation\": "${skipConfirmation:=true}",  \
-    \"skipAddDashErrorPopup\": "${skipAddDashErrorPopup:=true}"  \
-    }" > /usr/share/nginx/html/config.json
+    \"standaloneAllowLoad\": ${standaloneAllowLoad:=false},  \
+    \"standaloneLoadFromOtherDatabases\": ${standaloneLoadFromOtherDatabases:=false},  \
+    \"standaloneMultiDatabase\": ${standaloneMultiDatabase:=false}, \
+    \"standaloneDatabaseList\": \"${standaloneDatabaseList:='neo4j'}\", \
+    \"loggingMode\": \"${loggingMode:='0'}\",  \
+    \"loggingDatabase\": \"${loggingDatabase:='logs'}\",  \
+    \"customHeader\": \"${customHeader:=}\"  \
+   }" > /usr/share/nginx/html/config.json
+
+echo "${styleConfigJson:={\}}" > /usr/share/nginx/html/style.config.json

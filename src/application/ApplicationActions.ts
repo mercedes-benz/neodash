@@ -150,8 +150,10 @@ export const setStandaloneEnabled = (
   standaloneDashboardURL: string,
   standaloneUsername: string,
   standalonePassword: string,
-  skipConfirmation: boolean,
-  skipAddDashErrorPopup: boolean
+  standaloneAllowLoad: boolean,
+  standaloneLoadFromOtherDatabases: boolean,
+  standaloneMultiDatabase: boolean,
+  standaloneDatabaseList: string
 ) => ({
   type: SET_STANDALONE_ENABLED,
   payload: {
@@ -165,8 +167,10 @@ export const setStandaloneEnabled = (
     standaloneDashboardURL,
     standaloneUsername,
     standalonePassword,
-    skipConfirmation,
-    skipAddDashErrorPopup
+    standaloneAllowLoad,
+    standaloneLoadFromOtherDatabases,
+    standaloneMultiDatabase,
+    standaloneDatabaseList,
   },
 });
 
@@ -222,4 +226,10 @@ export const SET_PARAMETERS_TO_LOAD_AFTER_CONNECTING = 'APPLICATION/SET_PARAMETE
 export const setParametersToLoadAfterConnecting = (parameters: any) => ({
   type: SET_PARAMETERS_TO_LOAD_AFTER_CONNECTING,
   payload: { parameters },
+});
+
+export const SET_CUSTOM_HEADER = 'APPLICATION/SET_CUSTOM_HEADER';
+export const setCustomHeader = (customHeader: any) => ({
+  type: SET_CUSTOM_HEADER,
+  payload: { customHeader },
 });

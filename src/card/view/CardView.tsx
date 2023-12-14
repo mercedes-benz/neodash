@@ -66,7 +66,7 @@ const NeoCardView = ({
   // e.g. Change of query, type, some advanced settings...
   const [selectorChange, setSelectorChange] = useState(false);
 
-  const getLocalParameters = (parse_string, drilldown = true): any => {
+  const getLocalParameters = (parse_string, drilldown = true): unknown => {
     if (!parse_string || !globalParameters) {
       return {};
     }
@@ -154,7 +154,7 @@ const NeoCardView = ({
       ? reportTypes[type].withoutFooter
       : (reportTypes[type] && !reportTypes[type].selection) || (settings && settings.hideSelections);
 
-  const getGlobalParameter = (key: string): any => {
+  const getGlobalParameter = (key: string): unknown => {
     return globalParameters ? globalParameters[key] : undefined;
   };
 
