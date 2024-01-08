@@ -60,16 +60,12 @@ export const NeoDashboardTitle = ({
   }
 
   useEffect(() => {
-    document.title = dashboardTitleText;
+    document.title = dashboardTitle;
     // Reset text to the dashboard state when the page gets reorganized.
     if (dashboardTitle !== dashboardTitleText) {
       setDashboardTitleText(dashboardTitle);
     }
   }, [dashboardTitle]);
-
-  useEffect(() => {
-    document.title = dashboardTitleText;
-  }, [dashboardTitleText]);
 
   return (
     <div className='n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'>
