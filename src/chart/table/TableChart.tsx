@@ -24,6 +24,7 @@ import Button from '@mui/material/Button';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { renderCellExpand } from '../../component/misc/DataGridExpandRenderer';
 import { getCheckboxes, hasCheckboxes, updateCheckBoxes } from './TableActionsHelper';
+import api from '../../utils/api';
 
 const TABLE_HEADER_HEIGHT = 32;
 const TABLE_FOOTER_HEIGHT = 62;
@@ -94,6 +95,7 @@ export const NeoTableChart = (props: ChartProps) => {
   );
 
   const [notificationOpen, setNotificationOpen] = React.useState(false);
+  const [response, setResponse] = React.useState('');
   const [columnVisibilityModel, setColumnVisibilityModel] = React.useState<GridColumnVisibilityModel>({});
 
   const useStyles = generateClassDefinitionsBasedOnRules(styleRules);
@@ -233,8 +235,25 @@ export const NeoTableChart = (props: ChartProps) => {
 
   const pageNames = getPageNumbersAndNamesList();
 
+  const handleApiRequest = () => {
+    // Make a GET request using your api service
+    api
+      .post('http://localhost:8080/items', {
+        title: rows['EDLS SW size'],
+        name: rows['Update type'],
+        userId: rows.length,
+      })
+      .then((_json) => {
+        api.get(`http://localhost:8080/items/${_json.data.id}`).then((res) => setResponse(res.data.userId));
+      });
+  };
+
   return (
     <ThemeProvider theme={theme}>
+      <Button variant='outlined' size='small' onClick={handleApiRequest}>
+        Send request
+      </Button>
+      <a>{response}</a>
       <div className={classes.root} style={{ height: '100%', width: '100%', position: 'relative' }}>
         <Snackbar
           anchorOrigin={{
