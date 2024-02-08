@@ -130,11 +130,11 @@ export const NeoTableChart = (props: ChartProps) => {
     return key != 'id' ? key : `${key} `;
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handlePopHoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handlePopHoverClose = () => {
     setAnchorEl(null);
   };
 
@@ -298,14 +298,14 @@ export const NeoTableChart = (props: ChartProps) => {
         <Button size='small' onClick={handleApiCall} disabled={isApiLoading}>
           {isApiLoading ? 'Loading...' : 'Send'}
         </Button>
-        <Button size='small' onClick={handleClick} disabled={!props.settings.apiSpec.response}>
+        <Button size='small' onClick={handlePopHoverClick} disabled={!props.settings.apiSpec.response}>
           View Response
         </Button>
         <Popover
           id={id}
           open={open}
           anchorEl={anchorEl}
-          onClose={handleClose}
+          onClose={handlePopHoverClose}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
