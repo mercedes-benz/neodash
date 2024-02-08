@@ -1,5 +1,3 @@
-// ApiConfigModal.tsx
-
 import React, { useEffect, useState } from 'react';
 import {
   TextField,
@@ -65,13 +63,6 @@ const NeoApiConfigModal: React.FC<ApiConfigModalProps> = ({
     setConfig((prevConfig) => ({
       ...prevConfig,
       [name]: checked,
-    }));
-  };
-
-  const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      requestBody: e.target.value,
     }));
   };
 
