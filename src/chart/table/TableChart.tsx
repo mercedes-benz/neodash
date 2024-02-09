@@ -301,26 +301,30 @@ export const NeoTableChart = (props: ChartProps) => {
         <Button size='small' onClick={handlePopHoverClick} disabled={!props.settings.apiSpec.response}>
           View Response
         </Button>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handlePopHoverClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-        >
-          <Typography sx={{ p: 2 }}>
-            <a href={props.settings?.apiSpec.response.data} target='_blank'>
-              {props.settings?.apiSpec.response.data}
-            </a>
-          </Typography>
-        </Popover>
+        {props.settings.apiSpec.response ? (
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handlePopHoverClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <Typography sx={{ p: 2 }}>
+              <a href={props.settings?.apiSpec.response.data} target='_blank'>
+                {props.settings?.apiSpec.response.data}
+              </a>
+            </Typography>
+          </Popover>
+        ) : (
+          <></>
+        )}
       </ButtonGroup>
     </Stack>
   );
