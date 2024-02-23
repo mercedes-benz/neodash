@@ -247,10 +247,6 @@ export const NeoTableChart = (props: ChartProps) => {
 
   const pageNames = getPageNumbersAndNamesList();
 
-  const getValueFromParameters = (parameter) => {
-    return props.getGlobalParameter(parameter);
-  };
-
   const handleApiCall = async () => {
     setApiLoading(true);
     let response: AxiosResponse;
@@ -263,7 +259,7 @@ export const NeoTableChart = (props: ChartProps) => {
     const appendParams = new URLSearchParams();
 
     if (params) {
-      params.forEach((param) => appendParams.append(param.key, getValueFromParameters(param.value)));
+      params.forEach((param) => appendParams.append(param.key, props.getGlobalParameter(param.value)));
     }
 
     try {
