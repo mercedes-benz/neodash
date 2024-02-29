@@ -3,7 +3,7 @@ import NeoPage from '../page/Page';
 import NeoDashboardHeader from './header/DashboardHeader';
 import NeoDashboardTitle from './header/DashboardTitle';
 import NeoDashboardHeaderPageList from './header/DashboardHeaderPageList';
-import { createDriver, Neo4jProvider } from 'use-neo4j';
+import { Neo4jProvider } from 'use-neo4j';
 import { applicationGetConnection, applicationGetStandaloneSettings } from '../application/ApplicationSelectors';
 import { connect } from 'react-redux';
 import NeoDashboardConnectionUpdateHandler from '../component/misc/DashboardConnectionUpdateHandler';
@@ -11,12 +11,13 @@ import { forceRefreshPage } from '../page/PageActions';
 import { getPageNumber } from '../settings/SettingsSelectors';
 import { createNotificationThunk } from '../page/PageThunks';
 import { version } from '../modal/AboutModal';
-// import NeoDashboardSidebar from './sidebar/DashboardSidebar';
+import { createDriver } from '../application/ApplicationThunks';
+import NeoDashboardSidebar from './sidebar/DashboardSidebar';
 
 const Dashboard = ({
   pagenumber,
   connection,
-  applicationSettings,
+  standaloneSettings,
   onConnectionUpdate,
   onDownloadDashboardAsImage,
   onAboutModalOpen,
@@ -32,11 +33,12 @@ const Dashboard = ({
       connection.port,
       connection.username,
       connection.password,
-      { userAgent: `neodash/v${version}` }
+      { userAgent: `neodash/v${version}` },
+      connection.ssoProviders
     );
+    // @ts-ignore wrong driver version
     setDriver(newDriver);
   }
-
   const content = (
     <Neo4jProvider driver={driver}>
       <NeoDashboardConnectionUpdateHandler
@@ -71,26 +73,36 @@ const Dashboard = ({
           position: 'relative',
         }}
       >
-        {/* <div>
+        {!standaloneSettings.standalone || (standaloneSettings.standalone && standaloneSettings.standaloneAllowLoad) ? (
           <NeoDashboardSidebar />
-        </div> */}
-        <div className='n-w-full n-h-full n-overflow-y-scroll n-flex n-flex-row'>
-          {/* Main Content */}
-          <main className='n-flex-1 n-relative n-z-0 n-scroll-smooth n-w-full'>
-            <div className='n-absolute n-inset-0 page-spacing'>
-              <div className='page-spacing-overflow'>
-                {/* The main content of the page */}
-                {applicationSettings.standalonePassword && applicationSettings.skipConfirmation !== true ? (
-                  <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
-                    Warning: NeoDash is running with a plaintext password in config.json.
+        ) : (
+          <></>
+        )}
+        <div className='n-w-full n-h-full n-flex n-flex-col n-items-center n-justify-center n-rounded-md'>
+          <div className='n-w-full n-h-full n-overflow-y-scroll n-flex n-flex-row'>
+            {/* Main Content */}
+            <main className='n-flex-1 n-relative n-z-0 n-scroll-smooth n-w-full'>
+              <div className='n-absolute n-inset-0 page-spacing'>
+                <div className='page-spacing-overflow'>
+                  {/* The main content of the page */}
+
+                  <div>
+                    {standaloneSettings.standalonePassword &&
+                    standaloneSettings.standalonePasswordWarningHidden !== true ? (
+                      <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
+                        Warning: NeoDash is running with a plaintext password in config.json.
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                    <NeoDashboardTitle />
+                    <NeoDashboardHeaderPageList />
+                    <NeoPage></NeoPage>
                   </div>
-                ) : (
-                  <></>
-                )}
-                <NeoPage></NeoPage>
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
+          </div>
         </div>
       </div>
     </Neo4jProvider>
@@ -101,7 +113,7 @@ const Dashboard = ({
 const mapStateToProps = (state) => ({
   connection: applicationGetConnection(state),
   pagenumber: getPageNumber(state),
-  applicationSettings: applicationGetStandaloneSettings(state),
+  standaloneSettings: applicationGetStandaloneSettings(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -2,6 +2,8 @@
  * This file contains all state-changing actions relevant for the main application.
  */
 
+import { SSOProviderOriginal } from 'neo4j-client-sso';
+
 export const CLEAR_NOTIFICATION = 'APPLICATION/CLEAR_NOTIFICATION';
 export const clearNotification = () => ({
   type: CLEAR_NOTIFICATION,
@@ -56,10 +58,11 @@ export const setConnectionProperties = (
   port: string,
   database: string,
   username: string,
-  password: string
+  password: string,
+  ssoProviders?: SSOProviderOriginal[]
 ) => ({
   type: SET_CONNECTION_PROPERTIES,
-  payload: { protocol, url, port, database, username, password },
+  payload: { protocol, url, port, database, username, password, ssoProviders },
 });
 
 export const SET_BASIC_CONNECTION_PROPERTIES = 'APPLICATION/SET_BASIC_CONNECTION_PROPERTIES';
@@ -151,7 +154,12 @@ export const setStandaloneEnabled = (
   standaloneUsername: string,
   standalonePassword: string,
   skipConfirmation: boolean,
-  skipAddDashErrorPopup: boolean
+  skipAddDashErrorPopup: boolean,
+  standalonePasswordWarningHidden: boolean,
+  standaloneAllowLoad: boolean,
+  standaloneLoadFromOtherDatabases: boolean,
+  standaloneMultiDatabase: boolean,
+  standaloneDatabaseList: string
 ) => ({
   type: SET_STANDALONE_ENABLED,
   payload: {
@@ -167,6 +175,11 @@ export const setStandaloneEnabled = (
     standalonePassword,
     skipConfirmation,
     skipAddDashErrorPopup
+    standalonePasswordWarningHidden,
+    standaloneAllowLoad,
+    standaloneLoadFromOtherDatabases,
+    standaloneMultiDatabase,
+    standaloneDatabaseList,
   },
 });
 
@@ -222,4 +235,10 @@ export const SET_PARAMETERS_TO_LOAD_AFTER_CONNECTING = 'APPLICATION/SET_PARAMETE
 export const setParametersToLoadAfterConnecting = (parameters: any) => ({
   type: SET_PARAMETERS_TO_LOAD_AFTER_CONNECTING,
   payload: { parameters },
+});
+
+export const SET_CUSTOM_HEADER = 'APPLICATION/SET_CUSTOM_HEADER';
+export const setCustomHeader = (customHeader: any) => ({
+  type: SET_CUSTOM_HEADER,
+  payload: { customHeader },
 });

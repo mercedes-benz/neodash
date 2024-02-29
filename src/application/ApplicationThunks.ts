@@ -1,4 +1,3 @@
-import { createDriver } from 'use-neo4j';
 import { initializeSSO } from '../component/sso/SSOUtils';
 import { DEFAULT_SCREEN, Screens } from '../config/ApplicationConfig';
 import { setDashboard } from '../dashboard/DashboardActions';
@@ -40,14 +39,63 @@ import {
   setParametersToLoadAfterConnecting,
   setReportHelpModalOpen,
   setDraft,
+  setCustomHeader,
 } from './ApplicationActions';
+import { setLoggingMode, setLoggingDatabase, setLogErrorNotification } from './logging/LoggingActions';
 import { version } from '../modal/AboutModal';
+import neo4j, { auth, authTokenManagers } from 'neo4j-driver';
+import type { Neo4jScheme } from 'use-neo4j/dist/neo4j-config.interface';
+import { SSOProviderOriginal, handleRefreshingToken } from 'neo4j-client-sso';
+import { applicationIsStandalone } from './ApplicationSelectors';
+import { applicationGetLoggingSettings } from './logging/LoggingSelectors';
+import { createLogThunk } from './logging/LoggingThunk';
 import { createUUID } from '../utils/uuid';
 
 /**
  * Application Thunks (https://redux.js.org/usage/writing-logic-thunks) handle complex state manipulations.
  * Several actions/other thunks may be dispatched from here.
  */
+
+export const createDriver = (
+  scheme: Neo4jScheme,
+  host: string,
+  port: string | number,
+  username?: string,
+  password?: string,
+  config?: { userAgent?: string },
+  ssoProviders: SSOProviderOriginal[] = []
+) => {
+  if (ssoProviders.length > 0) {
+    const authTokenMgr = authTokenManagers.bearer({
+      tokenProvider: async () => {
+        const credentials = await handleRefreshingToken(ssoProviders);
+        const token = auth.bearer(credentials.password);
+        // Get the expiration from the JWT's payload, which is a JSON string encoded
+        // using base64. You could also use a JWT parsing lib
+        const [, payloadBase64] = credentials.password.split('.');
+        const payload: unknown = JSON.parse(window.atob(payloadBase64 ?? ''));
+        let expiration: Date;
+        if (typeof payload === 'object' && payload !== null && 'exp' in payload) {
+          expiration = new Date(Number(payload.exp) * 1000);
+        } else {
+          expiration = new Date();
+        }
+
+        return {
+          expiration,
+          token,
+        };
+      },
+    });
+    return neo4j.driver(`${scheme}://${host}:${port}`, authTokenMgr, config);
+  }
+
+  if (!username || !password) {
+    return neo4j.driver(`${scheme}://${host}:${port}`);
+  }
+
+  return neo4j.driver(`${scheme}://${host}:${port}`, neo4j.auth.basic(username, password), config);
+};
 
 /**
  * Establish a connection to Neo4j with the specified credentials. Open/close the relevant windows when connection is made (un)successfully.
@@ -57,87 +105,132 @@ import { createUUID } from '../utils/uuid';
  * @param database - the Neo4j database to connect to.
  * @param username - Neo4j username.
  * @param password - Neo4j password.
+ * @param SSOProviders - List of available SSO providers
  */
 export const createConnectionThunk =
-  (protocol, url, port, database, username, password) => (dispatch: any, getState: any) => {
-    try {
-      const driver = createDriver(protocol, url, port, username, password, { userAgent: `neodash/v${version}` });
-      // eslint-disable-next-line no-console
-      console.log('Attempting to connect...');
-      const validateConnection = (records) => {
+  (protocol, url, port, database, username, password, SSOProviders = []) =>
+    (dispatch: any, getState: any) => {
+      const loggingState = getState();
+      const loggingSettings = applicationGetLoggingSettings(loggingState);
+      const neodashMode = applicationIsStandalone(loggingState) ? 'Standalone' : 'Editor';
+      try {
+        const driver = createDriver(
+          protocol,
+          url,
+          port,
+          username,
+          password,
+          { userAgent: `neodash/v${version}` },
+          SSOProviders
+        );
         // eslint-disable-next-line no-console
-        console.log('Confirming connection was established...');
-        if (records && records[0] && records[0].error) {
-          dispatch(createNotificationThunk('Unable to establish connection', records[0].error));
-        } else if (records && records[0] && records[0].keys[0] == 'connected') {
-          // Connected to Neo4j. Set state accordingly.
-          dispatch(setConnectionProperties(protocol, url, port, database, username, password));
-          dispatch(setConnectionModalOpen(false));
-          dispatch(setConnected(true));
-          // An old dashboard (pre-2.3.5) may not always have a UUID. We catch this case here.
-          dispatch(assignDashboardUuidIfNotPresentThunk());
-          dispatch(updateSessionParameterThunk('session_uri', `${protocol}://${url}:${port}`));
-          dispatch(updateSessionParameterThunk('session_database', database));
-          dispatch(updateSessionParameterThunk('session_username', username));
-          // If we have remembered to load a specific dashboard after connecting to the database, take care of it here.
-          const { application } = getState();
-          if (
-            application.dashboardToLoadAfterConnecting &&
-            (application.dashboardToLoadAfterConnecting.startsWith('http') ||
-              application.dashboardToLoadAfterConnecting.startsWith('./') ||
-              application.dashboardToLoadAfterConnecting.startsWith('/'))
-          ) {
-            fetch(application.dashboardToLoadAfterConnecting)
-              .then((response) => response.text())
-              .then((data) => dispatch(loadDashboardThunk(createUUID(), data)));
-            dispatch(setDashboardToLoadAfterConnecting(null));
-          } else if (application.dashboardToLoadAfterConnecting) {
-            const setDashboardAfterLoadingFromDatabase = (value) => {
-              dispatch(loadDashboardThunk(createUUID(), value));
-            };
-
-            // If we specify a dashboard by name, load the latest version of it.
-            // If we specify a dashboard by UUID, load it directly.
-            if (application.dashboardToLoadAfterConnecting.startsWith('name:')) {
+        console.log('Attempting to connect...');
+        const validateConnection = (records) => {
+          // eslint-disable-next-line no-console
+          console.log('Confirming connection was established...');
+          if (records && records[0] && records[0].error) {
+            dispatch(createNotificationThunk('Unable to establish connection', records[0].error));
+            if (loggingSettings.loggingMode > '0') {
               dispatch(
-                loadDashboardFromNeo4jByNameThunk(
+                createLogThunk(
                   driver,
-                  application.standaloneDashboardDatabase,
-                  application.dashboardToLoadAfterConnecting.substring(5),
-                  setDashboardAfterLoadingFromDatabase
-                )
-              );
-            } else {
-              dispatch(
-                loadDashboardFromNeo4jThunk(
-                  driver,
-                  application.standaloneDashboardDatabase,
-                  application.dashboardToLoadAfterConnecting,
-                  setDashboardAfterLoadingFromDatabase
+                  loggingSettings.loggingDatabase,
+                  neodashMode,
+                  username,
+                  'ERR - connect to DB',
+                  database,
+                  '',
+                  `Error while trying to establish connection to Neo4j DB in ${neodashMode} mode at ${Date(
+                    Date.now()
+                  ).substring(0, 33)}`
                 )
               );
             }
-            dispatch(setDashboardToLoadAfterConnecting(null));
+          } else if (records && records[0] && records[0].keys[0] == 'connected') {
+            dispatch(setConnectionProperties(protocol, url, port, database, username, password));
+            dispatch(setConnectionModalOpen(false));
+            dispatch(setConnected(true));
+            // An old dashboard (pre-2.3.5) may not always have a UUID. We catch this case here.
+            dispatch(assignDashboardUuidIfNotPresentThunk());
+            dispatch(updateSessionParameterThunk('session_uri', `${protocol}://${url}:${port}`));
+            dispatch(updateSessionParameterThunk('session_database', database));
+            dispatch(updateSessionParameterThunk('session_username', username));
+            if (loggingSettings.loggingMode > '0') {
+              dispatch(
+                createLogThunk(
+                  driver,
+                  loggingSettings.loggingDatabase,
+                  neodashMode,
+                  username,
+                  'INF - connect to DB',
+                  database,
+                  '',
+                  `${username} established connection to Neo4j DB in ${neodashMode} mode at ${Date(Date.now()).substring(
+                    0,
+                    33
+                  )}`
+                )
+              );
+            }
+            // If we have remembered to load a specific dashboard after connecting to the database, take care of it here.
+            const { application } = getState();
+            if (
+              application.dashboardToLoadAfterConnecting &&
+              (application.dashboardToLoadAfterConnecting.startsWith('http') ||
+                application.dashboardToLoadAfterConnecting.startsWith('./') ||
+                application.dashboardToLoadAfterConnecting.startsWith('/'))
+            ) {
+              fetch(application.dashboardToLoadAfterConnecting)
+                .then((response) => response.text())
+                .then((data) => dispatch(loadDashboardThunk(createUUID(), data)));
+              dispatch(setDashboardToLoadAfterConnecting(null));
+            } else if (application.dashboardToLoadAfterConnecting) {
+              const setDashboardAfterLoadingFromDatabase = (value) => {
+                dispatch(loadDashboardThunk(createUUID(), value));
+              };
+
+              // If we specify a dashboard by name, load the latest version of it.
+              // If we specify a dashboard by UUID, load it directly.
+              if (application.dashboardToLoadAfterConnecting.startsWith('name:')) {
+                dispatch(
+                  loadDashboardFromNeo4jByNameThunk(
+                    driver,
+                    application.standaloneDashboardDatabase,
+                    application.dashboardToLoadAfterConnecting.substring(5),
+                    setDashboardAfterLoadingFromDatabase
+                  )
+                );
+              } else {
+                dispatch(
+                  loadDashboardFromNeo4jThunk(
+                    driver,
+                    application.standaloneDashboardDatabase,
+                    application.dashboardToLoadAfterConnecting,
+                    setDashboardAfterLoadingFromDatabase
+                  )
+                );
+              }
+              dispatch(setDashboardToLoadAfterConnecting(null));
+            }
+          } else {
+            dispatch(createNotificationThunk('Unknown Connection Error', 'Check the browser console.'));
           }
-        } else {
-          dispatch(createNotificationThunk('Unknown Connection Error', 'Check the browser console.'));
-        }
-      };
-      const query = 'RETURN true as connected';
-      const parameters = {};
-      runCypherQuery(
-        driver,
-        database,
-        query,
-        parameters,
-        1,
-        () => { },
-        (records) => validateConnection(records)
-      );
-    } catch (e) {
-      dispatch(createNotificationThunk('Unable to establish connection', e));
-    }
-  };
+        };
+        const query = 'RETURN true as connected';
+        const parameters = {};
+        runCypherQuery(
+          driver,
+          database,
+          query,
+          parameters,
+          1,
+          () => { },
+          (records) => validateConnection(records)
+        );
+      } catch (e) {
+        dispatch(createNotificationThunk('Unable to establish connection', e));
+      }
+    };
 
 /**
  * Establish a connection directly from the Neo4j Desktop integration (if running inside Neo4j Desktop)
@@ -219,26 +312,42 @@ export const handleSharedDashboardsThunk = () => (dispatch: any) => {
       const skipConfirmation = urlParams.get('skipConfirmation') == 'Yes';
 
       const dashboardDatabase = urlParams.get('dashboardDatabase');
+      dispatch(setStandaloneDashboardDatabase(dashboardDatabase));
       if (urlParams.get('credentials')) {
+        setWelcomeScreenOpen(false);
         const connection = decodeURIComponent(urlParams.get('credentials'));
         const protocol = connection.split('://')[0];
         const username = connection.split('://')[1].split(':')[0];
         const password = connection.split('://')[1].split(':')[1].split('@')[0];
-
         const database = connection.split('@')[1].split(':')[0];
         const url = connection.split('@')[1].split(':')[1];
         const port = connection.split('@')[1].split(':')[2];
-        if (url == password) {
-          // Special case where a connect link is generated without a password.
-          // Here, the format is parsed incorrectly and we open the connection window instead.
-
-          dispatch(resetShareDetails());
-          dispatch(setConnectionProperties(protocol, url, port, database, username.split('@')[0], ''));
-          dispatch(setWelcomeScreenOpen(false));
-          dispatch(setConnectionModalOpen(true));
-          // window.history.pushState({}, document.title, "/");
-          return;
-        }
+        // if (url == password) {
+        //   // Special case where a connect link is generated without a password.
+        //   // Here, the format is parsed incorrectly and we open the connection window instead.
+        //   dispatch(setConnectionProperties(protocol, url, port, database, username.split('@')[0], ''));
+        //   dispatch(
+        //     setShareDetailsFromUrl(
+        //       type,
+        //       id,
+        //       standalone,
+        //       protocol,
+        //       url,
+        //       port,
+        //       database,
+        //       username.split('@')[0],
+        //       '',
+        //       dashboardDatabase,
+        //       true
+        //     )
+        //   );
+        //   setDashboardToLoadAfterConnecting(id);
+        //   window.history.pushState({}, document.title, window.location.pathname);
+        //   dispatch(setConnectionModalOpen(true));
+        //   dispatch(setWelcomeScreenOpen(false));
+        //   // window.history.pushState({}, document.title, "/");
+        //   return;
+        // }
 
         dispatch(setConnectionModalOpen(false));
         dispatch(
@@ -357,6 +466,14 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
     standaloneDashboardName: 'My Dashboard',
     standaloneDashboardDatabase: 'dashboards',
     standaloneDashboardURL: '',
+    loggingMode: '0',
+    loggingDatabase: 'logs',
+    logErrorNotification: '3',
+    standaloneAllowLoad: false,
+    standaloneLoadFromOtherDatabases: false,
+    standaloneMultiDatabase: false,
+    standaloneDatabaseList: 'neo4j',
+    customHeader: '',
     standaloneUsername: '',
     standalonePassword: '',
     skipConfirmation: false,
@@ -405,10 +522,22 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
         config.standaloneUsername,
         config.standalonePassword,
         config.skipConfirmation,
-        config.skipAddDashErrorPopup
+        config.skipAddDashErrorPopup,
+        config.standalonePasswordWarningHidden,
+        config.standaloneAllowLoad,
+        config.standaloneLoadFromOtherDatabases,
+        config.standaloneMultiDatabase,
+        config.standaloneDatabaseList
       )
     );
+
+    dispatch(setLoggingMode(config.loggingMode));
+    dispatch(setLoggingDatabase(config.loggingDatabase));
+    dispatch(setLogErrorNotification('3'));
+
     dispatch(setConnectionModalOpen(false));
+
+    dispatch(setCustomHeader(config.customHeader));
 
     // Auto-upgrade the dashboard version if an old version is cached.
     if (state.dashboard && state.dashboard.version !== NEODASH_VERSION) {
@@ -438,7 +567,7 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
       dispatch(setAboutModalOpen(false));
       dispatch(setConnected(false));
       dispatch(setWelcomeScreenOpen(false));
-      const success = await initializeSSO(state.application.cachedSSODiscoveryUrl, (credentials) => {
+      const success = await initializeSSO(state.application.cachedSSODiscoveryUrl, (credentials, ssoProviders) => {
         if (standalone) {
           // Redirected from SSO and running in viewer mode, merge retrieved config with hardcoded credentials.
           dispatch(
@@ -448,7 +577,8 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
               config.standalonePort,
               config.standaloneDatabase,
               credentials.username,
-              credentials.password
+              credentials.password,
+              ssoProviders
             )
           );
           dispatch(
@@ -458,7 +588,8 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
               config.standalonePort,
               config.standaloneDatabase,
               credentials.username,
-              credentials.password
+              credentials.password,
+              ssoProviders
             )
           );
         } else {
@@ -470,7 +601,8 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
               state.application.connection.port,
               state.application.connection.database,
               credentials.username,
-              credentials.password
+              credentials.password,
+              ssoProviders
             )
           );
           dispatch(setConnected(true));
@@ -552,7 +684,6 @@ export const initializeApplicationAsStandaloneThunk =
   (config, paramsToSetAfterConnecting) => (dispatch: any, getState: any) => {
     const clearNotificationAfterLoad = true;
     const state = getState();
-
     // If we are running in standalone mode, auto-set the connection details that are configured.
     dispatch(
       setConnectionProperties(
@@ -595,4 +726,5 @@ export const initializeApplicationAsStandaloneThunk =
     } else {
       dispatch(setConnectionModalOpen(true));
     }
+    dispatch(handleSharedDashboardsThunk());
   };
