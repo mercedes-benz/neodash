@@ -561,22 +561,6 @@ const _REPORT_TYPES = {
         type: SELECTION_TYPES.TEXT,
         default: 'Execute',
       },
-      description: {
-        label: 'Report Description',
-        type: SELECTION_TYPES.MULTILINE_TEXT,
-        default: 'Enter markdown here...',
-      },
-      minimizable: {
-        label: 'Minimize Button',
-        type: SELECTION_TYPES.LIST,
-        values: [true, false],
-        default: false,
-      },
-      executeButtonName: {
-        label: 'Execute Button Name',
-        type: SELECTION_TYPES.TEXT,
-        default: 'Execute',
-      },
     },
   },
   pie: {
