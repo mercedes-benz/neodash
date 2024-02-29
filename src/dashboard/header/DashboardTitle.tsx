@@ -144,7 +144,8 @@ export const NeoDashboardTitle = ({
         </div>
       ) : (
         /* if we are in Standalone just title is displayed with no edit button */
-        <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
+        <div className='n-flex n-flex-row n-mx-8'>
+          <NeoDashboardHeaderLogo />
           <Typography variant='h3'>{dashboardTitle}</Typography>
         </div>
       )}

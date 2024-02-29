@@ -73,36 +73,23 @@ const Dashboard = ({
           position: 'relative',
         }}
       >
-        {!standaloneSettings.standalone || (standaloneSettings.standalone && standaloneSettings.standaloneAllowLoad) ? (
-          <NeoDashboardSidebar />
-        ) : (
-          <></>
-        )}
-        <div className='n-w-full n-h-full n-flex n-flex-col n-items-center n-justify-center n-rounded-md'>
-          <div className='n-w-full n-h-full n-overflow-y-scroll n-flex n-flex-row'>
-            {/* Main Content */}
-            <main className='n-flex-1 n-relative n-z-0 n-scroll-smooth n-w-full'>
-              <div className='n-absolute n-inset-0 page-spacing'>
-                <div className='page-spacing-overflow'>
-                  {/* The main content of the page */}
-
-                  <div>
-                    {standaloneSettings.standalonePassword &&
-                    standaloneSettings.standalonePasswordWarningHidden !== true ? (
-                      <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
-                        Warning: NeoDash is running with a plaintext password in config.json.
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-                    <NeoDashboardTitle />
-                    <NeoDashboardHeaderPageList />
-                    <NeoPage></NeoPage>
+        <div className='n-w-full n-h-full n-overflow-y-scroll n-flex n-flex-row'>
+          {/* Main Content */}
+          <main className='n-flex-1 n-relative n-z-0 n-scroll-smooth n-w-full'>
+            <div className='n-absolute n-inset-0 page-spacing'>
+              <div className='page-spacing-overflow'>
+                {/* The main content of the page */}
+                {standaloneSettings.standalonePassword && standaloneSettings.skipConfirmation !== true ? (
+                  <div style={{ textAlign: 'center', color: 'red', paddingTop: 60, marginBottom: -50 }}>
+                    Warning: NeoDash is running with a plaintext password in config.json.
                   </div>
-                </div>
+                ) : (
+                  <></>
+                )}
+                <NeoPage></NeoPage>
               </div>
-            </main>
-          </div>
+            </div>
+          </main>
         </div>
       </div>
     </Neo4jProvider>

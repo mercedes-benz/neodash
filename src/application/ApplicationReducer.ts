@@ -207,7 +207,7 @@ export const applicationReducer = (state = initialState, action: { type: any; pa
         standaloneUsername,
         standalonePassword,
         skipConfirmation,
-        skipAddDashErrorPopup
+        skipAddDashErrorPopup,
         standalonePasswordWarningHidden,
         standaloneAllowLoad,
         standaloneLoadFromOtherDatabases,
@@ -226,7 +226,7 @@ export const applicationReducer = (state = initialState, action: { type: any; pa
         standaloneUsername: standaloneUsername,
         standalonePassword: standalonePassword,
         skipConfirmation: skipConfirmation,
-        skipAddDashErrorPopup: skipAddDashErrorPopup
+        skipAddDashErrorPopup: skipAddDashErrorPopup,
         standalonePasswordWarningHidden: standalonePasswordWarningHidden,
         standaloneAllowLoad: standaloneAllowLoad,
         standaloneLoadFromOtherDatabases: standaloneLoadFromOtherDatabases,

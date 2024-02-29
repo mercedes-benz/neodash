@@ -174,7 +174,7 @@ export const setStandaloneEnabled = (
     standaloneUsername,
     standalonePassword,
     skipConfirmation,
-    skipAddDashErrorPopup
+    skipAddDashErrorPopup,
     standalonePasswordWarningHidden,
     standaloneAllowLoad,
     standaloneLoadFromOtherDatabases,
