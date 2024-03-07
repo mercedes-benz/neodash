@@ -43,7 +43,7 @@ const NeoForm = (props: ChartProps) => {
     });
   }
 
-  const isParametersDefined = (cypherQuery: string) => {
+  const isParametersDefined = (cypherQuery: string | undefined) => {
     const parameterNames = extractAllParameterNames(cypherQuery);
     if (props.parameters) {
       return checkParametersNameInGlobalParameter(parameterNames, props.parameters);
@@ -86,7 +86,7 @@ const NeoForm = (props: ChartProps) => {
           <Button
             style={{ marginLeft: 15 }}
             id='form-submit'
-            disabled={!submitButtonActive || isParametersDefined(props.query || '')}
+            disabled={!submitButtonActive || isParametersDefined(props.query)}
             onClick={() => {
               if (!props.query || !props.query.trim()) {
                 props.createNotification(
