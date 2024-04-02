@@ -268,6 +268,11 @@ export const NeoTableChart = (props: ChartProps) => {
 
   const pageNames = getPageNumbersAndNamesList();
 
+  /**
+   * @author <em>Mercedes-benz</em>
+   * @description Added as a part of API config modal
+   * ========================================================================================
+   */
   const handleApiCall = async () => {
     setApiLoading(true);
     let response: AxiosResponse;
@@ -351,6 +356,12 @@ export const NeoTableChart = (props: ChartProps) => {
   );
 
   const isApiSpecEnabled = props.settings?.apiSpec && props.settings?.apiSpec.apiEnabled;
+
+  /**
+   * ========================================================================================
+   * @author <em>Mercedes-benz</em>
+   * @description Added as a part of API config modal
+   */
 
   const tableStyle: any = isApiSpecEnabled
     ? { marginTop: 10, height: '90%', width: '100%', position: 'relative' }
