@@ -71,7 +71,7 @@ export const customGraphConfig = {
     },
 }
 
-export const customBarPieLineMapValueJsonChartConfig = {
+export const customCommonChartConfig = {
     ...customMinimizableConfig,
     ...customExecuteButtonConfig,
     hideQueryEditorInAutoRunOnMode: {
@@ -95,8 +95,4 @@ export const customSelectCardConfig = {
         type: SELECTION_TYPES.TEXT,
         default: null,
     },
-}
-
-export const customIframeCardConfig = {
-    ...customMinimizableConfig,
 }
