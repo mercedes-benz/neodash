@@ -534,49 +534,11 @@ const _REPORT_TYPES = {
         type: SELECTION_TYPES.NUMBER,
         default: 0.25,
       },
-      expandHeightForLegend: {
-        label: 'Expand Height For Legend',
-        type: SELECTION_TYPES.LIST,
-        values: [true, false],
-        default: false,
-      },
-      innerPadding: {
-        label: 'Inner Padding',
-        type: SELECTION_TYPES.NUMBER,
-        default: 0,
-      },
-      legendPosition: {
-        label: 'Legend Position',
-        type: SELECTION_TYPES.LIST,
-        values: ['Horizontal', 'Vertical'],
-        default: 'Vertical',
-      },
       hideQueryEditorInAutoRunOnMode: {
         label: 'Hide query editor on auto run on mode',
         type: SELECTION_TYPES.LIST,
         values: [true, false],
         default: false,
-      },
-      padding: {
-        label: 'Padding',
-        type: SELECTION_TYPES.NUMBER,
-        default: 0.25,
-      },
-      description: {
-        label: 'Report Description',
-        type: SELECTION_TYPES.MULTILINE_TEXT,
-        default: 'Enter markdown here...',
-      },
-      minimizable: {
-        label: 'Minimize Button',
-        type: SELECTION_TYPES.LIST,
-        values: [true, false],
-        default: false,
-      },
-      executeButtonName: {
-        label: 'Execute Button Name',
-        type: SELECTION_TYPES.TEXT,
-        default: 'Execute',
       },
       description: {
         label: 'Report Description',
@@ -1666,7 +1628,6 @@ const _REPORT_TYPES = {
       type: SELECTION_TYPES.LIST,
       values: [true, false],
       default: false,
-    },
     },
   },
 };
