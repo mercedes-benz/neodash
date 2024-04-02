@@ -141,7 +141,7 @@ export interface GraphChartVisualizationProps {
     setClickPosition: (pos) => void;
     setPageNumber: any;
     pageNames: [];
-    customTablePropertiesOfModal: any[];
+    customTablePropertiesOfModal: any[]; // Added as a part of this story VULCAN-134/OrderingOfAttributes
     pageIdAndParameterName: string;
   };
   /**

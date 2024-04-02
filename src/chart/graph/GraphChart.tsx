@@ -215,7 +215,7 @@ const NeoGraphChart = (props: GraphChartProps) => {
       clickPosition: clickPosition,
       setClickPosition: setClickPosition,
       createNotification: props.createNotification,
-      customTablePropertiesOfModal: settings.customTablePropertiesOfModal,
+      customTablePropertiesOfModal: settings.customTablePropertiesOfModal, // Added as a part of this story VULCAN-134/OrderingOfAttributes
       pageIdAndParameterName: settings.pageIdAndParameterName,
     },
     extensions: {
