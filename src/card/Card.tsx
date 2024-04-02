@@ -122,6 +122,12 @@ const NeoCard = ({
     setCollapseTimeout(report.collapseTimeout);
   }, [report.collapseTimeout]);
 
+  /**
+   * start
+   * @author <em>Mercedes-benz</em>
+   * @description Legend changes
+   * ============================================================================
+   */
   const [legendDefinition, setLegendDefinition] = React.useState(report.settings?.legendDefinition);
 
   useEffect(() => {
@@ -130,6 +136,12 @@ const NeoCard = ({
     }
     setLegendDefinition(report.settings?.legendDefinition);
   }, [report.settings.legendDefinition]);
+  /**
+   * ============================================================================
+   * end
+   * @author <em>Mercedes-benz</em>
+   * @description Legend changes
+   */
 
   // TODO - get rid of some of the props-drilling here...
   const component = (

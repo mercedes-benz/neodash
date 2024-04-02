@@ -135,6 +135,12 @@ export const NeoTableChart = (props: ChartProps) => {
     return key != 'id' ? key : `${key} `;
   };
 
+  /**
+   * @author <em>Mercedes-benz</em>
+   * @description start of expand cell renderer feature
+   * @param event React.MouseEvent<HTMLButtonElement>
+   * ==================================================
+   */
   const handlePopHoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -144,6 +150,12 @@ export const NeoTableChart = (props: ChartProps) => {
   };
 
   const lineBreakColumns: string[] = props.settings?.lineBreaksAfterListEntry;
+  /**
+   * ==================================================
+   * @author <em>Mercedes-benz</em>
+   * @description end of expand cell renderer feature
+   * @param event
+   */
 
   const actionableFields = actionsRules.filter((r) => r.condition !== 'rowCheck').map((r) => r.field);
 
@@ -179,6 +191,7 @@ export const NeoTableChart = (props: ChartProps) => {
               disableColumnSelector: true,
               flex: columnWidths && i < columnWidths.length ? columnWidths[i] : 1,
               disableClickEventBubbling: true,
+              // MB expand cell renderer change
               lineBreakAfterListEntry: lineBreakColumns?.includes(key.toString()),
             },
             value,
@@ -195,6 +208,7 @@ export const NeoTableChart = (props: ChartProps) => {
             disableColumnSelector: true,
             width: columnWidths && i < columnWidths.length ? columnWidths[i] : 100,
             disableClickEventBubbling: true,
+            // MB expand cell renderer change
             lineBreakAfterListEntry: lineBreakColumns?.includes(key.toString()),
           },
           value,

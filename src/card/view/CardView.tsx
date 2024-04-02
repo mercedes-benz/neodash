@@ -192,6 +192,13 @@ const NeoCardView = ({
     overflow: 'auto',
   };
 
+  /**
+   * @author <em>Mercedes-benz</em>
+   * @param cypherQuery
+   * @returns
+   * =====================================================================================
+   */
+
   const isParametersDefined = (cypherQuery: string) => {
     const parameterNames = extractAllParameterNames(cypherQuery);
     if (globalParameters) {
@@ -213,6 +220,11 @@ const NeoCardView = ({
       </Button>
     </div>
   );
+
+  /**
+   * =========================================================================================
+   * @author <em>Mercedes-benz</em>
+   */
 
   const cypherQueryEditor = (
     <>
