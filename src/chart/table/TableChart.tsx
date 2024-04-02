@@ -135,6 +135,16 @@ export const NeoTableChart = (props: ChartProps) => {
     return key != 'id' ? key : `${key} `;
   };
 
+  const handlePopHoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopHoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const lineBreakColumns: string[] = props.settings?.lineBreaksAfterListEntry;
+
   const actionableFields = actionsRules.filter((r) => r.condition !== 'rowCheck').map((r) => r.field);
 
   const columns = transposed
