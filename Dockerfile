@@ -1,5 +1,5 @@
 # build stage
-FROM node:lts-alpine3.18 AS build-stage
+FROM node:lts-alpine AS build-stage
 
 RUN yarn global add typescript jest
 WORKDIR /usr/local/src/neodash
@@ -18,10 +18,7 @@ COPY --chown=101:101 ./ /usr/local/src/neodash
 RUN yarn run build-minimal
 
 # production stage
-FROM nginx:alpine3.18 AS neodash
-RUN apk upgrade
-
-ENV NGINX_PORT=5005
+FROM nginxinc/nginx-unprivileged:latest AS neodash
 
 COPY --chown=101:101 --from=build-stage /usr/local/src/neodash/dist /usr/share/nginx/html
 
@@ -33,12 +30,10 @@ COPY --chown=101:101 ./scripts/message-entrypoint.sh /docker-entrypoint.d/messag
 RUN chmod +x /docker-entrypoint.d/config-entrypoint.sh
 RUN chmod +x /docker-entrypoint.d/message-entrypoint.sh
 
+USER 101
+EXPOSE 5005
+
 ## Launch webserver as non-root user.
-USER nginx
-
-EXPOSE $NGINX_PORT
-
 CMD ["nginx", "-g", "daemon off;"]
-
-HEALTHCHECK cmd curl --fail "http://localhost:$NGINX_PORT" || exit 1
-LABEL version="2.4.4"
+HEALTHCHECK cmd curl --fail http://localhost:5005 || exit 1
+LABEL version="2.4.0"
