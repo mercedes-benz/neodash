@@ -1,5 +1,5 @@
 # build stage
-FROM node:lts-alpine AS build-stage
+FROM node:lts-alpine3.18 AS build-stage
 
 RUN yarn global add typescript jest
 WORKDIR /usr/local/src/neodash
