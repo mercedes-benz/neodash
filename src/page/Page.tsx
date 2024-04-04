@@ -70,6 +70,12 @@ export const NeoPage = ({
     return ['se'];
   };
 
+  /**
+   * Start
+   * @author <em>Mercedes-benz</em>
+   * @description Grouped reports changes
+   * ========================================================
+   */
   const toggleToolBox = () => {
     setListOpen(!isListOpen);
   };
@@ -92,6 +98,12 @@ export const NeoPage = ({
   };
 
   const groupedReports = groupReportsByGroupId(filteredReports);
+  /**
+   * End
+   * ===========================================================
+   * @author <em>Mercedes-benz</em>
+   * @description Grouped reports changes
+   */
 
   /**
    * Based on the current layout, determine where the 'add report' card should be placed.
@@ -210,6 +222,7 @@ export const NeoPage = ({
 
   const content = (
     <div className='n-pt-3'>
+      {/* Page tool box start */}
       {toolbox && toolbox.length > 0 && (
         <PageToolBox
           items={toolbox || []}
@@ -234,6 +247,7 @@ export const NeoPage = ({
             onClonePressed={onClonePressed}
           />
         ))}
+      {/* Page tool box end */}
       <ResponsiveGridLayout
         draggableHandle='.drag-handle'
         layouts={layouts}

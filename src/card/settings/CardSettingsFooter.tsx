@@ -155,7 +155,8 @@ const NeoCardSettingsFooter = ({
       ) : (
         <></>
       )}
-
+      {/* Added as a part of API config modal
+       =========================================== */}
       {extensions['api-config'] && extensions['api-config'].active ? (
         <NeoApiConfigModal
           settingName={apiSpec}
@@ -167,6 +168,8 @@ const NeoCardSettingsFooter = ({
       ) : (
         <></>
       )}
+      {/*  ===============================================
+          Added as a part of API config modal */}
 
       <table
         style={{
@@ -219,6 +222,9 @@ const NeoCardSettingsFooter = ({
               ) : (
                 <></>
               )}
+
+              {/* Added as a part of API config modal
+                  =========================================== */}
               {extensions['api-config'] && extensions['api-config'].active && type === 'table' ? (
                 <Tooltip title='Enable API configuration' aria-label='' disableInteractive>
                   <IconButton
@@ -235,6 +241,8 @@ const NeoCardSettingsFooter = ({
               ) : (
                 <></>
               )}
+              {/*  ===============================================
+                  Added as a part of API config modal */}
             </td>
           </tr>
           <tr>

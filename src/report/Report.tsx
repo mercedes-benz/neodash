@@ -279,6 +279,7 @@ export const NeoReport = ({
   /**
    * This component renders string response from the cypher query. This feature is only applicable for graph report.
    * https://mercedes-benz.atlassian.net/browse/VULCAN-235
+   * ==============================================================================================================
    */
   if (records && records.length === 1) {
     const singleValue = records[0]?._fields?.[0];
@@ -295,6 +296,11 @@ export const NeoReport = ({
       );
     }
   }
+  /**
+   * ==============================================================================================================
+   * This component renders string response from the cypher query. This feature is only applicable for graph report.
+   * https://mercedes-benz.atlassian.net/browse/VULCAN-235
+   */
 
   // Draw the report based on the query status.
   if (disabled) {

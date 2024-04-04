@@ -8,6 +8,11 @@ import GraphEntityInspectionTable from './GraphEntityInspectionTable';
  * Renders a pop-up window to inspect a node/relationship properties in a read-only table.
  */
 export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) => {
+  /**
+   * @author <em>Mercedes-benz</em>
+   * @description Added as a part of vulcan-134
+   * ===========================================================================================================
+   */
   let headerName = '';
   const selectedEntity: any = props.interactivity?.selectedEntity;
   const customTablePropertiesOfModal = props.interactivity?.customTablePropertiesOfModal;
@@ -34,6 +39,11 @@ export const NeoGraphChartInspectModal = (props: GraphChartVisualizationProps) =
   const customTableDataSettingsForEntityType = Array.isArray(customTablePropertiesOfModal)
     ? getSettingsByEntityType(customTablePropertiesOfModal)
     : {};
+  /**
+   * ===========================================================================================================
+   * @author <em>Mercedes-benz</em>
+   * @description Added as a part of vulcan-134
+   */
 
   return (
     <div>

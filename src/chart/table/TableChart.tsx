@@ -135,6 +135,12 @@ export const NeoTableChart = (props: ChartProps) => {
     return key != 'id' ? key : `${key} `;
   };
 
+  /**
+   * @author <em>Mercedes-benz</em>
+   * @description start of expand cell renderer feature
+   * ==================================================
+   */
+
   const handlePopHoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -144,6 +150,12 @@ export const NeoTableChart = (props: ChartProps) => {
   };
 
   const lineBreakColumns: string[] = props.settings?.lineBreaksAfterListEntry;
+
+  /**
+   * ==================================================
+   * @author <em>Mercedes-benz</em>
+   * @description end of expand cell renderer feature
+   */
 
   const actionableFields = actionsRules.filter((r) => r.condition !== 'rowCheck').map((r) => r.field);
   const columns = transposed
@@ -178,7 +190,7 @@ export const NeoTableChart = (props: ChartProps) => {
               disableColumnSelector: true,
               flex: columnWidths && i < columnWidths.length ? columnWidths[i] : 1,
               disableClickEventBubbling: true,
-              lineBreakAfterListEntry: lineBreakColumns?.includes(key.toString()),
+              lineBreakAfterListEntry: lineBreakColumns?.includes(key.toString()), // MB expand cell renderer change
             },
             value,
             actionableFields.includes(key),
@@ -194,7 +206,7 @@ export const NeoTableChart = (props: ChartProps) => {
             disableColumnSelector: true,
             width: columnWidths && i < columnWidths.length ? columnWidths[i] : 100,
             disableClickEventBubbling: true,
-            lineBreakAfterListEntry: lineBreakColumns?.includes(key.toString()),
+            lineBreakAfterListEntry: lineBreakColumns?.includes(key.toString()), // MB expand cell renderer change
           },
           value,
           actionableFields.includes(key),
@@ -252,6 +264,12 @@ export const NeoTableChart = (props: ChartProps) => {
     : Math.floor(availableRowHeight) - pageSizeReducer;
 
   const pageNames = getPageNumbersAndNamesList();
+
+  /**
+   * @author <em>Mercedes-benz</em>
+   * @description Added as a part of API config modal
+   * ========================================================================================
+   */
 
   const handleApiCall = async () => {
     setApiLoading(true);
@@ -336,6 +354,12 @@ export const NeoTableChart = (props: ChartProps) => {
   );
 
   const isApiSpecEnabled = props.settings?.apiSpec && props.settings?.apiSpec.apiEnabled;
+
+  /**
+   * ========================================================================================
+   * @author <em>Mercedes-benz</em>
+   * @description Added as a part of API config modal
+   */
 
   const tableStyle: any = isApiSpecEnabled
     ? { marginTop: 10, height: '90%', width: '100%', position: 'relative' }
