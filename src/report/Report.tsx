@@ -1,6 +1,6 @@
 import { Chip, Tooltip } from '@mui/material';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { QueryStatus, runCypherQuery } from './ReportQueryRunner';
+import { QueryStatus, runCypherQuery, runCypherQueryForReports } from './ReportQueryRunner';
 import debounce from 'lodash/debounce';
 import NeoCodeViewerComponent, { NoDrawableDataErrorMessage } from '../component/editor/CodeViewerComponent';
 import { DEFAULT_ROW_LIMIT, HARD_ROW_LIMITING, RUN_QUERY_DELAY_MS } from '../config/ReportConfig';
@@ -39,13 +39,13 @@ export const NeoReport = ({
     fields = f;
   }, // The callback to update the set of query fields after query execution.
   setSchemaDispatch,
-  setGlobalParameter = () => {}, // callback to update global (dashboard) parameters.
+  setGlobalParameter = () => { }, // callback to update global (dashboard) parameters.
   getGlobalParameter = (_: string) => {
     return '';
   }, // function to get global (cypher) parameters.
-  updateReportSetting = () => {},
-  createNotification = () => {},
-  setPageNumber = () => {}, // Callback to update the current page number selected by the user.
+  updateReportSetting = () => { },
+  createNotification = () => { },
+  setPageNumber = () => { }, // Callback to update the current page number selected by the user.
   dimensions = { width: 300, height: 300 }, // Size of the report in pixels.
   rowLimit = DEFAULT_ROW_LIMIT, // The maximum number of records to render.
   queryTimeLimit = 20, // Time limit for queries before automatically aborted.
@@ -53,7 +53,7 @@ export const NeoReport = ({
   expanded = false, // whether the report is visualized in a fullscreen view.
   extensions = {}, // A set of enabled extensions.
   legendDefinition = {},
-  getCustomDispatcher = () => {},
+  getCustomDispatcher = () => { },
   ChartType = NeoTableChart, // The report component to render with the query results.
   prepopulateExtensionName,
   deletePrepopulationReportFunction,
@@ -70,7 +70,7 @@ export const NeoReport = ({
       '`driver` not defined. Have you added it into your app as <Neo4jContext.Provider value={{driver}}> ?'
     );
   }
-  const debouncedRunCypherQuery = useCallback(debounce(runCypherQuery, RUN_QUERY_DELAY_MS), []);
+  const debouncedRunCypherQuery = useCallback(debounce(runCypherQueryForReports, RUN_QUERY_DELAY_MS), []);
 
   const isQueryParametersDefined = (cypherQuery: string) => {
     const parameterNames = extractAllParameterNames(cypherQuery);
@@ -102,10 +102,10 @@ export const NeoReport = ({
     let numericFields =
       reportTypes[type].selection && fields
         ? Object.keys(reportTypes[type].selection).filter(
-            (field) =>
-              reportTypes[type].selection[field].type == SELECTION_TYPES.NUMBER &&
-              !reportTypes[type].selection[field].multiple
-          )
+          (field) =>
+            reportTypes[type].selection[field].type == SELECTION_TYPES.NUMBER &&
+            !reportTypes[type].selection[field].multiple
+        )
         : [];
     // Take care of multi select fields, they need to be added to the numeric fields too.
     if (reportTypes[type].selection) {
@@ -142,7 +142,7 @@ export const NeoReport = ({
           }
         );
       } else {
-        runCypherQuery(
+        runCypherQueryForReports(
           driver,
           database,
           newQuery,
@@ -239,17 +239,17 @@ export const NeoReport = ({
   // Can retrieve a maximum of 1000 rows at a time.
   const queryCallback = useCallback(
     (query, parameters, setRecords) => {
-      runCypherQuery(
+      runCypherQueryForReports(
         driver,
         database,
         query,
         parameters,
         1000,
         (status) => {
-          status == QueryStatus.NO_DATA ? setRecords([]) : () => {};
+          status == QueryStatus.NO_DATA ? setRecords([]) : () => { };
         },
         (result) => setRecords(result),
-        () => {},
+        () => { },
         fields,
         false,
         false,

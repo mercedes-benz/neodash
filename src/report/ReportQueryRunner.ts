@@ -1,6 +1,7 @@
 import { extractNodePropertiesFromRecords, extractNodeAndRelPropertiesFromRecords } from './ReportRecordProcessing';
 import isEqual from 'lodash.isequal';
 
+
 export enum QueryStatus {
   NO_QUERY, // No query specified
   NO_DATA, // No data was returned, therefore we can't draw it.
@@ -55,6 +56,7 @@ export async function runCypherQuery(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
+  console.log("In runCypherQuery");
   // If no query specified, we don't do anything.
   if (query.trim() == '') {
     setFields([]);
@@ -80,6 +82,12 @@ export async function runCypherQuery(
     .then((res) => {
       // @ts-ignore
       const { records } = res;
+
+
+
+      console.log("Printing records:");
+      console.log(records);
+
       // TODO - check query summary to ensure that no writes are made in safe-mode.
       if (records.length == 0) {
         setStatus(QueryStatus.NO_DATA);
@@ -111,13 +119,14 @@ export async function runCypherQuery(
       } else if (records.length > rowLimit) {
         setStatus(QueryStatus.COMPLETE_TRUNCATED);
         setRecords(records.slice(0, rowLimit));
-        // console.log("TODO remove this - QUERY RETURNED WAS TRUNCTURED!")
+        console.log("TODO remove this - QUERY RETURNED WAS TRUNCTURED!");
         transaction.commit();
         return;
       }
       setStatus(QueryStatus.COMPLETE);
+
       setRecords(records);
-      // console.log("TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!")
+      console.log("TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!");
 
       transaction.commit();
     })
@@ -128,8 +137,8 @@ export async function runCypherQuery(
       if (
         e.message.startsWith(
           'The transaction has been terminated. ' +
-            'Retry your operation in a new transaction, and you should see a successful result. ' +
-            'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
+          'Retry your operation in a new transaction, and you should see a successful result. ' +
+          'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
         )
       ) {
         setStatus(QueryStatus.TIMED_OUT);
@@ -147,3 +156,174 @@ export async function runCypherQuery(
       return e.message;
     });
 }
+
+// CALL TO MIDDLEWARE
+async function fetchData() {
+
+  return fetch('http://localhost:3002/records')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(response);
+      return response.json();
+    })
+    .then(data => {
+
+      console.log('Received data:', data);
+      return data;
+    })
+    .catch(error => {
+      console.error('There was a problem with your fetch operation:', error);
+      throw error;
+    });
+}
+
+
+export async function runCypherQueryForReports(
+  driver,
+  database = '',
+  query = '',
+  parameters = {},
+  rowLimit = 1000,
+  setStatus = (status) => {
+    // eslint-disable-next-line no-console
+    console.log(`Query runner attempted to set status: ${JSON.stringify(status)}`);
+  },
+  setRecords = (records) => {
+    // eslint-disable-next-line no-console
+    console.log(`Query runner attempted to set records: ${JSON.stringify(records)}`);
+  },
+  setFields = (fields) => {
+    // eslint-disable-next-line no-console
+    console.log(`Query runner attempted to set fields: ${JSON.stringify(fields)}`);
+  },
+  fields = [],
+  useNodePropsAsFields = false,
+  useReturnValuesAsFields = false,
+  useHardRowLimit = false,
+  queryTimeLimit = 20,
+  setSchema = () => {
+    // eslint-disable-next-line no-console
+    // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
+  }
+) {
+  let fetchedData
+  try {
+
+    fetchedData = await fetchData();
+
+
+    console.log('Fetched data:', fetchedData);
+
+
+  } catch (error) {
+
+    console.error('Error fetching data:', error);
+  }
+
+  // If no query specified, we don't do anything.
+  if (query.trim() == '') {
+    setFields([]);
+    setStatus(QueryStatus.NO_QUERY);
+    return;
+  }
+  const session = database ? driver.session({ database: database }) : driver.session();
+  const transaction = session.beginTransaction({ timeout: queryTimeLimit * 1000, connectionTimeout: 2000 });
+
+  // For usuability reasons, we can set a hard cap on the query result size by wrapping it a subquery (Neo4j 4.0 and later).
+  // This unfortunately does not preserve ordering on the return fields.
+  // If we are on Neo4j 4.0 or later, we can use subqueries to smartly limit the result set size based on report type.
+  if (useHardRowLimit && Object.values(driver._connectionProvider._openConnections).length > 0) {
+    // @ts-ignore
+    const dbVersion = Object.values(driver._connectionProvider._openConnections)[0]._server.version;
+    if (!dbVersion.startsWith('Neo4j/3.')) {
+      query = `CALL { ${query}} RETURN * LIMIT ${rowLimit + 1}`;
+    }
+  }
+
+  await transaction
+    .run(query, parameters)
+    .then((res) => {
+      // @ts-ignore
+
+      // const { records } = res;
+
+      const records = fetchedData;
+
+
+
+      console.log("Printing records:");
+      console.log(records);
+
+      // TODO - check query summary to ensure that no writes are made in safe-mode.
+      if (records.length == 0) {
+        setStatus(QueryStatus.NO_DATA);
+        // console.log("TODO remove this - QUERY RETURNED NO DATA!")
+        transaction.commit();
+        return;
+      }
+
+      if (useReturnValuesAsFields) {
+        // Send a deep copy of the returned record keys as the set of fields.
+        const newFields = records && records[0] && records[0].keys ? records[0].keys.slice() : [];
+
+        if (!isEqual(newFields, fields)) {
+          setFields(newFields);
+        }
+      } else if (useNodePropsAsFields) {
+        // If we don't use dynamic field mapping, but we do have a selection, use the discovered node properties as fields.
+        const nodePropsAsFields = extractNodePropertiesFromRecords(records);
+        setFields(nodePropsAsFields);
+      }
+
+      setSchema(extractNodeAndRelPropertiesFromRecords(records));
+
+      if (records == null) {
+        setStatus(QueryStatus.NO_DRAWABLE_DATA);
+        // console.log("TODO remove this - QUERY RETURNED NO DRAWABLE DATA!")
+        transaction.commit();
+        return;
+      } else if (records.length > rowLimit) {
+        setStatus(QueryStatus.COMPLETE_TRUNCATED);
+        setRecords(records.slice(0, rowLimit));
+        console.log("TODO remove this - QUERY RETURNED WAS TRUNCTURED!");
+        transaction.commit();
+        return;
+      }
+      setStatus(QueryStatus.COMPLETE);
+
+      setRecords(records);
+      console.log("TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!");
+
+      transaction.commit();
+    })
+    .catch((e) => {
+      // setFields([]);
+
+      // Process timeout errors.
+      if (
+        e.message.startsWith(
+          'The transaction has been terminated. ' +
+          'Retry your operation in a new transaction, and you should see a successful result. ' +
+          'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
+        )
+      ) {
+        setStatus(QueryStatus.TIMED_OUT);
+        setRecords([{ error: e.message }]);
+        transaction.rollback();
+        return e.message;
+      }
+
+      setStatus(QueryStatus.ERROR);
+      // Process other errors.
+      if (setRecords) {
+        setRecords([{ error: e.message }]);
+      }
+      transaction.rollback();
+      return e.message;
+    });
+}
+
+// report.tsx
+
