@@ -157,27 +157,7 @@ export async function runCypherQuery(
     });
 }
 
-// CALL TO MIDDLEWARE
-async function fetchData() {
 
-  return fetch('http://localhost:3002/records')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      console.log(response);
-      return response.json();
-    })
-    .then(data => {
-
-      console.log('Received data:', data);
-      return data;
-    })
-    .catch(error => {
-      console.error('There was a problem with your fetch operation:', error);
-      throw error;
-    });
-}
 
 
 export async function runCypherQueryForReports(
@@ -208,19 +188,6 @@ export async function runCypherQueryForReports(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
-  let fetchedData
-  try {
-
-    fetchedData = await fetchData();
-
-
-    console.log('Fetched data:', fetchedData);
-
-
-  } catch (error) {
-
-    console.error('Error fetching data:', error);
-  }
 
   // If no query specified, we don't do anything.
   if (query.trim() == '') {
@@ -247,9 +214,9 @@ export async function runCypherQueryForReports(
     .then((res) => {
       // @ts-ignore
 
-      // const { records } = res;
+      const { records } = res;
 
-      const records = fetchedData;
+
 
 
 
