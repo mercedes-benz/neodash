@@ -1,6 +1,6 @@
 import { extractNodePropertiesFromRecords, extractNodeAndRelPropertiesFromRecords } from './ReportRecordProcessing';
 import isEqual from 'lodash.isequal';
-
+const { Record } = require('neo4j-driver');
 
 export enum QueryStatus {
   NO_QUERY, // No query specified
@@ -56,7 +56,7 @@ export async function runCypherQuery(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
-  console.log("In runCypherQuery");
+  console.log('In runCypherQuery');
   // If no query specified, we don't do anything.
   if (query.trim() == '') {
     setFields([]);
@@ -83,9 +83,7 @@ export async function runCypherQuery(
       // @ts-ignore
       const { records } = res;
 
-
-
-      console.log("Printing records:");
+      console.log('Printing records:');
       console.log(records);
 
       // TODO - check query summary to ensure that no writes are made in safe-mode.
@@ -119,14 +117,14 @@ export async function runCypherQuery(
       } else if (records.length > rowLimit) {
         setStatus(QueryStatus.COMPLETE_TRUNCATED);
         setRecords(records.slice(0, rowLimit));
-        console.log("TODO remove this - QUERY RETURNED WAS TRUNCTURED!");
+        console.log('TODO remove this - QUERY RETURNED WAS TRUNCTURED!');
         transaction.commit();
         return;
       }
       setStatus(QueryStatus.COMPLETE);
 
       setRecords(records);
-      console.log("TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!");
+      console.log('TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!');
 
       transaction.commit();
     })
@@ -137,8 +135,8 @@ export async function runCypherQuery(
       if (
         e.message.startsWith(
           'The transaction has been terminated. ' +
-          'Retry your operation in a new transaction, and you should see a successful result. ' +
-          'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
+            'Retry your operation in a new transaction, and you should see a successful result. ' +
+            'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
         )
       ) {
         setStatus(QueryStatus.TIMED_OUT);
@@ -159,26 +157,23 @@ export async function runCypherQuery(
 
 // CALL TO MIDDLEWARE
 async function fetchData() {
-
   return fetch('http://localhost:3002/records')
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       console.log(response);
       return response.json();
     })
-    .then(data => {
-
+    .then((data) => {
       console.log('Received data:', data);
       return data;
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('There was a problem with your fetch operation:', error);
       throw error;
     });
 }
-
 
 export async function runCypherQueryForReports(
   driver,
@@ -208,17 +203,12 @@ export async function runCypherQueryForReports(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
-  let fetchedData
+  let fetchedData;
   try {
-
     fetchedData = await fetchData();
 
-
     console.log('Fetched data:', fetchedData);
-
-
   } catch (error) {
-
     console.error('Error fetching data:', error);
   }
 
@@ -248,12 +238,18 @@ export async function runCypherQueryForReports(
       // @ts-ignore
 
       // const { records } = res;
+      const records = [];
+      // const records = fetchedData;
+      fetchedData.forEach((recordData) => {
+        // Create a new Record instance for each item and push it to the records array
+        const record = new Record(recordData.keys, recordData._fields, recordData._fieldLookup);
+        records.push(record);
+      });
 
-      const records = fetchedData;
-
-
-
-      console.log("Printing records:");
+      // console.log(records[0].keys);
+      // console.log(records[0]._fields);
+      // console.log(records[0]._fieldLookup);
+      console.log('Printing records:');
       console.log(records);
 
       // TODO - check query summary to ensure that no writes are made in safe-mode.
@@ -287,14 +283,14 @@ export async function runCypherQueryForReports(
       } else if (records.length > rowLimit) {
         setStatus(QueryStatus.COMPLETE_TRUNCATED);
         setRecords(records.slice(0, rowLimit));
-        console.log("TODO remove this - QUERY RETURNED WAS TRUNCTURED!");
+        console.log('TODO remove this - QUERY RETURNED WAS TRUNCTURED!');
         transaction.commit();
         return;
       }
       setStatus(QueryStatus.COMPLETE);
 
       setRecords(records);
-      console.log("TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!");
+      console.log('TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!');
 
       transaction.commit();
     })
@@ -305,8 +301,8 @@ export async function runCypherQueryForReports(
       if (
         e.message.startsWith(
           'The transaction has been terminated. ' +
-          'Retry your operation in a new transaction, and you should see a successful result. ' +
-          'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
+            'Retry your operation in a new transaction, and you should see a successful result. ' +
+            'The transaction has not completed within the specified timeout (dbms.transaction.timeout).'
         )
       ) {
         setStatus(QueryStatus.TIMED_OUT);
@@ -326,4 +322,3 @@ export async function runCypherQueryForReports(
 }
 
 // report.tsx
-
