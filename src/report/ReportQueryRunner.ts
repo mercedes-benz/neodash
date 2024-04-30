@@ -1,6 +1,7 @@
 import { extractNodePropertiesFromRecords, extractNodeAndRelPropertiesFromRecords } from './ReportRecordProcessing';
 import isEqual from 'lodash.isequal';
-const { Record } = require('neo4j-driver');
+import { Record } from 'neo4j-driver';
+import axios from 'axios';
 
 export enum QueryStatus {
   NO_QUERY, // No query specified
@@ -175,6 +176,38 @@ async function fetchData() {
     });
 }
 
+// POST REQUEST TO MIDDLWARE
+async function postQuery(query) {
+  try {
+    const response = await fetch('http://localhost:3002/records', {
+      method: 'POST',
+      body: JSON.stringify({
+        cypherQuery: query,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+
+    const json = await response.json();
+    console.log(json);
+    return json;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// async function postQuery(query) {
+//   try {
+//     const response = await axios.post('http://localhost:3002/records', {
+//       cypherQuery: query,
+//     });
+//     console.log(response.data);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+
 export async function runCypherQueryForReports(
   driver,
   database = '',
@@ -203,9 +236,14 @@ export async function runCypherQueryForReports(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
+  console.log('Printing the query that was executed:');
+  console.log(query);
+  console.log('>>>', typeof query);
+  // postQuery(query);
+
   let fetchedData;
   try {
-    fetchedData = await fetchData();
+    fetchedData = await postQuery(query);
 
     console.log('Fetched data:', fetchedData);
   } catch (error) {
