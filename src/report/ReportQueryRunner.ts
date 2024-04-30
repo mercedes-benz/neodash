@@ -206,11 +206,9 @@ export async function runCypherQueryForReports(
   })
     .then((response) => {
       // @ts-ignore
-      console.log('>>>>>', response);
       return response.json();
     })
     .then((fetchedData) => {
-      console.log(fetchedData);
       const records = [];
       // const records = fetchedData;
       fetchedData.forEach((recordData) => {
