@@ -11,7 +11,7 @@ import {
   upgradeDashboardVersion,
 } from '../dashboard/DashboardThunks';
 import { createNotificationThunk } from '../page/PageThunks';
-import { runCypherQuery } from '../report/ReportQueryRunner';
+import { runCypherQuery, runCypherQueryForReports } from '../report/ReportQueryRunner';
 import {
   setPageNumberThunk,
   updateParametersToNeo4jTypeThunk,
@@ -125,13 +125,13 @@ export const createConnectionThunk =
       };
       const query = 'RETURN true as connected';
       const parameters = {};
-      runCypherQuery(
+      runCypherQueryForReports(
         driver,
         database,
         query,
         parameters,
         1,
-        () => { },
+        () => {},
         (records) => validateConnection(records)
       );
     } catch (e) {
@@ -360,7 +360,7 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
     standaloneUsername: '',
     standalonePassword: '',
     skipConfirmation: false,
-    skipAddDashErrorPopup: false
+    skipAddDashErrorPopup: false,
   };
   try {
     config = await (await fetch('config.json')).json();
