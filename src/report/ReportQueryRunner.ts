@@ -1,4 +1,5 @@
 import { extractNodePropertiesFromRecords, extractNodeAndRelPropertiesFromRecords } from './ReportRecordProcessing';
+import { Record } from 'neo4j-driver';
 import isEqual from 'lodash.isequal';
 
 export enum QueryStatus {
@@ -27,6 +28,7 @@ export enum QueryStatus {
  * @param queryTimeLimit - maximum query time in seconds.
  * @returns
  */
+
 export async function runCypherQuery(
   driver,
   database = '',
@@ -55,36 +57,47 @@ export async function runCypherQuery(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
+  console.log('Printing the query that was executed:');
+  console.log(query);
+
   // If no query specified, we don't do anything.
   if (query.trim() == '') {
     setFields([]);
     setStatus(QueryStatus.NO_QUERY);
     return;
   }
-  const session = database ? driver.session({ database: database }) : driver.session();
-  const transaction = session.beginTransaction({ timeout: queryTimeLimit * 1000, connectionTimeout: 2000 });
 
-  // For usuability reasons, we can set a hard cap on the query result size by wrapping it a subquery (Neo4j 4.0 and later).
-  // This unfortunately does not preserve ordering on the return fields.
-  // If we are on Neo4j 4.0 or later, we can use subqueries to smartly limit the result set size based on report type.
-  if (useHardRowLimit && Object.values(driver._connectionProvider._openConnections).length > 0) {
-    // @ts-ignore
-    const dbVersion = Object.values(driver._connectionProvider._openConnections)[0]._server.version;
-    if (!dbVersion.startsWith('Neo4j/3.')) {
-      query = `CALL { ${query}} RETURN * LIMIT ${rowLimit + 1}`;
-    }
-  }
-
-  await transaction
-    .run(query, parameters)
-    .then((res) => {
+  // Send query and get records from backend
+  await fetch('http://localhost:3002/records', {
+    method: 'POST',
+    body: JSON.stringify({
+      cypherQuery: query,
+      parameters: parameters,
+    }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+  })
+    .then((response) => {
       // @ts-ignore
-      const { records } = res;
+      return response.json();
+    })
+    .then((fetchedData) => {
+      const records = [];
+      // const records = fetchedData;
+      fetchedData.forEach((recordData) => {
+        // Create a new Record instance for each item and push it to the records array
+        const record = new Record(recordData.keys, recordData._fields, recordData._fieldLookup);
+        records.push(record);
+      });
+
+      console.log('Printing records:');
+      console.log(records);
+
       // TODO - check query summary to ensure that no writes are made in safe-mode.
       if (records.length == 0) {
         setStatus(QueryStatus.NO_DATA);
-        // console.log("TODO remove this - QUERY RETURNED NO DATA!")
-        transaction.commit();
+
         return;
       }
 
@@ -105,21 +118,17 @@ export async function runCypherQuery(
 
       if (records == null) {
         setStatus(QueryStatus.NO_DRAWABLE_DATA);
-        // console.log("TODO remove this - QUERY RETURNED NO DRAWABLE DATA!")
-        transaction.commit();
+
         return;
       } else if (records.length > rowLimit) {
         setStatus(QueryStatus.COMPLETE_TRUNCATED);
         setRecords(records.slice(0, rowLimit));
-        // console.log("TODO remove this - QUERY RETURNED WAS TRUNCTURED!")
-        transaction.commit();
+
         return;
       }
       setStatus(QueryStatus.COMPLETE);
-      setRecords(records);
-      // console.log("TODO remove this - QUERY WAS EXECUTED SUCCESFULLY!")
 
-      transaction.commit();
+      setRecords(records);
     })
     .catch((e) => {
       // setFields([]);
@@ -134,7 +143,7 @@ export async function runCypherQuery(
       ) {
         setStatus(QueryStatus.TIMED_OUT);
         setRecords([{ error: e.message }]);
-        transaction.rollback();
+
         return e.message;
       }
 
@@ -143,7 +152,6 @@ export async function runCypherQuery(
       if (setRecords) {
         setRecords([{ error: e.message }]);
       }
-      transaction.rollback();
       return e.message;
     });
 }

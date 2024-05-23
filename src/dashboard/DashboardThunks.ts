@@ -95,8 +95,9 @@ export const loadDashboardThunk = (uuid, text) => (dispatch: any, getState: any)
     }
 
     if (dashboard.version !== NEODASH_VERSION) {
-      throw `Invalid dashboard version: ${dashboard.version}. Try restarting the application, or retrieve your cached dashboard using a debug report.`;
+      // throw `Invalid dashboard version: ${dashboard.version}. Try restarting the application, or retrieve your cached dashboard using a debug report.`;
     }
+    dashboard = JSON.parse(dashboard);
 
     // Reverse engineer the minimal set of fields from the selection loaded.
     dashboard.pages.forEach((p) => {
