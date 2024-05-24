@@ -57,8 +57,8 @@ export async function runCypherQuery(
     // console.log(`Query runner attempted to set schema: ${JSON.stringify(schema)}`);
   }
 ) {
-  console.log('Printing the query that was executed:');
-  console.log(query);
+  console.log('Query>>', query);
+  console.log('Params>>', parameters);
 
   // If no query specified, we don't do anything.
   if (query.trim() == '') {

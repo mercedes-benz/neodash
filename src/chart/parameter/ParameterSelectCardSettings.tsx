@@ -58,7 +58,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
 
     onReportSettingUpdate('parameterName', parameterName);
   }
-  // Define query callback to allow reports to get extra data on interactions.
+  // Define query s.callback to allow reports to get extra data on interaction
   const queryCallback = useCallback(
     (query, parameters, setRecords) => {
       debouncedRunCypherQuery(
@@ -149,12 +149,13 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
     updateReportQuery(entityType, propertyType, propertyTypeDisplay);
   }
 
-  function updateReportQuery(entityType, propertyType, propertyTypeDisplay) {
+  function updateReportQuery(entityType, propertyType, propertyTypeDisplay) {  
     const propertyTypeDisplaySanitized = propertyTypeDisplay || propertyType;
     const limit = settings.suggestionLimit ? settings.suggestionLimit : 5;
     const deduplicate = settings.deduplicateSuggestions !== undefined ? settings.deduplicateSuggestions : true;
     const searchType = settings.searchType ? settings.searchType : 'CONTAINS';
     const caseSensitive = settings.caseSensitive !== undefined ? settings.caseSensitive : false;
+    debugger;
     if (settings.type == 'Node Property') {
       const newQuery =
         `MATCH (n:\`${entityType}\`) \n` +
@@ -163,7 +164,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
         }($input) \n` +
         `RETURN ${deduplicate ? 'DISTINCT' : ''} n.\`${propertyType}\` as value, ` +
         ` n.\`${propertyTypeDisplaySanitized}\` as display ` +
-        `ORDER BY size(toString(value)) ASC LIMIT ${limit}`;
+        `LIMIT ${limit}`;
       onQueryUpdate(newQuery);
     } else if (settings.type == 'Relationship Property') {
       const newQuery =
@@ -173,7 +174,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
         }($input) \n` +
         `RETURN ${deduplicate ? 'DISTINCT' : ''} n.\`${propertyType}\` as value, ` +
         ` n.\`${propertyTypeDisplaySanitized}\` as display ` +
-        `ORDER BY size(toString(value)) ASC LIMIT ${limit}`;
+        `LIMIT ${limit}`;
       onQueryUpdate(newQuery);
     } else if (settings.type == 'Custom Query') {
       const newQuery = query;
@@ -303,14 +304,19 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
               if (manualPropertyNameSpecification) {
                 handleNodeLabelSelectionUpdate(value);
               } else if (settings.type == 'Node Property') {
+                console.log("inside else if on line 308")
                 queryCallback(
-                  'CALL db.labels() YIELD label WITH label as nodeLabel WHERE toLower(nodeLabel) CONTAINS toLower($input) RETURN DISTINCT nodeLabel LIMIT 5',
+                  //gives node labels when node property is selected. Here $input can be I2_SW
+                  //'CALL db.labels() YIELD label WITH label as nodeLabel WHERE toLower(nodeLabel) CONTAINS toLower($input) RETURN DISTINCT nodeLabel LIMIT 5',
+                  'MATCH (n) WHERE toLower(labels(n)[0])CONTAINS toLower($input) RETURN DISTINCT labels(n)[0] AS nodeLabel LIMIT 5',
                   { input: value },
                   setLabelRecords
                 );
               } else {
                 queryCallback(
-                  'CALL db.relationshipTypes() YIELD relationshipType WITH relationshipType as relType WHERE toLower(relType) CONTAINS toLower($input) RETURN DISTINCT relType LIMIT 5',
+                  //gives rel types when rel property is selected. Here $input can be used_in
+                  //'CALL db.relationshipTypes() YIELD relationshipType WITH relationshipType as relType WHERE toLower(relType) CONTAINS toLower($input) RETURN DISTINCT relType LIMIT 5',
+                  'MATCH(a)-[r]->(b) WHERE toLower(TYPE(r))CONTAINS toLower($input) RETURN DISTINCT TYPE(r) as relType limit 5',
                   { input: value },
                   setLabelRecords
                 );
@@ -348,7 +354,9 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                     handlePropertyNameSelectionUpdate(value);
                   } else {
                     queryCallback(
-                      'CALL db.propertyKeys() YIELD propertyKey as propertyName WITH propertyName WHERE toLower(propertyName) CONTAINS toLower($input) RETURN DISTINCT propertyName LIMIT 5',
+                      //gives property names when node label is given. Here, $input can be title
+                      //'CALL db.propertyKeys() YIELD propertyKey as propertyName WITH propertyName WHERE toLower(propertyName) CONTAINS toLower($input) RETURN DISTINCT propertyName LIMIT 5',
+                      'MATCH (n) UNWIND keys(n) AS key WITH DISTINCT key AS propertyName WHERE toLower(propertyName) CONTAINS toLower($input) RETURN propertyName' ,
                       { input: value },
                       setPropertyRecords
                     );
