@@ -7,7 +7,7 @@
   "standaloneHost": "localhost",
   "standalonePort": "7687",
   "standaloneDatabase": "prodbackupnew",
-  "standaloneDashboardName": "Parameter select test",
+  "standaloneDashboardName": "Apache AGE Dashboard",
   "standaloneDashboardDatabase": "prodbackupnew",
   "standaloneDashboardURL": "",
   "skipAddDashErrorPopup": true,
