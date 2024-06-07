@@ -16,7 +16,7 @@ export const getCheckboxes = (actionsRules, rows, getGlobalParameter) => {
     if (Array.isArray(values)) {
       values.forEach((value) => {
         rows.forEach((row, index) => {
-          if (row[fieldName] == value) {
+          if (JSON.stringify(row[fieldName]) == JSON.stringify(value)) {
             selection.push(index);
           }
         });
