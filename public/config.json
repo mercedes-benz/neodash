@@ -2,16 +2,15 @@
   "ssoEnabled": false,
   "ssoProviders": [],
   "ssoDiscoveryUrl": "https://example.com",
-  "standalone": false,
+  "standalone": true,
   "standaloneProtocol": "neo4j",
   "standaloneHost": "localhost",
   "standalonePort": "7687",
   "standaloneDatabase": "prodbackupnew",
-  "standaloneDashboardName": "Multi select",
+  "standaloneDashboardName": "Demo Dashboard",
   "standaloneDashboardDatabase": "prodbackupnew",
   "standaloneDashboardURL": "",
  "skipAddDashErrorPopup": true,
   "standaloneUsername": "neo4j",
   "standalonePassword":"password",
-  "skipConfirmation":true 
-}
+  "skipConfirmation":true }
