@@ -7,11 +7,10 @@
   "standaloneHost": "localhost",
   "standalonePort": "7687",
   "standaloneDatabase": "prodbackupnew",
-  "standaloneDashboardName": "Apache AGE Dashboard",
+  "standaloneDashboardName": "Demo Dashboard",
   "standaloneDashboardDatabase": "prodbackupnew",
   "standaloneDashboardURL": "",
-  "skipAddDashErrorPopup": true,
+ "skipAddDashErrorPopup": true,
   "standaloneUsername": "neo4j",
   "standalonePassword":"password",
-  "skipConfirmation":true
-}
+  "skipConfirmation":true }
