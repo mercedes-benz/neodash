@@ -17,7 +17,7 @@ import {
   performActionOnElement,
 } from '../../extensions/advancedcharts/Utils';
 import { IconButton } from '@neo4j-ndl/react';
-import { CloudArrowDownIconOutline, XMarkIconOutline } from '@neo4j-ndl/react/icons';
+import { CloudArrowDownIconOutline, ArrowPathIconOutline, XMarkIconOutline } from '@neo4j-ndl/react/icons';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { extensionEnabled } from '../../utils/ReportUtils';
@@ -25,6 +25,7 @@ import { renderCellExpand } from '../../component/misc/DataGridExpandRenderer';
 import { getCheckboxes, hasCheckboxes, updateCheckBoxes } from './TableActionsHelper';
 import ApiService from '../../utils/apiService';
 import { AxiosResponse } from 'axios';
+import Notification from '../../component/custom/Notification';
 
 const TABLE_HEADER_HEIGHT = 32;
 const TABLE_FOOTER_HEIGHT = 62;
@@ -129,6 +130,7 @@ export const NeoTableChart = (props: ChartProps) => {
   }
 
   const { records } = props;
+  const isApiSpecEnabled = props.settings?.apiSpec && props.settings?.apiSpec.apiEnabled;
 
   const generateSafeColumnKey = (key) => {
     return key != 'id' ? key : `${key} `;
@@ -142,6 +144,13 @@ export const NeoTableChart = (props: ChartProps) => {
     setAnchorEl(null);
   };
 
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [notificationMessage, setNotificationMessage] = React.useState('');
+  const [notificationSeverity, setNotificationSeverity] = React.useState<'success' | 'warning' | 'error'>('success');
+
+  const handleNotificationClose = () => {
+    setAlertOpen(false);
+  };
   const lineBreakColumns: string[] = props.settings?.lineBreaksAfterListEntry;
 
   const actionableFields = actionsRules.filter((r) => r.condition !== 'rowCheck').map((r) => r.field);
@@ -333,53 +342,72 @@ export const NeoTableChart = (props: ChartProps) => {
           throw new Error(`Unsupported method: ${method}`);
       }
 
-      props.updateReportSetting('apiSpec', { ...props.settings.apiSpec, response });
+      props.updateReportSetting('apiSpec', { ...props.settings?.apiSpec, response });
+      setNotificationMessage('RUPS package created. Please find the link above');
+      setNotificationSeverity('success');
+      setAlertOpen(true);
     } catch (error) {
       // Handle errors here
       console.error('API call error:', error);
+      setNotificationMessage('RUPS package creation is currently not working. Please try again later.');
+      setNotificationSeverity('error');
+      setAlertOpen(true);
     } finally {
       setApiLoading(false);
     }
   };
 
+  const handleResetApiResponse = () => {
+    props.updateReportSetting('apiSpec', { ...props.settings?.apiSpec, response: null });
+  };
+
+  useEffect(() => {
+    if (isApiSpecEnabled) {
+      handleResetApiResponse();
+    }
+  }, [records]);
+
   const apiCallButton = () => (
     <Stack direction='row' spacing={2} justifyContent='flex-end' marginRight={2}>
-      <ButtonGroup color='primary' variant='outlined' aria-label='button group'>
-        <Button size='small' onClick={handleApiCall} disabled={isApiLoading}>
-          {isApiLoading ? 'Loading...' : props.settings?.sendRequestButtonName || 'send'}
-        </Button>
-        <Button size='small' onClick={handlePopHoverClick} disabled={!props.settings.apiSpec.response}>
+      <Button variant='outlined' size='small' onClick={handleApiCall} disabled={isApiLoading}>
+        {isApiLoading ? 'Loading...' : props.settings?.sendRequestButtonName || 'send'}
+      </Button>
+      {props.settings?.apiSpec.response && (
+        <Button
+          size='small'
+          variant='outlined'
+          onClick={handlePopHoverClick}
+          disabled={!props.settings?.apiSpec.response}
+        >
           {isApiLoading ? 'Loading...' : props.settings?.viewResponseButtonName || 'view response'}
         </Button>
-        {props.settings.apiSpec.response ? (
-          <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handlePopHoverClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            <Typography sx={{ p: 2 }}>
-              <a href={props.settings?.apiSpec.response.data} target='_blank'>
-                {props.settings?.apiSpec.response.data}
-              </a>
-            </Typography>
-          </Popover>
-        ) : (
-          <></>
-        )}
-      </ButtonGroup>
+      )}
+      {props.settings?.apiSpec.response ? (
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handlePopHoverClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+        >
+          <Typography sx={{ p: 2 }}>
+            <a href={props.settings?.apiSpec.response.data} target='_blank'>
+              {props.settings?.apiSpec.response.data}
+            </a>
+          </Typography>
+        </Popover>
+      ) : (
+        <></>
+      )}
     </Stack>
   );
-
-  const isApiSpecEnabled = props.settings?.apiSpec && props.settings?.apiSpec.apiEnabled;
 
   const isRowSelectable = (params) => {
     const condition = props.settings?.rowSelectableConditionEnabled;
@@ -395,6 +423,12 @@ export const NeoTableChart = (props: ChartProps) => {
 
   return (
     <ThemeProvider theme={theme}>
+      <Notification
+        open={alertOpen}
+        message={notificationMessage}
+        severity={notificationSeverity}
+        onClose={handleNotificationClose}
+      />
       {isApiSpecEnabled ? apiCallButton() : <></>}
       <div className={classes.root} style={tableStyle}>
         <Snackbar
