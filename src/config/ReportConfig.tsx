@@ -111,6 +111,21 @@ const _REPORT_TYPES = {
         values: [true, false],
         default: false,
       },
+      rowSelectableConditionEnabled: {
+        label: 'Enable row selecable condition',
+        type: SELECTION_TYPES.LIST,
+        values: [true, false],
+        default: false,
+      },
+      fieldName: {
+        label: 'Enter the field name',
+        type: SELECTION_TYPES.TEXT,
+        default: 'id',
+      },
+      fieldValue: {
+        label: 'Enter the field value',
+        type: SELECTION_TYPES.TEXT,
+      },
     },
   },
   graph: {

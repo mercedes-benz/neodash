@@ -381,6 +381,14 @@ export const NeoTableChart = (props: ChartProps) => {
 
   const isApiSpecEnabled = props.settings?.apiSpec && props.settings?.apiSpec.apiEnabled;
 
+  const isRowSelectable = (params) => {
+    const condition = props.settings?.rowSelectableConditionEnabled;
+    if (condition) {
+      return String(params.row[props.settings?.fieldName]) !== props.settings?.fieldValue;
+    }
+    return true;
+  };
+
   const tableStyle: any = isApiSpecEnabled
     ? { marginTop: 10, height: '90%', width: '100%', position: 'relative' }
     : { height: '100%', width: '100%', position: 'relative' };
@@ -441,6 +449,7 @@ export const NeoTableChart = (props: ChartProps) => {
           onCellClick={(e) =>
             performActionOnElement(e, actionsRules, { ...props, pageNames: pageNames }, 'Click', 'Table')
           }
+          isRowSelectable={isRowSelectable}
           onCellDoubleClick={(e) => {
             let rules = getRule(e, actionsRules, 'doubleClick');
             if (rules !== null) {
