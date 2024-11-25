@@ -358,6 +358,20 @@ export function RenderSubValue(value, transposedTable = false) {
   return RenderString(value);
 }
 
+export function RenderHTML(value) {
+  
+  if (value == undefined) {
+    return '';
+  }
+
+  if(Array.isArray(value) && value.length > 0) {
+    const joinedString = value.join('')
+    return <div dangerouslySetInnerHTML={{ __html: joinedString }} />
+  }
+
+  return value;
+}
+
 export const rendererForType: any = {
   node: {
     type: 'string',
@@ -384,6 +398,10 @@ export const rendererForType: any = {
     renderValue: (c) => {
       return JSON.stringify(c.value);
     },
+  },
+  html: {
+    type: 'html',
+    renderValue: (c) => RenderHTML(c.value),
   },
   array: {
     type: 'string',

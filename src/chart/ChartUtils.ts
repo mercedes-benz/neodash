@@ -65,6 +65,25 @@ export function valueIsArray(value) {
   return className == 'Array';
 }
 
+export function valueIsValidHtmlArray(value) {
+  // Check if the value is an array
+  const className = value !== undefined && value.__proto__.constructor.name;
+  
+  if (className === 'Array') {
+    // Join the array elements into a single string
+    const joinedString = value.join('');
+    
+    // Create a temporary DOM element to validate HTML
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = joinedString;
+    
+    // If the innerHTML matches the input, it's valid HTML
+    return tempElement.innerHTML === joinedString;
+  }
+  
+  return false;
+}
+
 export function valueIsNode(value) {
   // const className = value.__proto__.constructor.name;
   // return className == "Node";
@@ -133,6 +152,8 @@ export function getRecordType(value) {
     return 'relationship';
   } else if (valueIsPath(value)) {
     return 'path';
+  }else if (valueIsValidHtmlArray(value)) {
+    return 'html';
   } else if (valueIsArray(value)) {
     return 'array';
   } else if (valueIsObject(value)) {
