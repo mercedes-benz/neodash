@@ -55,6 +55,12 @@ const RULE_CONDITIONS = {
       disableFieldSelection: true,
       multiple: true,
     },
+    {
+      value: 'ruleCellCopy',
+      label: 'Cell Copy',
+      disableFieldSelection: true,
+      multiple: true,
+    },
   ],
   bar: [
     {
