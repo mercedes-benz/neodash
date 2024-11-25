@@ -500,9 +500,14 @@ export const NeoTableChart = (props: ChartProps) => {
             
             if(ruleCellCopy?.length > 0) {
               const fieldDetails = ruleCellCopy.find(rule => rule.field === e.field)
-              const regex = new RegExp(fieldDetails?.customizationValue, "g");
-              setNotificationOpen(true);
-              navigator.clipboard.writeText(e.value.replace(regex, ""));
+              if(fieldDetails) {
+                const regex = new RegExp(fieldDetails?.customizationValue, "g");
+                setNotificationOpen(true);
+                navigator.clipboard.writeText(e.value.replace(regex, ""));
+              } else {
+                setNotificationOpen(true);
+                navigator.clipboard.writeText(e.value);
+              }
               return 
             }
 
