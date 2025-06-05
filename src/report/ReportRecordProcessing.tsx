@@ -10,7 +10,8 @@ import {
   valueIsPath,
   valueIsRelationship,
 } from '../chart/ChartUtils';
-// import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
+import { store } from '../index';
 
 /**
  * Collects all node labels and node properties in a set of Neo4j records.
@@ -253,7 +254,7 @@ function RenderPath(value) {
  * @param transposedTable - Optional. Specifies whether the table should be transposed. Default is false.
  * @returns The rendered array of values.
  */
-function RenderArray(value, transposedTable = false) {
+export function RenderArray(value, transposedTable = false, lineBreakAfterListEntry = false) {
   let mapped = [];
   // If the first value is neither a Node nor a Relationship object
   // It is safe to assume that all values should be renedered as strings
@@ -274,19 +275,35 @@ function RenderArray(value, transposedTable = false) {
   mapped = value.map((v, i) => {
     return (
       <span key={String(`k${i}`) + v}>
-        {RenderSubValue(v)}
-        {i < value.length - 1 && !valueIsNode(v) && !valueIsRelationship(v) ? <span>, </span> : <></>}
+        {RenderSubValue(v + (i < value.length - 1 && lineBreakAfterListEntry ? ', \r\n' : ''))}
+        {i < value.length - 1 && !valueIsNode(v) && !valueIsRelationship(v) && !lineBreakAfterListEntry ? (
+          <span>, </span>
+        ) : (
+          <></>
+        )}
       </span>
     );
   });
   return mapped;
 }
 
+let allowEmbeddedHTMLFlag;
+
 export function RenderString(value) {
   const str = value?.toString() || '';
 
-  if (str.startsWith('<a href=')) {
-    return <div dangerouslySetInnerHTML={{ __html: str }} className='anchor' />;
+  if (allowEmbeddedHTMLFlag == undefined) {
+    allowEmbeddedHTMLFlag = store.getState()?.dashboard?.settings?.enableEmbeddedHtml || false;
+  }
+  if (allowEmbeddedHTMLFlag) {
+    const cleanHTML = DOMPurify.sanitize(str, { USE_PROFILES: { html: true } });
+    if (str.startsWith('<a href=')) {
+      const replaced = cleanHTML.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
+      return <span dangerouslySetInnerHTML={{ __html: replaced }} className='anchor' />;
+    }
+    if (isHTMLString(str)) {
+      return <span dangerouslySetInnerHTML={{ __html: cleanHTML }} />;
+    }
   }
 
   if (str.startsWith('http') || str.startsWith('https')) {
@@ -392,7 +409,7 @@ export const rendererForType: any = {
   },
   array: {
     type: 'string',
-    renderValue: (c) => RenderArray(c.value, c.transposedTable),
+    renderValue: (c) => RenderArray(c.value, c.transposedTable, c.lineBreakAfterListEntry),
   },
   string: {
     type: 'string',
@@ -439,4 +456,11 @@ export function renderValueByType(value) {
     return renderer.renderValue({ value: value });
   }
   return value.toString();
+}
+
+function isHTMLString(str) {
+  const trimmed = str.trim();
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = trimmed;
+  return tempDiv.firstElementChild instanceof HTMLElement;
 }
