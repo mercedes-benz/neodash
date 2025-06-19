@@ -266,7 +266,7 @@
   width: 100vw;
   height: 100vh;
   overflow: auto;
-  background-color: rgba(0,0,0,0.75);
+  background-color: rgba(0, 0, 0, 0.75);
   justify-content: center;
   align-items: center;
 }
@@ -281,7 +281,7 @@
   width: 90%;
   color: white;
   position: relative;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 .modal-close-wrapper {
   position: absolute;
@@ -302,9 +302,7 @@ label {
   font-weight: 600;
   font-size: 1rem;
 }
-input[type="email"],
-textarea,
-input[type="file"] {
+.input-style {
   margin-top: 0.3em;
   width: 100%;
   padding: 0.5em;
@@ -315,7 +313,7 @@ input[type="file"] {
   background-color: #fff;
   color: #000;
 }
-input[type="file"] {
+input[type='file'] {
   padding: 0;
   border: none;
   background: none;
@@ -335,6 +333,8 @@ button.cancel:hover {
 button:hover {
   background-color: #4c9269;
 }
-input, textarea, select {
-  color: #000; 
+input,
+textarea,
+select {
+  color: #000;
 }

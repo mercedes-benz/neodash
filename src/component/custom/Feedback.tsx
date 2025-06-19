@@ -11,7 +11,7 @@ import { filesToBase64 } from '../../utils/shareUtils';
 const Feedback = () => {
   const [showModal, setShowModal] = useState(false);
   const [reporterEmail, setReporterEmail] = useState('');
-  const [reporterName, setReporterName] = useState('user');
+  const [reporterName, setReporterName] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
   const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState(null);
@@ -38,12 +38,12 @@ const Feedback = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      setEmailStatus('Fetching email from profile...');
+      setEmailStatus('Fetching data from profile...');
       try {
         const userInfo = await axios.get(`${dbQueryUrl}/v1/userInfo`);
         if (userInfo && userInfo.data.email && userInfo.data.email.length > 0) {
           setReporterEmail(userInfo.data.email);
-          setReporterName(userInfo.data.userName || 'user');
+          setReporterName(userInfo.data.userName);
           setEmailStatus('Email autofilled from profile.');
         } else {
           throw new Error('Email not found');
@@ -69,7 +69,7 @@ const Feedback = () => {
   };
 
   const resetForm = () => {
-    setReporterName('user');
+    setReporterName('');
     setReporterEmail('');
     setEmailStatus('');
     setDescription('');
@@ -118,7 +118,10 @@ const Feedback = () => {
               'Content-Type': 'application/json',
             },
           })
-          .then(() => setIsSuccess(true))
+          .then(() => {
+            resetForm();
+            setIsSuccess(true);
+          })
           .catch((err) => {
             console.error('Unable to submit feedback: ', err);
             setIsError(true);
@@ -180,6 +183,7 @@ const Feedback = () => {
               Reporter Name
               <input
                 type='text'
+                className='input-style'
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 placeholder='John'
@@ -191,6 +195,7 @@ const Feedback = () => {
               Reporter Email
               <input
                 type='email'
+                className='input-style'
                 value={reporterEmail}
                 onChange={(e) => setReporterEmail(e.target.value)}
                 placeholder='your.email@example.com'
@@ -202,6 +207,7 @@ const Feedback = () => {
             <label style={{ marginTop: '1em' }}>
               Description
               <textarea
+                className='input-style'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={8}
