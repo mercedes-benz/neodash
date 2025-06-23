@@ -83,6 +83,9 @@ const Feedback = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reporterEmail)) {
       newErrors.email = 'Invalid email address';
     }
+    if (!reporterName.trim()) {
+      newErrors.name = 'Name should not be empty';
+    }
     if (!description.trim()) {
       newErrors.description = 'Description should not be empty';
     } else if (description.length > MAX_DESCRIPTION_LENGTH) {
