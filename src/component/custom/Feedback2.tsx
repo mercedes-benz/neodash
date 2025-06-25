@@ -2,15 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 const closeIcon = '/x-button.png';
 const supportIcon = '/support.png';
-import { Button, IconButton } from '@neo4j-ndl/react';
+import { IconButton } from '@neo4j-ndl/react';
 import Tooltip from '@mui/material/Tooltip/Tooltip';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import { filesToBase64 } from '../../utils/shareUtils';
 
 const Feedback = () => {
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
   const [showModal, setShowModal] = useState(false);
   const [reporterEmail, setReporterEmail] = useState('');
   const [reporterName, setReporterName] = useState('');
@@ -25,24 +24,10 @@ const Feedback = () => {
     description: undefined,
     files: undefined,
   });
-  
+  const modalRef = useRef(null);
   const TIMEOUT_DURATION = 1000;
   const MAX_DESCRIPTION_LENGTH = 500;
-  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
-  const modalStyle = {
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 500,
-    bgcolor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4,
-    maxHeight: '90vh',
-    overflowY: 'auto',
-  };
-
+  const mode = process.env.NODE_ENV;
   axios.defaults.headers.common[
     'Authorization'
   ] = `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjFhMDlkODQzMWU4ZjQ0MTY5ZWRhNzE1ZDZkN2E4Y2Y4ZjRjZTlkNWQifQ.eyJhdF9oYXNoIjoiU1NDYVBIQjJuazFWUlJhT0R3RnRWZyIsImF1ZCI6WyJEQUlWQkFETV9NSUNUTV9FTUVBX0RFVl8wMTM5NSJdLCJlbWFpbCI6Imhhcm1hbi5tYXRhcGF0aGlAbWVyY2VkZXMtYmVuei5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzUwODMxNTY4LCJmYW1pbHlfbmFtZSI6Ik1hdGFwYXRoaSIsImdpdmVuX25hbWUiOiJTdWhhcyIsImdyb3VwcyI6WyJEQUlWQkFETS5VUERQQVRIX0FETUlOX0VNRUFfUFJPRCIsIkRBSVZCQURNLlVQRFBBVEhfUkVBRF9FTUVBX0RFViIsIkRBSVZCQURNLlVQRFBBVEhfQUREX0VNRUFfREVWIiwiREFJVkJBRE0uVVBEUEFUSF9BRE1JTl9FTUVBX0RFViIsIkRBSVZCQURNLlVQRFBBVEhfREVMRVRFX0VNRUFfREVWIiwiREFJVkJBRE0uVVBEUEFUSF9TRk1fQVVUT0dFTl9QUk9EIiwiREFJVkJBRE0uVVBEUEFUSF9DQU1QQUlHTl9BVVRPR0VOX1BST0QiLCJEQUlWQkFETS5VUERQQVRIX0NBTVBBSUdOX0FVVE9HRU5fREVWIiwiREFJVkJBRE0uVVBEUEFUSF9TRk1fQVVUT0dFTl9ERVYiXSwiaWF0IjoxNzUwODI3OTY4LCJpc3MiOiJodHRwczovL3Nzb2FscGhhLmR2Yi5jb3JwaW50ZXIubmV0L3YxIiwibmFtZSI6IlNVSEFTIE1BVEFQQVRISSIsInByZWZlcnJlZF91c2VybmFtZSI6IlNVSEFTIE1BVEFQQVRISSIsInB1YiI6IlNWUmRUZEQyVWc9PSIsInNjb3BlIjpbImdyb3VwcyIsIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsIm9mZmxpbmVfYWNjZXNzIl0sInN1YiI6IlNNQVRBUEEiLCJ1c2VyX3R5cGUiOiJleHRlcm5hbF9jb250cmFjdG9yIn0.BfXyq42soa4C3sQFDRvzuWcww4qO-j5OhMjVa93SYvDNtcRA7uQX62k3d9tL93OKc28KFpQXrbmlIPU-NOjRDuzFxju8wqSci_ro495irIT9H4xiPK3A57wzMuOqMBYiox-FG82AluAXOUCx6GHoUib4aS1gjEDcfz8XtdH-ACXw6TbsfweYCH0IP_Otrz6s9vD-tXvVmuXR2S3a6cxz85pSdjI61X5A-8_cnUgM7xveROaNXmgEW-wdqr9YoXCBJzBFcW2-EOvg299X55MmyKNwU9ZHxeAKSMpdgKDt9oh5jJ-F1lKDBbtUT7lIavm5YgfmY8flArMqQ3XYcATt2A`;
@@ -70,6 +55,12 @@ const Feedback = () => {
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+
+  const handleOutsideClick = (e) => {
+    if (modalRef.current && e.target === modalRef.current) {
+      closeModal();
+    }
+  };
 
   const handleFileChange = (e) => {
     setAttachments(e.target.files);
@@ -192,19 +183,13 @@ const Feedback = () => {
         </Alert>
       </Snackbar>
 
-      <Modal
-        open={showModal}
-        onClose={closeModal}
-        aria-labelledby='feedback-modal-title'
-        aria-describedby='feedback-modal-description'
-      >
-        <Box sx={modalStyle}>
-          <div className='modal-close-wrapper' onClick={closeModal} style={{ cursor: 'pointer', float: 'right' }}>
+      <div className={`modal${showModal ? ' is-active' : ''}`} ref={modalRef} onClick={handleOutsideClick}>
+        <div className='modal-content' onClick={(e) => e.stopPropagation()}>
+          <div className='modal-close-wrapper' onClick={closeModal}>
             <img className='modal-closed' src={closeIcon} alt='close icon' />
           </div>
-          <h4 id='feedback-modal-title' className='modal-title'>
-            Report a Bug / Share Feedback
-          </h4>
+
+          <h4 className='modal-title'>Report a Bug / Share Feedback</h4>
           <hr />
           <br />
 
@@ -270,14 +255,16 @@ const Feedback = () => {
                 gap: '1em',
               }}
             >
-              <Button onClick={closeModal}>Cancel</Button>
-              <Button style={{ padding: '10px 24px' }} type='submit'>
+              <button className='cancel' style={{ padding: '10px 24px' }} type='button' onClick={closeModal}>
+                Cancel
+              </button>
+              <button style={{ padding: '10px 24px' }} type='submit'>
                 Submit
-              </Button>
+              </button>
             </div>
           </form>
-        </Box>
-      </Modal>
+        </div>
+      </div>
     </>
   );
 };
