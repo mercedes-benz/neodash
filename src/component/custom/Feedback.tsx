@@ -138,7 +138,6 @@ const Feedback = () => {
           attachments: base64EncodedFiles,
           source: url.toString(),
         };
-        console.log('URL is ', `${dbQueryUrl}/v1/send-feedback`);
         await axios
           .post(`${dbQueryUrl}/v1/send-feedback`, requestBody, {
             headers: {
