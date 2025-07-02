@@ -6,7 +6,10 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { filesToBase64 } from '../../utils/shareUtils';
+import { buildURL, extractQueryParams, filesToBase64, getPath } from '../../utils/shareUtils';
+import { useSelector } from 'react-redux';
+import { getPages } from '../../dashboard/DashboardSelectors';
+import { getGlobalParameters, getPageNumber } from '../../settings/SettingsSelectors';
 
 interface FeedbackErrors {
   name?: string;
@@ -47,6 +50,9 @@ const Feedback = () => {
     maxHeight: '90vh',
     overflowY: 'auto',
   };
+  const pages = useSelector((state) => getPages(state));
+  const parameters = useSelector((state) => getGlobalParameters(state));
+  const pageNumber = useSelector((state) => getPageNumber(state));
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -122,13 +128,16 @@ const Feedback = () => {
           name: reporterName,
         };
         const base64EncodedFiles = attachments ? await filesToBase64(attachments) : null;
+        const url: URL = buildURL(
+          getPath(window.location.href),
+          extractQueryParams(pages, pageNumber, parameters, true)
+        );
         const requestBody = {
           contact: reporterContact,
           description: description,
           attachments: base64EncodedFiles,
-          source: window.location.href
+          source: url.toString(),
         };
-        console.log("URL is ", `${dbQueryUrl}/v1/send-feedback`);
         await axios
           .post(`${dbQueryUrl}/v1/send-feedback`, requestBody, {
             headers: {
@@ -225,7 +234,7 @@ const Feedback = () => {
                 required
               />
               {errors.email && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.email}</div>}
-              {emailStatus && <small style={{ color: 'lightgray', fontStyle: 'italic'}}>{emailStatus}</small>}
+              {emailStatus && <small style={{ color: 'lightgray', fontStyle: 'italic' }}>{emailStatus}</small>}
             </label>
 
             <label style={{ marginTop: '1em' }}>
@@ -259,11 +268,10 @@ const Feedback = () => {
               style={{
                 marginTop: '2em',
                 display: 'flex',
-                justifyContent: 'flex-end',
+                justifyContent: 'center',
                 gap: '1em',
               }}
             >
-              <Button onClick={closeModal}>Cancel</Button>
               <Button style={{ padding: '10px 24px' }} type='submit'>
                 Submit
               </Button>
