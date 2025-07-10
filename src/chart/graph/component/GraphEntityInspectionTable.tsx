@@ -1,19 +1,11 @@
 import React from 'react';
 import ShowMoreText from 'react-show-more-text';
 import { Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { TextLink } from '@neo4j-ndl/react';
-// import DOMPurify from 'dompurify';
+import { RenderString } from '../../../report/ReportRecordProcessing';
 
 export const formatProperty = (property) => {
   const str = property?.toString() || '';
-  if (str.startsWith('http://') || str.startsWith('https://')) {
-    return (
-      <TextLink externalLink href={str}>
-        {str}
-      </TextLink>
-    );
-  }
-  return str;
+  return RenderString(str);
 };
 
 /**

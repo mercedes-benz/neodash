@@ -21,6 +21,7 @@ import NeoExportModal from '../../modal/ExportModal';
 import { setDraft } from '../../application/ApplicationActions';
 import NeoDashboardHeaderLogo from './DashboardHeaderLogo';
 import { ShareableButton } from '../../component/custom/ShareableButton'
+import Feedback from '../../component/custom/Feedback';
 
 type SettingsMenuOpenEvent = React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>;
 
@@ -156,15 +157,19 @@ export const NeoDashboardTitle = ({
       )}
       {/* If the app is not running in standalone mode (i.e. in edit mode) always show dashboard settings. */}
       {!standaloneSettings.standalone ? (
-        <div className='flex flex-row flex-wrap items-center gap-2'>
+        <div className='flex flex-row flex-wrap items-end gap-2'>
           {editable ? renderExtensionsButtons() : <></>}
           <NeoSettingsModal dashboardSettings={dashboardSettings} updateDashboardSetting={updateDashboardSetting} />
           <ShareableButton exportPageParameters={false}/>
           {editable ? <NeoExportModal /> : <></>}
           {editable ? <NeoExtensionsModal closeMenu={handleSettingsMenuClose} /> : <></>}
+          <Feedback />
         </div>
       ) : (
-        <><ShareableButton exportPageParameters={false}/></>
+        <div className='flex flex-row flex-wrap items-end gap-2 n-mr-6'>
+          <ShareableButton exportPageParameters={false}/>
+          <Feedback />
+        </div>
       )}
     </div>
   );
