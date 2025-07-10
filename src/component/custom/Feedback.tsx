@@ -211,7 +211,7 @@ const Feedback = () => {
           <br />
 
           <form onSubmit={submitFeedback} noValidate>
-            <label>
+            < label className='feedback-label'>
               Reporter Name
               <input
                 type='text'
@@ -223,7 +223,7 @@ const Feedback = () => {
               />
               {errors.name && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.name}</div>}
             </label>
-            <label>
+            <label className='feedback-label'>
               Reporter Email
               <input
                 type='email'
@@ -237,10 +237,10 @@ const Feedback = () => {
               {emailStatus && <small style={{ color: 'lightgray', fontStyle: 'italic' }}>{emailStatus}</small>}
             </label>
 
-            <label style={{ marginTop: '1em' }}>
+            <label style={{ marginTop: '1em' }} className='feedback-label'>
               Description
               <textarea
-                className='input-style'
+                className='input-style input-textarea'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={8}
@@ -257,9 +257,10 @@ const Feedback = () => {
                 alignItems: 'center',
                 gap: '8px',
               }}
+              className='feedback-label'
             >
               Attach screenshot
-              <input type='file' onChange={handleFileChange} multiple />
+              <input type='file' className='input-file' onChange={handleFileChange} multiple />
             </label>
             {errors.files && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.files}</div>}
 

@@ -269,7 +269,7 @@
 .modal-title {
   margin-bottom: 0.5rem;
 }
-label {
+.feedback-label {
   display: block;
   margin-bottom: 1em;
   font-weight: 600;
@@ -286,21 +286,13 @@ label {
   background-color: #fff;
   color: #000;
 }
-input[type='file'] {
+.input-file {
   padding: 0;
   border: none;
   background: none;
 }
-textarea {
+.input-textarea {
   resize: vertical;
   min-height: 120px;
   color: #000 !important;
-}
-button:hover {
-  background-color: #4c9269;
-}
-input,
-textarea,
-select {
-  color: #000;
 }
