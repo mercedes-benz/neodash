@@ -82,7 +82,7 @@ function ApplyColumnType(column, value, asAction, useExpandedRenderer) {
         valueGetter: (params) => {
           const fieldValue = params.row[params.field];
           if (typeof fieldValue === 'number') {
-            return parseFloat(fieldValue.toString()).toFixed(2);
+            return parseFloat(fieldValue.toString()).toFixed(1);
           }
           return fieldValue;
         },
