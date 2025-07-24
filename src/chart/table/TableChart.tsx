@@ -82,7 +82,6 @@ function ApplyColumnType(column, value, asAction, useExpandedRenderer) {
         valueGetter: (params) => {
           const fieldValue = params.row[params.field];
           if (typeof fieldValue === 'number') {
-            console.log("number is: ", fieldValue);
             return parseFloat(fieldValue.toString()).toFixed(2);
           }
           return fieldValue;
