@@ -81,8 +81,9 @@ function ApplyColumnType(column, value, asAction, useExpandedRenderer) {
         renderCell: renderCell ? renderCell : fallbackRenderer,
         valueGetter: (params) => {
           const fieldValue = params.row[params.field];
-          if (typeof fieldValue === 'number' && Number.isInteger(fieldValue)) {
-            return parseFloat(fieldValue.toFixed(2)).toFixed(2);
+          if (typeof fieldValue === 'number') {
+            console.log("number is: ", fieldValue);
+            return parseFloat(fieldValue.toString()).toFixed(2);
           }
           return fieldValue;
         },
