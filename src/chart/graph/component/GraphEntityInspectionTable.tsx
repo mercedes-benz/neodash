@@ -6,11 +6,10 @@ import { valueIsArray } from '../../ChartUtils';
 
 export const formatProperty = (property) => {
   if (valueIsArray(property)) {
-    return RenderArray(Array.from(property), false, true, true);
-  } 
-    const str = property?.toString() || '';
-    return RenderString(str);
-  
+    return RenderArray(Array.from(property), false, true);
+  }
+  const str = property?.toString() || '';
+  return RenderString(str);
 };
 
 /**
