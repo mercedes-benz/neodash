@@ -296,3 +296,8 @@
   min-height: 120px;
   color: #000 !important;
 }
+
+.line-break {
+  white-space: pre-line !important;
+  word-break: break-all !important;
+}
