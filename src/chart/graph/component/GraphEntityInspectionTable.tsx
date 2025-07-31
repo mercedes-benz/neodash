@@ -13,7 +13,7 @@ export const formatProperty = (property) => {
 };
 
 /**
- * Component to render node/relationship properties in a table format, format using linebreak
+ * Component to render node/relationship properties in a table format
  */
 export const GraphEntityInspectionTable = ({
   entity,
