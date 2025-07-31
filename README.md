@@ -64,6 +64,24 @@ There is also a dedicated linting step in the Github project pipeline in order t
 
 > Don't hesitate to setup your IDE formatting feature to use the Prettier module and our defined rules (.prettierrc.json).
 
+Please install gitleaks in your system in order to run pre-commit hooks
+commands:
+# MacOS
+brew install gitleaks
+# Docker (DockerHub)
+docker pull zricethezav/gitleaks:latest
+docker run -v ${path_to_host_folder_to_scan}:/path zricethezav/gitleaks:latest [COMMAND] [OPTIONS] [SOURCE_PATH]
+# Docker (ghcr.io)
+docker pull ghcr.io/gitleaks/gitleaks:latest
+docker run -v ${path_to_host_folder_to_scan}:/path ghcr.io/gitleaks/gitleaks:latest [COMMAND] [OPTIONS] [SOURCE_PATH]
+# From Source (make sure `go` is installed)
+git clone https://github.com/gitleaks/gitleaks.git
+cd gitleaks
+make build
+#Windows
+Go to the official Gitleaks GitHub releases page . Download the appropriate .zip file for your Windows architecture (e.g., gitleaks_windows_x64.zip for 64-bit systems). Extract the executable.
+Unzip the downloaded file. This will typically contain gitleaks.exe. Add to PATH (optional but recommended).
+
 
 ## User Guide
 NeoDash comes with built-in examples of dashboards and reports. For more details on the types of reports and how to customize them, see the [User Guide](
