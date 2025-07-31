@@ -1,9 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-. "$(dirname -- "$0")/common.sh"
-
-yarn run lint-staged
-
 gitleaks detect --source=. --verbose --config .gitleaks.toml
 
 if [ $? -ne 0 ]; then
