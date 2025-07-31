@@ -1,6 +1,5 @@
 import React from 'react';
-import ShowMoreText from 'react-show-more-text';
-import { Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { RenderArray, RenderString } from '../../../report/ReportRecordProcessing';
 import { valueIsArray } from '../../ChartUtils';
 
@@ -71,9 +70,9 @@ export const GraphEntityInspectionTable = ({
         {key}
       </TableCell>
       <TableCell align={'left'}>
-        <ShowMoreText lines={2} className='line-break'>
+        <Typography variant='body-medium' className='line-break'>
           {formatProperty(entity && entity.properties[key])}
-        </ShowMoreText>
+        </Typography>
       </TableCell>
       {checklistEnabled ? (
         <TableCell align={'center'}>
