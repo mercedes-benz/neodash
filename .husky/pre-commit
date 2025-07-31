@@ -10,5 +10,5 @@ if [ $? -ne 0 ]; then
   echo "Gitleaks check failed. Push aborted."
   exit 1
 else
-  echo "Gitleaks did not detect any secrets. Proceeding with push."
+  echo "Gitleaks did not detect any secrets. Proceeding with commit."
 fi
