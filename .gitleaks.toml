@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "global allow list"
+regexes = [
+  '''pub0b97bee959db42713ec1f...''',
+  '''4737836d-3dd9-4903-bcf6-2...'''
+]

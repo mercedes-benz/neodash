@@ -1,0 +1,34 @@
+
+name: gitleaks
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+jobs:
+  GitleaksScan:
+    name: Run Gitleaks Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Run Gitleaks
+        run: |
+          echo "Fetching the latest Gitleaks download URL..."
+          GITLEAKS_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep browser_download_url | cut -d'"' -f 4 | grep linux | grep x64)
+          
+          echo "Downloading Gitleaks..."
+          wget -O gitleaks.tar.gz $GITLEAKS_DOWNLOAD_URL
+          if ! tar -xvf gitleaks.tar.gz gitleaks; then
+            echo "ERROR: Gitleaks not available, please check the URL"
+            echo "URL: $GITLEAKS_DOWNLOAD_URL"
+            exit 1
+          fi
+          echo "Gitleaks version:"
+          ./gitleaks version
+          if ! ./gitleaks detect --source=. --verbose --redact=30 --config .gitleaks.toml; then
+            echo "ERROR: Secrets found in the repository or error occurred"
+            exit 1
+          fi
+          echo "No secrets found in the repository"

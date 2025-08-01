@@ -3,3 +3,12 @@
 . "$(dirname -- "$0")/common.sh"
 
 yarn run lint-staged
+
+gitleaks detect --source=. --verbose --config .gitleaks.toml
+
+if [ $? -ne 0 ]; then
+  echo "Gitleaks check failed. Push aborted."
+  exit 1
+else
+  echo "Gitleaks did not detect any secrets. Proceeding with commit."
+fi
