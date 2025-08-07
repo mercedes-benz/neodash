@@ -76,7 +76,17 @@ function ApplyColumnType(column, value, asAction, useExpandedRenderer) {
     : renderer.renderValue;
 
   const columnProperties = renderer
-    ? { type: renderer.type, renderCell: renderCell ? renderCell : fallbackRenderer }
+    ? {
+        type: renderer.type,
+        renderCell: renderCell ? renderCell : fallbackRenderer,
+        valueGetter: (params) => {
+          const fieldValue = params.row[params.field];
+          if (typeof fieldValue === 'number') {
+            return parseFloat(fieldValue.toString()).toFixed(1);
+          }
+          return fieldValue;
+        },
+      }
     : rendererForType.string;
   if (columnProperties) {
     column = { ...column, ...columnProperties };

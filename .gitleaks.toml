@@ -1,0 +1,41 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "global allow list"
+regexes = [
+  '''pub0b97bee959db42713ec1f...''',
+  '''4737836d-3dd9-4903-bcf6-2...'''
+]
+
+[[rules]]
+description = "JWT Token"
+regex = '''eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.?[a-zA-Z0-9_-]*'''
+
+[[rules]]
+description = "Generic API Key"
+regex = '''(?i)(api_key|apikey|api-key|key)[\'"]?[:=][\'"]?[a-zA-Z0-9]{32,}'''
+
+[[rules]]
+description = "AWS Access Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+
+[[rules]]
+description = "AWS Secret Key"
+regex = '''(?i)(aws_secret_access_key|aws_secret_key|secret_key)[\'"]?[:=][\'"]?[a-zA-Z0-9/+]{40}'''
+
+[[rules]]
+description = "Private Key"
+regex = '''-----BEGIN PRIVATE KEY-----[a-zA-Z0-9/+=\s]+-----END PRIVATE KEY-----'''
+
+[[rules]]
+description = "Slack Token"
+regex = '''xox[baprs]-[0-9]{12}-[0-9]{12}-[a-zA-Z0-9]{24}'''
+
+[[rules]]
+description = "Google API Key"
+regex = '''AIza[0-9A-Za-z_-]{35}'''
+
+[[rules]]
+description = "Heroku API Key"
+regex = '''(?i)(heroku_api_key|heroku_key)[\'"]?[:=][\'"]?[a-zA-Z0-9]{32}'''
