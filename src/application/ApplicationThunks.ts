@@ -73,6 +73,7 @@ export const createConnectionThunk =
       console.log('Attempting to connect...');
       const validateConnection = (records) => {
         // eslint-disable-next-line no-console
+        console.log('DEBUG: Records', records);
         console.log('Confirming connection was established...');
         if (records && records[0] && records[0].error) {
           if (
