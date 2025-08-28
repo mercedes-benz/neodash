@@ -722,6 +722,11 @@ const _REPORT_TYPES = {
         type: SELECTION_TYPES.NUMBER,
         default: 'auto',
       },
+      yTickCount: {
+        label: 'Y-axis Tick Count (Approximate)',
+        type: SELECTION_TYPES.NUMBER,
+        default: 'auto',
+      },
       xAxisTimeFormat: {
         label: 'X-axis Format (Time chart)',
         type: SELECTION_TYPES.TEXT,
