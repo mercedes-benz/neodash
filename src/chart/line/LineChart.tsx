@@ -67,6 +67,7 @@ const NeoLineChart = (props: ChartProps) => {
 
   const xTickRotationAngle = settings.xTickRotationAngle != undefined ? settings.xTickRotationAngle : 0;
   const yTickRotationAngle = settings.yTickRotationAngle != undefined ? settings.yTickRotationAngle : 0;
+  const yTickCount = settings.yTickCount !== undefined ? settings.yTickCount : 'auto';
   const styleRules = useStyleRules(
     extensionEnabled(props.extensions, 'styling'),
     props.settings.styleRules,
@@ -240,6 +241,7 @@ const NeoLineChart = (props: ChartProps) => {
           tickSize: 6,
           tickPadding: 12,
           tickRotation: yTickRotationAngle,
+          tickValues: yTickCount !== 'auto' && !isNaN(Number(yTickCount)) ? Number(yTickCount) : undefined,
         }}
         pointSize={pointSize}
         lineWidth={lineWidth}
