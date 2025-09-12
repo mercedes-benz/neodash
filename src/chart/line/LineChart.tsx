@@ -67,6 +67,7 @@ const NeoLineChart = (props: ChartProps) => {
 
   const xTickRotationAngle = settings.xTickRotationAngle != undefined ? settings.xTickRotationAngle : 0;
   const yTickRotationAngle = settings.yTickRotationAngle != undefined ? settings.yTickRotationAngle : 0;
+  const yTickCount = settings.yTickCount !== undefined ? settings.yTickCount : 'auto';
   const styleRules = useStyleRules(
     extensionEnabled(props.extensions, 'styling'),
     props.settings.styleRules,
@@ -77,17 +78,18 @@ const NeoLineChart = (props: ChartProps) => {
   // For line charts, the line color is overridden if at least one value meets the criteria.
   const getLineColors = (line) => {
     const xFieldName = props.selection && props.selection.x;
-    const yFieldName = line.id && line.id.split('(')[1] && line.id.split('(')[1].split(')')[0];
+    const yFieldName = line.id;
     let color = 'black';
-    line.data.forEach((entry) => {
+    for (const entry of line.data) {
       const data = {};
-      data[xFieldName] = entry[selection.x];
-      data[yFieldName] = entry[selection.value];
+      data[xFieldName] = entry.x;
+      data[yFieldName] = entry.y;
       const validRuleIndex = evaluateRulesOnDict(data, styleRules, ['line color']);
       if (validRuleIndex !== -1) {
         color = styleRules[validRuleIndex].customizationValue;
+        break;
       }
-    });
+    }
     return color;
   };
 
@@ -239,6 +241,7 @@ const NeoLineChart = (props: ChartProps) => {
           tickSize: 6,
           tickPadding: 12,
           tickRotation: yTickRotationAngle,
+          tickValues: yTickCount !== 'auto' && !isNaN(Number(yTickCount)) ? Number(yTickCount) : undefined,
         }}
         pointSize={pointSize}
         lineWidth={lineWidth}
