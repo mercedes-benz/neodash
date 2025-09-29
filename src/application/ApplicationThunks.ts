@@ -438,11 +438,24 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
     skipAddDashErrorPopup: false,
   };
   try {
-    config = await (await fetch('config.json')).json();
+    console.log('Step0: Loading config.json');
+    let response = await await fetch('config.json');
+    console.log('Step1: Fetched config.json', response);
+    if (response && response.status === 200 && (await response.text()).length > 0) {
+      console.log('Step2: Success config.json: ');
+      const decodedConfig = atob(await response.text());
+      config = JSON.parse(decodedConfig);
+      console.log('Step3: Decoded config.json: ', config);
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('No valid config file found. Using default config.', response);
+      console.error('Error getting config file.');
+    }
   } catch (e) {
     // Config may not be found, for example when we are in Neo4j Desktop.
     // eslint-disable-next-line no-console
     console.log('No config file detected. Setting to safe defaults.');
+    console.error(e);
   }
 
   try {
