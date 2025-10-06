@@ -443,7 +443,9 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
       const decodedJson = await response.json();
       const data = atob(decodedJson.data);
       config = JSON.parse(data);
-
+      if (typeof config.skipConfirmation === 'string') {
+        config.skipConfirmation = config.skipConfirmation === 'true';
+      }
       let secret = '';
       try {
         const secretResponse = await fetch('neodash_secret.txt');
