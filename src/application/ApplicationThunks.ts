@@ -438,11 +438,42 @@ export const loadApplicationConfigThunk = () => async (dispatch: any, getState: 
     skipAddDashErrorPopup: false,
   };
   try {
-    config = await (await fetch('config.json')).json();
+    let response = await fetch('config.json');
+    if (response.ok) {
+      const decodedJson = await response.json();
+      const data = atob(decodedJson.data);
+      config = JSON.parse(data);
+      if (typeof config.skipConfirmation === 'string') {
+        config.skipConfirmation = config.skipConfirmation === 'true';
+      }
+      let secret = '';
+      try {
+        const secretResponse = await fetch('neodash_secret.txt');
+        secret = await secretResponse.text();
+      } catch (e) {
+        console.warn('Could not fetch secret.');
+      }
+
+      if (typeof config.standalonePassword === 'string' && secret) {
+        const delimiter = `|`;
+        if (config.standalonePassword) {
+          config.standalonePassword = config.standalonePassword.split(delimiter)[0];
+        } else {
+          console.warn('Password format is invalid or secret does not match.');
+        }
+      } else if (config.standalonePassword && !secret) {
+        console.warn('No secret was found. Leaving password as is.');
+      }
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('No valid config file found. Using default config.', response);
+      console.error('Error getting config file.');
+    }
   } catch (e) {
     // Config may not be found, for example when we are in Neo4j Desktop.
     // eslint-disable-next-line no-console
     console.log('No config file detected. Setting to safe defaults.');
+    console.error(e);
   }
 
   try {
