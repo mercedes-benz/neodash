@@ -1,18 +1,19 @@
-import React from 'react';
-
-import { DASHBOARD_HEADER_BRAND_LOGO, IS_CUSTOM_LOGO } from '../../config/ApplicationConfig';
+import React, { useEffect } from 'react';
 import StyleConfig from '../../config/StyleConfig';
-import { Typography } from '@neo4j-ndl/react';
+import { useSelector } from 'react-redux';
+import { getDashboardSettings } from '../DashboardSelectors';
 
 await StyleConfig.getInstance();
 
 export const NeoDashboardHeaderLogo = () => {
+  const theme = useSelector((state) => getDashboardSettings(state))?.theme;
+  const src = theme && theme === 'dark' ? 'Update_Paths_Tool_logo_Inverted.png' : 'update-paths-tool-logo.png';
+
   const content = (
     <div className='n-items-center sm:n-flex md:n-flex-1 n-justify-start n-cursor-pointer'>
       <a href='/landing-page/' target='_blank'>
-        <img className='n-h-10 n-w-auto n-m-2' src={'update-paths-tool-logo.png'} alt='Logo' />
+        <img className='n-h-10 n-w-auto n-m-2' src={src} alt='Logo' />
       </a>
-      {/* {IS_CUSTOM_LOGO ? <></> : <Typography variant='h6'>Labs</Typography>} */}
     </div>
   );
 

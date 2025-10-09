@@ -152,12 +152,12 @@ const NeoGraphChart = (props: GraphChartProps) => {
     style: {
       width: width,
       height: height,
-      backgroundColor: theme == 'dark' && settings.backgroundColor == '#fafafa' ? '#040404' : settings.backgroundColor, // Temporary fix for default color adjustment in dark mode
+      backgroundColor: theme == 'dark' ? '#23262b' : settings.backgroundColor, // Temporary fix for default color adjustment in dark mode
       linkDirectionalParticles: linkDirectionalParticles,
       linkDirectionalArrowLength: arrowLengthProp,
       linkDirectionalParticleSpeed: settings.linkDirectionalParticleSpeed,
       nodeLabelFontSize: settings.nodeLabelFontSize,
-      nodeLabelColor: theme == 'dark' && settings.nodeLabelColor == 'black' ? 'white' : settings.nodeLabelColor, // Temporary fix for default color adjustment in dark mode
+      nodeLabelColor: theme == 'dark' ? 'white' : settings.nodeLabelColor, // Temporary fix for default color adjustment in dark mode
       relLabelFontSize: settings.relLabelFontSize,
       relLabelColor: settings.relLabelColor,
       defaultNodeSize: settings.defaultNodeSize,

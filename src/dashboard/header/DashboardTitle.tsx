@@ -98,55 +98,59 @@ export const NeoDashboardTitle = ({
       {/* TODO : Replace with editable field if dashboard is editable */}
       {/* only allow edit title if dashboard is not standalone - here we are in Title edit mode*/}
       {editing && !standaloneSettings.standalone ? (
-        <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
-          <form
-            onSubmit={() => {
-              if (editing) {
-                setEditing(false);
-              }
-            }}
-          >
-            <input
-              autoFocus={true}
-              value={dashboardTitleText}
-              style={{
-                height: '1.9rem',
-                fontSize: '1.875rem', // h3
-                fontWeight: 700, // h3
-                padding: 10,
-                width: inputWidth,
-              }}
-              placeholder='Dashboard name...'
-              onBlur={() => {
+        <>
+          <NeoDashboardHeaderLogo />
+          <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
+            <form
+              onSubmit={() => {
                 if (editing) {
                   setEditing(false);
                 }
               }}
-              onChange={(event) => {
-                if (editable) {
-                  const { target } = event;
-                  target.style.width = '350px';
-                  setInputWidth(target.scrollWidth);
-                  setDashboardTitleText(event.target.value);
-                  debouncedDashboardTitleUpdate(event.target.value);
-                }
-              }}
-            />
-          </form>
-          <Tooltip title={'Stop Editing'} disableInteractive>
-            <IconButton
-              className='logo-btn n-p-1'
-              aria-label={'stop-editing'}
-              size='large'
-              onClick={() => setEditing(false)}
-              clean
             >
-              <CheckIconOutline className='header-icon' type='outline' />
-            </IconButton>
-          </Tooltip>
-        </div>
+              <input
+                autoFocus={true}
+                value={dashboardTitleText}
+                style={{
+                  height: '1.9rem',
+                  fontSize: '1.875rem', // h3
+                  fontWeight: 700, // h3
+                  padding: 10,
+                  width: inputWidth,
+                }}
+                placeholder='Dashboard name...'
+                onBlur={() => {
+                  if (editing) {
+                    setEditing(false);
+                  }
+                }}
+                onChange={(event) => {
+                  if (editable) {
+                    const { target } = event;
+                    target.style.width = '350px';
+                    setInputWidth(target.scrollWidth);
+                    setDashboardTitleText(event.target.value);
+                    debouncedDashboardTitleUpdate(event.target.value);
+                  }
+                }}
+              />
+            </form>
+            <Tooltip title={'Stop Editing'} disableInteractive>
+              <IconButton
+                className='logo-btn n-p-1'
+                aria-label={'stop-editing'}
+                size='large'
+                onClick={() => setEditing(false)}
+                clean
+              >
+                <CheckIconOutline className='header-icon' type='outline' />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </>
       ) : !standaloneSettings.standalone /* out of edit mode - if Not Standalone we display the edit button */ ? (
         <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
+          <NeoDashboardHeaderLogo />
           <div className='n-flex n-flex-row n-mx-8'>
             <Typography variant='h3'>{dashboardTitle ? dashboardTitle : '(no title)'}</Typography>
             <Tooltip title={'Edit'} disableInteractive>
