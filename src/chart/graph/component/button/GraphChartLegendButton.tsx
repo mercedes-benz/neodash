@@ -3,6 +3,7 @@ import { Box, Button, List, ListItem, ListItemText, Popover, Tooltip, Typography
 import { GraphChartVisualizationProps } from '../../GraphChartVisualization';
 import { CircleIcon } from '@neo4j-ndl/react/icons';
 import { ArrowForwardRounded } from '@mui/icons-material';
+import { dark } from '@mui/material/styles/createPalette';
 
 /**
  * Renders an icon on the bottom-right of the graph visualization to fit the current graph to the user's view.
@@ -102,7 +103,7 @@ export const NeoGraphChartLegendButton = (props: GraphChartVisualizationProps) =
             sx={{
               typography: 'subtitle2',
               textTransform: 'capitalize',
-              color: '#535a65',
+              color: dark ? '#ffffff' : '#535a65',
             }}
           >
             Legend
