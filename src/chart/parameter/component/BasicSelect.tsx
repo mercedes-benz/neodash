@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { CircularProgress, debounce } from '@mui/material';
 import { SelectionConfirmationButton } from './SelectionConfirmationButton';
+import { useThemedAutocomplete } from './useThemedAutocomplete';
 
 const BasicSelect = (props: ParameterSelectProps) => {
   const { manualParameterSave, predefinedOptions } = props;
@@ -25,7 +26,7 @@ const BasicSelect = (props: ParameterSelectProps) => {
     props.settings && props.settings.clearParameterOnFieldClear ? props.settings.clearParameterOnFieldClear : false;
   const [running, setRunning] = React.useState(false);
   const [paramValueLocal, setParamValueLocal] = React.useState(null);
-
+  const { textFieldSx, isDark } = useThemedAutocomplete();
   const setParameterValue = (value) => {
     setRunning(false);
     props.setParameterValue(value);
@@ -59,6 +60,16 @@ const BasicSelect = (props: ParameterSelectProps) => {
     <div className={'n-flex n-flex-row n-flex-wrap n-items-center'}>
       <FormControl
         fullWidth
+        sx={{
+          ...(isDark ? (textFieldSx as any) : {}),
+          ...(isDark
+            ? {
+                '& .MuiSelect-icon': {
+                  color: '#ffffff',
+                },
+              }
+            : {}),
+        }}
         style={{
           maxWidth: 'calc(100% - 40px)',
           minWidth: `calc(100% - ${manualParameterSave ? '60' : '30'}px)`,
@@ -80,7 +91,9 @@ const BasicSelect = (props: ParameterSelectProps) => {
         >
           <MenuItem value='' style={{ height: 40 }}></MenuItem>
           {defaultOptions.map((option) => (
-            <MenuItem value={option}>{option}</MenuItem>
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
