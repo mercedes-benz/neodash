@@ -10,7 +10,14 @@ import { EntityType } from '../../chart/Utils';
  * @returns a user-defined value if a rule is met, or the default value if none are.
  */
 export const evaluateRulesOnNeo4jRecord = (record, customization, defaultValue, rules) => {
-  if (!record || !customization || !rules) {
+  if (
+    record === null ||
+    record === undefined ||
+    customization === null ||
+    customization === undefined ||
+    rules === null ||
+    rules === undefined
+  ) {
     return defaultValue;
   }
   for (const [index, rule] of rules.entries()) {
@@ -19,7 +26,7 @@ export const evaluateRulesOnNeo4jRecord = (record, customization, defaultValue, 
       // if the row contains the specified field...
       if (record._fieldLookup[rule.field] !== undefined) {
         const val = record._fields[record._fieldLookup[rule.field]];
-        const realValue = val && val.low ? val.low : val;
+        const realValue = val && val.low !== undefined ? val.low : val;
         const ruleValue = rule.value;
         if (evaluateCondition(realValue, rule.condition, ruleValue)) {
           return rule.customizationValue;
@@ -58,7 +65,7 @@ export const evaluateRulesOnMappedNeo4jRecord = (record, mapping, customization,
  * @returns the index of the rule that is satisfied.
  */
 export const evaluateRulesOnDict = (dict, rules, customizations) => {
-  if (!dict || !rules) {
+  if (dict === null || dict === undefined || rules === null || rules === undefined) {
     return -1;
   }
   for (const [index, rule] of rules.entries()) {
@@ -66,7 +73,8 @@ export const evaluateRulesOnDict = (dict, rules, customizations) => {
     if (customizations.includes(rule.customization)) {
       // if the row contains the specified field...
       if (dict[rule.field] !== undefined && dict[rule.field] !== null) {
-        const realValue = dict[rule.field].low ? dict[rule.field].low : dict[rule.field];
+        const realValue =
+          dict[rule.field] && dict[rule.field].low !== undefined ? dict[rule.field].low : dict[rule.field];
         const ruleValue = rule.value;
         if (evaluateCondition(realValue, rule.condition, ruleValue)) {
           return index;
@@ -95,7 +103,14 @@ export const evaluateRulesOnLink = (link, customization, defaultValue, rules) =>
 };
 
 export const evaluateRules = (entity, customization, defaultValue, rules, entityType) => {
-  if (!entity || !customization || !rules) {
+  if (
+    entity === null ||
+    entity === undefined ||
+    customization === null ||
+    customization === undefined ||
+    rules === null ||
+    rules === undefined
+  ) {
     return defaultValue;
   }
 
@@ -110,7 +125,9 @@ export const evaluateRules = (entity, customization, defaultValue, rules, entity
         (entityType === EntityType.Node && entity.labels.includes(typeOrLabel)) ||
         (entityType === EntityType.Relationship && entity.type == typeOrLabel)
       ) {
-        const realValue = entity?.properties?.[property] || '';
+        // Handle zero values correctly by checking for explicit undefined
+        const propertyValue = entity?.properties?.[property];
+        const realValue = propertyValue !== undefined ? propertyValue : '';
         const ruleValue = rule.value;
         if (evaluateCondition(realValue, rule.condition, ruleValue)) {
           return rule.customizationValue;
@@ -128,7 +145,14 @@ export const evaluateRules = (entity, customization, defaultValue, rules, entity
  * @return whether the condition is met.
  */
 const evaluateCondition = (realValue, condition, ruleValue) => {
-  if (!ruleValue || !condition || !realValue) {
+  if (
+    ruleValue === null ||
+    ruleValue === undefined ||
+    condition === null ||
+    condition === undefined ||
+    realValue === null ||
+    realValue === undefined
+  ) {
     // If something is null, rules are never met.
     return false;
   }
