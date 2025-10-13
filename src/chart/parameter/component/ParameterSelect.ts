@@ -69,5 +69,9 @@ export interface ParameterSelectProps {
   /**
    * Predefined options
    */
-  predefinedOptions?: string | undefined
+  predefinedOptions?: string | undefined;
+  /**
+   * sx prop to override styles
+   */
+  sx?: object;
 }

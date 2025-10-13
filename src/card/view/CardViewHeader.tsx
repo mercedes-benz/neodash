@@ -19,6 +19,8 @@ import {
   MinusIconOutline,
 } from '@neo4j-ndl/react/icons';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import { getDashboardTheme } from '../../dashboard/DashboardSelectors';
 
 const NeoCardViewHeader = ({
   title,
@@ -41,6 +43,7 @@ const NeoCardViewHeader = ({
   const [parsedText, setParsedText] = React.useState(title);
   const [editing, setEditing] = React.useState(false);
   const [descriptionModalOpen, setDescriptionModalOpen] = React.useState(false);
+  const isDarkMode = useSelector((state) => getDashboardTheme(state)) === 'dark';
 
   function replaceParamsOnString(s, p) {
     let parsed: string;
@@ -71,6 +74,7 @@ const NeoCardViewHeader = ({
       allVariants: { color: 'rgb(var(--palette-neutral-text-weak))' },
     },
     palette: {
+      mode: isDarkMode ? 'dark' : 'light',
       text: {
         primary: 'rgb(var(--palette-neutral-text))',
       },
@@ -194,7 +198,7 @@ const NeoCardViewHeader = ({
   );
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Dialog
         maxWidth={'lg'}
         open={descriptionModalOpen}
@@ -232,7 +236,7 @@ const NeoCardViewHeader = ({
         }
         title={cardTitle}
       />
-    </>
+    </ThemeProvider>
   );
 };
 

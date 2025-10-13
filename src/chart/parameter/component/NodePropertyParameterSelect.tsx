@@ -5,7 +5,8 @@ import { ParameterSelectProps } from './ParameterSelect';
 import { RenderSubValue } from '../../../report/ReportRecordProcessing';
 import { SelectionConfirmationButton } from './SelectionConfirmationButton';
 import NeoCodeViewerComponent from '../../../component/editor/CodeViewerComponent';
-import { getRecordType, toNumber } from '../../ChartUtils';
+import { toNumber } from '../../ChartUtils';
+import { useThemedAutocomplete } from './useThemedAutocomplete';
 
 const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
   const suggestionsUpdateTimeout =
@@ -26,15 +27,15 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
   };
   const { multiSelector, manualParameterSave } = props;
   const allParameters = props.allParameters ? props.allParameters : {};
-  const [extraRecords, setExtraRecords] = React.useState([]);
+  const [extraRecords, setExtraRecords] = React.useState<any[]>([]);
 
-  const [inputDisplayText, setInputDisplayText] = React.useState(
+  const [inputDisplayText, setInputDisplayText] = React.useState<any>(
     props.parameterDisplayValue && multiSelector ? '' : props.parameterDisplayValue
   );
-  const [inputValue, setInputValue] = React.useState(getInitialValue(props.parameterDisplayValue, multiSelector));
+  const [inputValue, setInputValue] = React.useState<any>(getInitialValue(props.parameterDisplayValue, multiSelector));
 
-  const [paramValueLocal, setParamValueLocal] = React.useState(props.parameterValue);
-  const [paramValueDisplayLocal, setParamValueDisplayLocal] = React.useState(props.parameterDisplayValue);
+  const [paramValueLocal, setParamValueLocal] = React.useState<any>(props.parameterValue);
+  const [paramValueDisplayLocal, setParamValueDisplayLocal] = React.useState<any>(props.parameterDisplayValue);
 
   const debouncedQueryCallback = useCallback(debounce(props.queryCallback, suggestionsUpdateTimeout), []);
   const label = props.settings && props.settings.entityType ? props.settings.entityType : '';
@@ -45,6 +46,7 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
     props.settings && props.settings.clearParameterOnFieldClear ? props.settings.clearParameterOnFieldClear : false;
   const autoSelectFirstValue =
     props.settings && props.settings.autoSelectFirstValue ? props.settings.autoSelectFirstValue : false;
+  const { textFieldSx, popupIcon, clearIcon } = useThemedAutocomplete();
 
   // index of the display value in the resulting extra records retrieved by the component when the user types. equals '1' for NeoDash 2.2.2 and later.
   const displayValueRowIndex = props.compatibilityMode
@@ -205,8 +207,11 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
             });
           }
         }}
+        sx={textFieldSx as any}
         value={inputValue || ''}
         onChange={propagateSelection}
+        popupIcon={popupIcon}
+        clearIcon={clearIcon}
         renderInput={(params) => (
           <TextField
             {...params}

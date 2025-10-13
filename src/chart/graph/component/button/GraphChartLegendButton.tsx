@@ -3,6 +3,8 @@ import { Box, Button, List, ListItem, ListItemText, Popover, Tooltip, Typography
 import { GraphChartVisualizationProps } from '../../GraphChartVisualization';
 import { CircleIcon } from '@neo4j-ndl/react/icons';
 import { ArrowForwardRounded } from '@mui/icons-material';
+import { getDashboardTheme } from '../../../../dashboard/DashboardSelectors';
+import { useSelector } from 'react-redux';
 
 /**
  * Renders an icon on the bottom-right of the graph visualization to fit the current graph to the user's view.
@@ -13,6 +15,7 @@ export const NeoGraphChartLegendButton = (props: GraphChartVisualizationProps) =
   const [legendOpen, setLegendOpen] = React.useState(false);
   const [legendEnabled, setLegendEnabled] = React.useState(false);
   const [legendEntries, setLegendEntries] = React.useState(props.data?.legendDefinition);
+  const isDark = useSelector((state) => getDashboardTheme(state)) === 'dark';
 
   React.useEffect(() => {
     let legendEntryList: object[] = [];
@@ -102,7 +105,7 @@ export const NeoGraphChartLegendButton = (props: GraphChartVisualizationProps) =
             sx={{
               typography: 'subtitle2',
               textTransform: 'capitalize',
-              color: '#535a65',
+              color: isDark ? '#ffffff' : '#535a65',
             }}
           >
             Legend
