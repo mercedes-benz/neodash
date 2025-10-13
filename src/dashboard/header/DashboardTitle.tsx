@@ -202,6 +202,17 @@ export const NeoDashboardTitle = ({
         </div>
       ) : (
         <div className='flex flex-row flex-wrap items-end gap-2 n-mr-6'>
+          <Tooltip title={'Change Theme'} disableInteractive>
+            <div className='ndl-icon-btn ndl-medium n-mr-2'>
+              <DarkModeSwitch
+                checked={isDarkMode}
+                onChange={toggleDarkMode}
+                size={22}
+                sunColor={DASHBOARD_HEADER_BUTTON_COLOR || '#000000'}
+                moonColor={'#ffffff'}
+              />
+            </div>
+          </Tooltip>
           <ShareableButton exportPageParameters={false} />
           <Feedback />
         </div>
