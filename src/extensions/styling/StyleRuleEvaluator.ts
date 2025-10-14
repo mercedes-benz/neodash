@@ -58,7 +58,7 @@ export const evaluateRulesOnMappedNeo4jRecord = (record, mapping, customization,
  * @returns the index of the rule that is satisfied.
  */
 export const evaluateRulesOnDict = (dict, rules, customizations) => {
-  if (!dict || !rules || !customizations) {
+  if (!dict || !rules) {
     return -1;
   }
   for (const [index, rule] of rules.entries()) {
