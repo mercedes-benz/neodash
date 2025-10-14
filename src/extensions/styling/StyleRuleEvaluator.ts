@@ -10,14 +10,7 @@ import { EntityType } from '../../chart/Utils';
  * @returns a user-defined value if a rule is met, or the default value if none are.
  */
 export const evaluateRulesOnNeo4jRecord = (record, customization, defaultValue, rules) => {
-  if (
-    record === null ||
-    record === undefined ||
-    customization === null ||
-    customization === undefined ||
-    rules === null ||
-    rules === undefined
-  ) {
+  if (!record || !customization || !rules) {
     return defaultValue;
   }
   for (const [index, rule] of rules.entries()) {
@@ -65,7 +58,7 @@ export const evaluateRulesOnMappedNeo4jRecord = (record, mapping, customization,
  * @returns the index of the rule that is satisfied.
  */
 export const evaluateRulesOnDict = (dict, rules, customizations) => {
-  if (dict === null || dict === undefined || rules === null || rules === undefined) {
+  if (!dict || !rules || !customizations) {
     return -1;
   }
   for (const [index, rule] of rules.entries()) {
@@ -103,14 +96,7 @@ export const evaluateRulesOnLink = (link, customization, defaultValue, rules) =>
 };
 
 export const evaluateRules = (entity, customization, defaultValue, rules, entityType) => {
-  if (
-    entity === null ||
-    entity === undefined ||
-    customization === null ||
-    customization === undefined ||
-    rules === null ||
-    rules === undefined
-  ) {
+  if (!entity || !customization || !rules) {
     return defaultValue;
   }
 
@@ -145,15 +131,7 @@ export const evaluateRules = (entity, customization, defaultValue, rules, entity
  * @return whether the condition is met.
  */
 const evaluateCondition = (realValue, condition, ruleValue) => {
-  if (
-    ruleValue === null ||
-    ruleValue === undefined ||
-    condition === null ||
-    condition === undefined ||
-    realValue === null ||
-    realValue === undefined
-  ) {
-    // If something is null, rules are never met.
+  if (!ruleValue || !condition || !realValue) {
     return false;
   }
   if (condition == '=') {
