@@ -132,6 +132,7 @@ export const evaluateRules = (entity, customization, defaultValue, rules, entity
  */
 const evaluateCondition = (realValue, condition, ruleValue) => {
   if (!ruleValue || !condition || !realValue) {
+    // If something is null, rules are never met.
     return false;
   }
   if (condition == '=') {
