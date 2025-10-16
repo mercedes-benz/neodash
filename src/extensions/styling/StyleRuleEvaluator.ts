@@ -128,15 +128,16 @@ export const evaluateRules = (entity, customization, defaultValue, rules, entity
  * @return whether the condition is met.
  */
 const evaluateCondition = (realValue, condition, ruleValue) => {
-  if (!ruleValue || !condition || !realValue) {
-    // If something is null, rules are never met.
+  // fix edge case for realValue = 0
+  let _realValue = realValue === 0 ? '0' : realValue;
+  if (!ruleValue || !condition || !_realValue) {
     return false;
   }
   if (condition == '=') {
-    return realValue === ruleValue;
+    return Number(_realValue) === ruleValue;
   }
   if (condition == '!=') {
-    return realValue !== ruleValue;
+    return Number(_realValue) !== ruleValue;
   }
   if (!isNaN(Number(ruleValue))) {
     ruleValue = Number(ruleValue);
