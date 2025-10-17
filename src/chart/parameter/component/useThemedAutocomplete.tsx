@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getDashboardSettings } from '../../../dashboard/DashboardSelectors';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ClearIcon from '@mui/icons-material/Clear';
+import { createTheme } from '@mui/material/styles';
 
 export const useThemedAutocomplete = () => {
   const theme = useSelector((state) => getDashboardSettings(state))?.theme;
@@ -16,11 +17,41 @@ export const useThemedAutocomplete = () => {
           '&.Mui-focused fieldset': { borderColor: 'var(--palette-dark-accent, #2563eb)' },
         },
         '& .MuiInputLabel-root': { color: 'var(--palette-dark-text-weak, #9ca3af)' },
+        // Additional overrides reused by DatePicker
+        '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.35)' },
+        '& .MuiInputBase-input': { color: '#fff' },
+        '& .MuiSvgIcon-root': { color: '#fff' },
+        '& .MuiIconButton-root': { color: '#fff' },
       }
     : {};
+
+  const muiTheme = React.useMemo(
+    () =>
+      createTheme({
+        palette: { mode: isDark ? 'dark' : 'light' },
+        components: {
+          MuiOutlinedInput: {
+            styleOverrides: {
+              notchedOutline: isDark ? { borderColor: 'rgba(255,255,255,0.18)' } : {},
+            },
+          },
+          MuiIconButton: {
+            styleOverrides: {
+              root: isDark ? { color: '#fff' } : {},
+            },
+          },
+          MuiInputLabel: {
+            styleOverrides: {
+              root: isDark ? { color: '#fff' } : {},
+            },
+          },
+        },
+      }),
+    [isDark]
+  );
 
   const popupIcon = <ExpandMoreIcon sx={{ color: isDark ? '#ffffff' : undefined }} />;
   const clearIcon = <ClearIcon sx={{ color: isDark ? '#ffffff' : undefined }} />;
 
-  return { isDark, textFieldSx, popupIcon, clearIcon };
+  return { isDark, textFieldSx, popupIcon, clearIcon, muiTheme };
 };
