@@ -7,11 +7,24 @@ a {
 }
 
 .anchor {
+  color: var(--link-color);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
-  text-decoration-color: blue;
-  color: blue;
+  text-decoration-color: var(--link-underline-color);
+  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+
+/* Hover / focus */
+.anchor:hover,
+.anchor:focus {
+  color: color-mix(in srgb, var(--link-color) 80%, black 20%);
+  text-decoration-color: color-mix(in srgb, var(--link-underline-color) 85%, black 15%);
+}
+
+/* Visited (optional — keep accessible contrast) */
+.anchor:visited {
+  color: color-mix(in srgb, var(--link-color), black 40%);
 }
 
 /* Create CSS class based components */
@@ -102,4 +115,9 @@ a {
   .n-bg-dark-neutral-text-weak {
     background-color: rgb(196 200 205 / var(--tw-bg-opacity)) !important;
   }
+}
+
+:root {
+  --link-color: #608dc0ff;     /* light-mode default */
+  --link-underline-color: #1c3959ff;
 }

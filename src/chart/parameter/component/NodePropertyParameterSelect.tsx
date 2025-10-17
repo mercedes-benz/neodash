@@ -173,6 +173,7 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
         multiple={multiSelector}
         options={options}
         disabled={disabled}
+        noOptionsText={<div className='no-options-text'>No options</div>}
         limitTags={multiSelectLimit}
         style={{
           maxWidth: 'calc(100% - 40px)',

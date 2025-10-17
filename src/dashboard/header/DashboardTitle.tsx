@@ -88,7 +88,9 @@ export const NeoDashboardTitle = ({
   const toggleDarkMode = (checked: boolean) => {
     setDarkMode(checked);
   };
-
+  useEffect(() => {
+    setDarkMode(themeMode === 'dark');
+  }, [themeMode]);
   useEffect(() => {
     setTheme(isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
