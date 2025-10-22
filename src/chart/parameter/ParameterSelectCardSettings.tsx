@@ -25,12 +25,12 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
 
   const { manualPropertyNameSpecification } = settings;
   const [labelInputText, setLabelInputText] = React.useState(settings.entityType);
-  const [labelRecords, setLabelRecords] = React.useState([]);
+  const [labelRecords, setLabelRecords] = React.useState<any[]>([]);
   const [propertyInputText, setPropertyInputText] = React.useState(settings.propertyType);
   const [propertyInputDisplayText, setPropertyInputDisplayText] = React.useState(
     settings.propertyTypeDisplay || settings.propertyType
   );
-  const [propertyRecords, setPropertyRecords] = React.useState([]);
+  const [propertyRecords, setPropertyRecords] = React.useState<any[]>([]);
   let { parameterName } = settings;
 
   // When certain settings are updated, a re-generated search query is needed.
@@ -232,10 +232,9 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
         <NeoField
           label={'Name'}
           key={'freetext'}
+          valueLabel={settings.entityType ? settings.entityType : ''}
           value={settings.entityType ? settings.entityType : ''}
-          defaultValue={''}
           placeholder={'Enter a parameter name here...'}
-          style={{}}
           onChange={(value) => {
             setLabelInputText(value);
             handleNodeLabelSelectionUpdate(value);
@@ -248,10 +247,9 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
             <NeoField
               label={'Name'}
               key={'query'}
+              valueLabel={settings?.entityType || ''}
               value={settings?.entityType || ''}
-              defaultValue={''}
               placeholder={'Enter a parameter name here...'}
-              style={{}}
               onChange={(value) => {
                 setLabelInputText(value);
                 handleNodeLabelSelectionUpdate(value);
@@ -299,6 +297,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
             }
             getOptionLabel={(option) => option || ''}
             style={{ marginTop: '13px' }}
+            isOptionEqualToValue={(option, value) => (option || '') === (value || '')}
             inputValue={labelInputText}
             onInputChange={(event, value) => {
               setLabelInputText(value);
@@ -342,6 +341,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                 }
                 getOptionLabel={(option) => option || ''}
                 style={{ display: 'inline-block', width: '65%', marginTop: '13px', marginRight: '5%' }}
+                isOptionEqualToValue={(option, value) => (option || '') === (value || '')}
                 inputValue={propertyInputText}
                 onInputChange={(event, value) => {
                   setPropertyInputText(value);
@@ -379,6 +379,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                   }
                   getOptionLabel={(option) => option || ''}
                   style={{ display: 'inline-block', width: '65%', marginTop: '13px', marginRight: '5%' }}
+                  isOptionEqualToValue={(option, value) => (option || '') === (value || '')}
                   inputValue={propertyInputDisplayText}
                   onInputChange={(event, value) => {
                     setPropertyInputDisplayText(value);

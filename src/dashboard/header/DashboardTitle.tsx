@@ -3,7 +3,13 @@ import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import { setDashboardTitle } from '../DashboardActions';
 import { applicationGetConnection, applicationGetStandaloneSettings } from '../../application/ApplicationSelectors';
-import { getDashboardTitle, getDashboardExtensions, getDashboardSettings, getPages } from '../DashboardSelectors';
+import {
+  getDashboardTitle,
+  getDashboardExtensions,
+  getDashboardSettings,
+  getPages,
+  getDashboardTheme,
+} from '../DashboardSelectors';
 import { getDashboardIsEditable, getPageNumber } from '../../settings/SettingsSelectors';
 import { updateDashboardSetting } from '../../settings/SettingsActions';
 import { Typography, IconButton, Menu, MenuItems, TextInput } from '@neo4j-ndl/react';
@@ -20,8 +26,10 @@ import { Tooltip } from '@mui/material';
 import NeoExportModal from '../../modal/ExportModal';
 import { setDraft } from '../../application/ApplicationActions';
 import NeoDashboardHeaderLogo from './DashboardHeaderLogo';
-import { ShareableButton } from '../../component/custom/ShareableButton'
+import { ShareableButton } from '../../component/custom/ShareableButton';
 import Feedback from '../../component/custom/Feedback';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import { DASHBOARD_HEADER_BUTTON_COLOR } from '../../config/ApplicationConfig';
 
 type SettingsMenuOpenEvent = React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>;
 
@@ -33,7 +41,9 @@ export const NeoDashboardTitle = ({
   dashboardSettings,
   extensions,
   updateDashboardSetting,
-  connection
+  connection,
+  themeMode,
+  setTheme,
 }) => {
   const [dashboardTitleText, setDashboardTitleText] = React.useState(dashboardTitle);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -73,60 +83,76 @@ export const NeoDashboardTitle = ({
     }
   }, [dashboardTitle]);
 
+  const [isDarkMode, setDarkMode] = React.useState(themeMode !== 'light');
+
+  const toggleDarkMode = (checked: boolean) => {
+    setDarkMode(checked);
+  };
+  useEffect(() => {
+    setDarkMode(themeMode === 'dark');
+  }, [themeMode]);
+  useEffect(() => {
+    setTheme(isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
   return (
     <div className='n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'>
       {/* TODO : Replace with editable field if dashboard is editable */}
       {/* only allow edit title if dashboard is not standalone - here we are in Title edit mode*/}
       {editing && !standaloneSettings.standalone ? (
-        <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
-          <form
-            onSubmit={() => {
-              if (editing) {
-                setEditing(false);
-              }
-            }}
-          >
-            <input
-              autoFocus={true}
-              value={dashboardTitleText}
-              style={{
-                height: '1.9rem',
-                fontSize: '1.875rem', // h3
-                fontWeight: 700, // h3
-                padding: 10,
-                width: inputWidth,
-              }}
-              placeholder='Dashboard name...'
-              onBlur={() => {
+        <>
+          <NeoDashboardHeaderLogo />
+          <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
+            <form
+              onSubmit={() => {
                 if (editing) {
                   setEditing(false);
                 }
               }}
-              onChange={(event) => {
-                if (editable) {
-                  const { target } = event;
-                  target.style.width = '350px';
-                  setInputWidth(target.scrollWidth);
-                  setDashboardTitleText(event.target.value);
-                  debouncedDashboardTitleUpdate(event.target.value);
-                }
-              }}
-            />
-          </form>
-          <Tooltip title={'Stop Editing'} disableInteractive>
-            <IconButton
-              className='logo-btn n-p-1'
-              aria-label={'stop-editing'}
-              size='large'
-              onClick={() => setEditing(false)}
-              clean
             >
-              <CheckIconOutline className='header-icon' type='outline' />
-            </IconButton>
-          </Tooltip>
-        </div>
+              <input
+                autoFocus={true}
+                value={dashboardTitleText}
+                style={{
+                  height: '1.9rem',
+                  fontSize: '1.875rem', // h3
+                  fontWeight: 700, // h3
+                  padding: 10,
+                  width: inputWidth,
+                }}
+                placeholder='Dashboard name...'
+                onBlur={() => {
+                  if (editing) {
+                    setEditing(false);
+                  }
+                }}
+                onChange={(event) => {
+                  if (editable) {
+                    const { target } = event;
+                    target.style.width = '350px';
+                    setInputWidth(target.scrollWidth);
+                    setDashboardTitleText(event.target.value);
+                    debouncedDashboardTitleUpdate(event.target.value);
+                  }
+                }}
+              />
+            </form>
+            <Tooltip title={'Stop Editing'} disableInteractive>
+              <IconButton
+                className='logo-btn n-p-1'
+                aria-label={'stop-editing'}
+                size='large'
+                onClick={() => setEditing(false)}
+                clean
+              >
+                <CheckIconOutline className='header-icon' type='outline' />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </>
       ) : !standaloneSettings.standalone /* out of edit mode - if Not Standalone we display the edit button */ ? (
         <div className={'n-flex n-flex-row n-flex-wrap n-justify-between n-items-center'}>
+          <NeoDashboardHeaderLogo />
           <div className='n-flex n-flex-row n-mx-8'>
             <Typography variant='h3'>{dashboardTitle ? dashboardTitle : '(no title)'}</Typography>
             <Tooltip title={'Edit'} disableInteractive>
@@ -160,14 +186,36 @@ export const NeoDashboardTitle = ({
         <div className='flex flex-row flex-wrap items-end gap-2'>
           {editable ? renderExtensionsButtons() : <></>}
           <NeoSettingsModal dashboardSettings={dashboardSettings} updateDashboardSetting={updateDashboardSetting} />
-          <ShareableButton exportPageParameters={false}/>
+          <ShareableButton exportPageParameters={false} />
           {editable ? <NeoExportModal /> : <></>}
           {editable ? <NeoExtensionsModal closeMenu={handleSettingsMenuClose} /> : <></>}
           <Feedback />
+          <Tooltip title={'Change Theme'} disableInteractive>
+            <div className='ndl-icon-btn ndl-medium n-mr-2'>
+              <DarkModeSwitch
+                checked={isDarkMode}
+                onChange={toggleDarkMode}
+                size={22}
+                sunColor={DASHBOARD_HEADER_BUTTON_COLOR || '#000000'}
+                moonColor={'#ffffff'}
+              />
+            </div>
+          </Tooltip>
         </div>
       ) : (
         <div className='flex flex-row flex-wrap items-end gap-2 n-mr-6'>
-          <ShareableButton exportPageParameters={false}/>
+          <Tooltip title={'Change Theme'} disableInteractive>
+            <div className='ndl-icon-btn ndl-medium n-mr-2'>
+              <DarkModeSwitch
+                checked={isDarkMode}
+                onChange={toggleDarkMode}
+                size={22}
+                sunColor={DASHBOARD_HEADER_BUTTON_COLOR || '#000000'}
+                moonColor={'#ffffff'}
+              />
+            </div>
+          </Tooltip>
+          <ShareableButton exportPageParameters={false} />
           <Feedback />
         </div>
       )}
@@ -182,6 +230,7 @@ const mapStateToProps = (state) => ({
   dashboardSettings: getDashboardSettings(state),
   extensions: getDashboardExtensions(state),
   connection: applicationGetConnection(state),
+  themeMode: getDashboardTheme(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -191,6 +240,9 @@ const mapDispatchToProps = (dispatch) => ({
   updateDashboardSetting: (setting, value) => {
     dispatch(setDraft(true));
     dispatch(updateDashboardSetting(setting, value));
+  },
+  setTheme: (theme: string) => {
+    dispatch(updateDashboardSetting('theme', theme));
   },
 });
 

@@ -14,6 +14,7 @@ export const formatProperty = (property) => {
 /**
  * Component to render node/relationship properties in a table format, format using linebreak
  */
+
 export const GraphEntityInspectionTable = ({
   entity,
   theme,
@@ -70,7 +71,7 @@ export const GraphEntityInspectionTable = ({
         {key}
       </TableCell>
       <TableCell align={'left'}>
-        <Typography variant='body-medium' className='line-break'>
+        <Typography variant='body2' className='line-break'>
           {formatProperty(entity && entity.properties[key])}
         </Typography>
       </TableCell>

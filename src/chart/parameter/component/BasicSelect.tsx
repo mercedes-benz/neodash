@@ -25,7 +25,6 @@ const BasicSelect = (props: ParameterSelectProps) => {
     props.settings && props.settings.clearParameterOnFieldClear ? props.settings.clearParameterOnFieldClear : false;
   const [running, setRunning] = React.useState(false);
   const [paramValueLocal, setParamValueLocal] = React.useState(null);
-
   const setParameterValue = (value) => {
     setRunning(false);
     props.setParameterValue(value);
@@ -80,7 +79,9 @@ const BasicSelect = (props: ParameterSelectProps) => {
         >
           <MenuItem value='' style={{ height: 40 }}></MenuItem>
           {defaultOptions.map((option) => (
-            <MenuItem value={option}>{option}</MenuItem>
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>

@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import { DataGrid, GridColumnVisibilityModel, GridRowId } from '@mui/x-data-grid';
 import { ChartProps } from '../Chart';
-import {
-  evaluateRulesOnDict,
-  generateClassDefinitionsBasedOnRules,
-  useStyleRules,
-} from '../../extensions/styling/StyleRuleEvaluator';
-import { Tooltip, Snackbar, Stack, ButtonGroup, Popover, Typography } from '@mui/material';
+import { evaluateRulesOnDict, useStyleRules } from '../../extensions/styling/StyleRuleEvaluator';
+import { adjustTextColorForDarkMode, darkenColor } from '../../extensions/styling/DarkModeStyleUtils';
+import { makeStyles } from '@mui/styles';
+import { Tooltip, Snackbar, Stack, Popover, Typography } from '@mui/material';
 import { downloadCSV } from '../ChartUtils';
 import { getRendererForValue, rendererForType, RenderSubValue } from '../../report/ReportRecordProcessing';
 
@@ -17,8 +15,7 @@ import {
   performActionOnElement,
 } from '../../extensions/advancedcharts/Utils';
 import { IconButton } from '@neo4j-ndl/react';
-import { CloudArrowDownIconOutline, ArrowPathIconOutline, XMarkIconOutline } from '@neo4j-ndl/react/icons';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CloudArrowDownIconOutline, XMarkIconOutline } from '@neo4j-ndl/react/icons';
 import Button from '@mui/material/Button';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { renderCellExpand } from '../../component/misc/DataGridExpandRenderer';
@@ -32,17 +29,13 @@ import {
 import ApiService from '../../utils/apiService';
 import { AxiosResponse } from 'axios';
 import Notification from '../../component/custom/Notification';
+import { useSelector } from 'react-redux';
+import { getDashboardTheme } from '../../dashboard/DashboardSelectors';
 
 const TABLE_HEADER_HEIGHT = 32;
 const TABLE_FOOTER_HEIGHT = 62;
 const TABLE_ROW_HEIGHT = 52;
 const HIDDEN_COLUMN_PREFIX = '__';
-const theme = createTheme({
-  typography: {
-    fontFamily: "'Nunito Sans', sans-serif !important",
-    allVariants: { color: 'rgb(var(--palette-neutral-text-default))' },
-  },
-});
 
 const expandedCellRenderer = (value, lineBreaksAfterListEntry) => {
   return renderCellExpand(value, lineBreaksAfterListEntry);
@@ -103,6 +96,8 @@ export const NeoTableChart = (props: ChartProps) => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const [isApiLoading, setApiLoading] = React.useState(false);
+  const themeMode = useSelector((state) => getDashboardTheme(state));
+  const isDarkMode = themeMode === 'dark';
 
   const transposed = props.settings && props.settings.transposed ? props.settings.transposed : false;
   const wrapContent = props.settings && props.settings.wrapContent ? props.settings.wrapContent : false;
@@ -127,10 +122,46 @@ export const NeoTableChart = (props: ChartProps) => {
   const [notificationOpen, setNotificationOpen] = React.useState(false);
   const [columnVisibilityModel, setColumnVisibilityModel] = React.useState<GridColumnVisibilityModel>({});
 
-  const useStyles = generateClassDefinitionsBasedOnRules(styleRules);
+  // Generate class definitions based on rules, with dark mode support
+  const generateDarkModeAwareClassDefinitions = (rules) => {
+    const classes = {};
+    rules.forEach((rule, i) => {
+      if (rule.customization == 'cell color') {
+        classes[`& .rule${i}`] = {
+          backgroundColor: isDarkMode ? darkenColor(rule.customizationValue, 0.7) : rule.customizationValue,
+        };
+      }
+      if (rule.customization == 'cell text color') {
+        classes[`& .rule${i}`] = {
+          color: isDarkMode ? adjustTextColorForDarkMode(rule.customizationValue) : rule.customizationValue,
+          fontWeight: 'bold',
+        };
+      }
+      if (rule.customization == 'row color') {
+        classes[`& .rule${i}`] = {
+          backgroundColor: isDarkMode ? darkenColor(rule.customizationValue, 0.7) : rule.customizationValue,
+        };
+      }
+      if (rule.customization == 'row text color') {
+        classes[`& .rule${i}`] = {
+          color: isDarkMode ? adjustTextColorForDarkMode(rule.customizationValue) : rule.customizationValue,
+          fontWeight: 'bold',
+        };
+      }
+    });
+    return makeStyles({
+      root: classes,
+    });
+  };
+
+  const useStyles = generateDarkModeAwareClassDefinitions(styleRules);
   const classes = useStyles();
   if (props.records == null || props.records.length == 0 || props.records[0].keys == null) {
-    return <>No data, re-run the report.</>;
+    return (
+      <Typography sx={{ color: isDarkMode ? 'var(--palette-dark-text)' : 'inherit' }}>
+        No data, re-run the report.
+      </Typography>
+    );
   }
 
   const useExpandedRenderer = props.settings?.expandedCellRenderer;
@@ -443,7 +474,7 @@ export const NeoTableChart = (props: ChartProps) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Notification
         open={alertOpen}
         message={notificationMessage}
@@ -558,7 +589,7 @@ export const NeoTableChart = (props: ChartProps) => {
           }}
         />
       </div>
-    </ThemeProvider>
+    </>
   );
 };
 

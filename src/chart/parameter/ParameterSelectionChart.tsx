@@ -6,7 +6,6 @@ import RelationshipPropertyParameterSelectComponent from './component/Relationsh
 import FreeTextParameterSelectComponent from './component/FreeTextParameterSelect';
 import QueryParameterSelectComponent from './component/QueryParameterSelect';
 import BasicSelectComponent from './component/BasicSelect';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 /**
  * A special chart type to define global dashboard parameters that are injected as query parameters into each report.
@@ -50,21 +49,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
   if (!query || query.trim().length == 0) {
     return <p style={{ margin: '15px' }}>No selection specified.</p>;
   }
-
-  const theme = createTheme({
-    typography: {
-      fontFamily: "'Nunito Sans', sans-serif !important",
-      allVariants: { color: 'rgb(var(--palette-neutral-text))' },
-    },
-    palette: {
-      text: {
-        primary: 'rgb(var(--palette-neutral-text))',
-      },
-      background: {
-        paper: 'rgb(var(--palette-neutral-bg-weak))',
-      },
-    },
-  });
 
   const content = () => {
     if (type == 'Free Text') {
@@ -187,7 +171,7 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
     }
     return <div>Invalid Parameter Selector Type.</div>;
   };
-  return <ThemeProvider theme={theme}>{content()}</ThemeProvider>;
+  return content();
 };
 
 export default NeoParameterSelectionChart;

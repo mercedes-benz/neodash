@@ -8,7 +8,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { buildURL, extractQueryParams, filesToBase64, getPath } from '../../utils/shareUtils';
 import { useSelector } from 'react-redux';
-import { getPages } from '../../dashboard/DashboardSelectors';
+import { getDashboardSettings, getPages } from '../../dashboard/DashboardSelectors';
 import { getGlobalParameters, getPageNumber } from '../../settings/SettingsSelectors';
 
 interface FeedbackErrors {
@@ -53,6 +53,21 @@ const Feedback = () => {
   const pages = useSelector((state) => getPages(state));
   const parameters = useSelector((state) => getGlobalParameters(state));
   const pageNumber = useSelector((state) => getPageNumber(state));
+  const theme = useSelector((state) => getDashboardSettings(state))?.theme;
+  const src = theme && theme === 'dark' ? 'support-dark.png' : 'support-light.png';
+  const isDark = theme === 'dark';
+  const modalSx = {
+    ...modalStyle,
+    backgroundColor: isDark ? 'var(--palette-dark-surface, #1f2937)' : modalStyle.bgcolor,
+    color: isDark ? 'var(--palette-dark-text, #e5e7eb)' : undefined,
+  } as any;
+  const inputDarkStyle = isDark
+    ? {
+        backgroundColor: 'var(--palette-dark-surface-strong, #111827)',
+        color: 'var(--palette-dark-text, #e5e7eb)',
+        borderColor: 'var(--palette-dark-neutral-border, #374151)',
+      }
+    : {};
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -168,7 +183,7 @@ const Feedback = () => {
           aria-label={'Report a bug/share feedback'}
           style={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}
         >
-          <img src='support.png' alt='Report button' style={{ width: 20, height: 20 }} />
+          <img src={src} alt='Report button' style={{ width: 20, height: 20 }} />
         </IconButton>
       </Tooltip>
 
@@ -200,7 +215,7 @@ const Feedback = () => {
         aria-labelledby='feedback-modal-title'
         aria-describedby='feedback-modal-description'
       >
-        <Box sx={modalStyle}>
+        <Box sx={modalSx}>
           <div className='modal-close-wrapper' onClick={closeModal} style={{ cursor: 'pointer', float: 'right' }}>
             <img className='modal-closed' src='x-button.png' alt='close icon' />
           </div>
@@ -211,7 +226,7 @@ const Feedback = () => {
           <br />
 
           <form onSubmit={submitFeedback} noValidate>
-            < label className='feedback-label'>
+            <label className='feedback-label'>
               Reporter Name
               <input
                 type='text'
@@ -220,6 +235,7 @@ const Feedback = () => {
                 onChange={(e) => setReporterName(e.target.value)}
                 placeholder='John'
                 required
+                style={inputDarkStyle}
               />
               {errors.name && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.name}</div>}
             </label>
@@ -232,6 +248,7 @@ const Feedback = () => {
                 onChange={(e) => setReporterEmail(e.target.value)}
                 placeholder='your.email@example.com'
                 required
+                style={inputDarkStyle}
               />
               {errors.email && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.email}</div>}
               {emailStatus && <small style={{ color: 'lightgray', fontStyle: 'italic' }}>{emailStatus}</small>}
@@ -246,6 +263,7 @@ const Feedback = () => {
                 rows={8}
                 placeholder='Provide detailed info about the issue including issue description, relavant links, steps to reproduce.'
                 required
+                style={inputDarkStyle}
               ></textarea>
               {errors.description && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.description}</div>}
             </label>

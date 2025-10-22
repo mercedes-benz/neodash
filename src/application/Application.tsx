@@ -1,4 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import { lightTheme, darkTheme } from '../component/theme/Themes';
 import NeoWelcomeScreenModal from '../modal/WelcomeScreenModal';
 import { connect } from 'react-redux';
 import {
@@ -101,15 +103,15 @@ const Application = ({
   useEffect(() => {
     if (!initialized) {
       // Tell Neo4j Desktop to disable capturing right clicking
-      window.neo4jDesktopApi &&
-        window.neo4jDesktopApi.showMenuOnRightClick &&
-        window.neo4jDesktopApi.showMenuOnRightClick(false);
+      (window as any).neo4jDesktopApi &&
+        (window as any).neo4jDesktopApi.showMenuOnRightClick &&
+        (window as any).neo4jDesktopApi.showMenuOnRightClick(false);
       setInitialized(true);
       initializeApplication(initialized);
     }
   }, []);
 
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (themeMode === 'dark') {
@@ -124,73 +126,77 @@ const Application = ({
   };
 
   // Only render the dashboard component if we have an active Neo4j connection.
+  const muiTheme = themeMode === 'dark' ? darkTheme : lightTheme;
+
   return (
-    <div
-      onContextMenu={disableContextMenu}
-      ref={ref}
-      className={`n-bg-palette-neutral-bg-default n-h-screen n-w-screen n-flex n-flex-col n-overflow-hidden`}
-    >
-      {connected ? (
+    <ThemeProvider theme={muiTheme}>
+      <div
+        onContextMenu={disableContextMenu}
+        ref={ref}
+        className={`n-bg-palette-neutral-bg-default n-h-screen n-w-screen n-flex n-flex-col n-overflow-hidden`}
+      >
+        {connected ? (
+          <Suspense fallback=''>
+            <Dashboard
+              onDownloadDashboardAsImage={(_) => downloadComponentAsImage(ref)}
+              onAboutModalOpen={onAboutModalOpen}
+              resetApplication={resetApplication}
+            ></Dashboard>
+          </Suspense>
+        ) : (
+          <NeoDashboardPlaceholder></NeoDashboardPlaceholder>
+        )}
+        {/* TODO - move all models into a pop-ups (or modals) component. */}
         <Suspense fallback=''>
-          <Dashboard
-            onDownloadDashboardAsImage={(_) => downloadComponentAsImage(ref)}
-            onAboutModalOpen={onAboutModalOpen}
-            resetApplication={resetApplication}
-          ></Dashboard>
+          <NeoAboutModal open={aboutModalOpen} handleClose={onAboutModalClose} getDebugState={getDebugState} />
         </Suspense>
-      ) : (
-        <NeoDashboardPlaceholder></NeoDashboardPlaceholder>
-      )}
-      {/* TODO - move all models into a pop-ups (or modals) component. */}
-      <Suspense fallback=''>
-        <NeoAboutModal open={aboutModalOpen} handleClose={onAboutModalClose} getDebugState={getDebugState} />
-      </Suspense>
-      <NeoConnectionModal
-        open={connectionModalOpen}
-        connected={connected}
-        dismissable={!standalone}
-        connection={connection}
-        ssoSettings={ssoSettings}
-        standalone={standaloneSettings.standalone}
-        standaloneSettings={standaloneSettings}
-        createConnection={createConnection}
-        onSSOAttempt={onSSOAttempt}
-        setConnectionProperties={setConnectionDetails}
-        onConnectionModalClose={onConnectionModalClose}
-        setWelcomeScreenOpen={setWelcomeScreenOpen}
-      ></NeoConnectionModal>
-      <NeoWelcomeScreenModal
-        welcomeScreenOpen={welcomeScreenOpen}
-        setWelcomeScreenOpen={setWelcomeScreenOpen}
-        hasCachedDashboard={hasCachedDashboard}
-        hasNeo4jDesktopConnection={hasNeo4jDesktopConnection}
-        onConnectionModalOpen={onConnectionModalOpen}
-        createConnectionFromDesktopIntegration={createConnectionFromDesktopIntegration}
-        onAboutModalOpen={onAboutModalOpen}
-        resetDashboard={resetDashboard}
-      ></NeoWelcomeScreenModal>
-      <Suspense fallback=''>
-        <NeoUpgradeOldDashboardModal
-          open={oldDashboard}
-          text={oldDashboard}
-          loadDashboard={loadDashboard}
-          clearOldDashboard={clearOldDashboard}
-        />
-      </Suspense>
-      <Suspense fallback=''>
-        <NeoLoadSharedDashboardModal
-          shareDetails={shareDetails}
-          onResetShareDetails={onResetShareDetails}
-          onConfirmLoadSharedDashboard={onConfirmLoadSharedDashboard}
-        />
-      </Suspense>
-      <Suspense fallback=''>
-        <NeoReportHelpModal open={reportHelpModalOpen} handleClose={onReportHelpModalClose} />
-      </Suspense>
-      <Suspense fallback=''>
-        <NeoNotificationModal></NeoNotificationModal>
-      </Suspense>
-    </div>
+        <NeoConnectionModal
+          open={connectionModalOpen}
+          connected={connected}
+          dismissable={!standalone}
+          connection={connection}
+          ssoSettings={ssoSettings}
+          standalone={standaloneSettings.standalone}
+          standaloneSettings={standaloneSettings}
+          createConnection={createConnection}
+          onSSOAttempt={onSSOAttempt}
+          setConnectionProperties={setConnectionDetails}
+          onConnectionModalClose={onConnectionModalClose}
+          setWelcomeScreenOpen={setWelcomeScreenOpen}
+        ></NeoConnectionModal>
+        <NeoWelcomeScreenModal
+          welcomeScreenOpen={welcomeScreenOpen}
+          setWelcomeScreenOpen={setWelcomeScreenOpen}
+          hasCachedDashboard={hasCachedDashboard}
+          hasNeo4jDesktopConnection={hasNeo4jDesktopConnection}
+          onConnectionModalOpen={onConnectionModalOpen}
+          createConnectionFromDesktopIntegration={createConnectionFromDesktopIntegration}
+          onAboutModalOpen={onAboutModalOpen}
+          resetDashboard={resetDashboard}
+        ></NeoWelcomeScreenModal>
+        <Suspense fallback=''>
+          <NeoUpgradeOldDashboardModal
+            open={oldDashboard}
+            text={oldDashboard}
+            loadDashboard={loadDashboard}
+            clearOldDashboard={clearOldDashboard}
+          />
+        </Suspense>
+        <Suspense fallback=''>
+          <NeoLoadSharedDashboardModal
+            shareDetails={shareDetails}
+            onResetShareDetails={onResetShareDetails}
+            onConfirmLoadSharedDashboard={onConfirmLoadSharedDashboard}
+          />
+        </Suspense>
+        <Suspense fallback=''>
+          <NeoReportHelpModal open={reportHelpModalOpen} handleClose={onReportHelpModalClose} />
+        </Suspense>
+        <Suspense fallback=''>
+          <NeoNotificationModal></NeoNotificationModal>
+        </Suspense>
+      </div>
+    </ThemeProvider>
   );
 };
 

@@ -5,7 +5,7 @@ import { ParameterSelectProps } from './ParameterSelect';
 import { RenderSubValue } from '../../../report/ReportRecordProcessing';
 import { SelectionConfirmationButton } from './SelectionConfirmationButton';
 import NeoCodeViewerComponent from '../../../component/editor/CodeViewerComponent';
-import { getRecordType, toNumber } from '../../ChartUtils';
+import { toNumber } from '../../ChartUtils';
 
 const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
   const suggestionsUpdateTimeout =
@@ -26,15 +26,15 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
   };
   const { multiSelector, manualParameterSave } = props;
   const allParameters = props.allParameters ? props.allParameters : {};
-  const [extraRecords, setExtraRecords] = React.useState([]);
+  const [extraRecords, setExtraRecords] = React.useState<any[]>([]);
 
-  const [inputDisplayText, setInputDisplayText] = React.useState(
+  const [inputDisplayText, setInputDisplayText] = React.useState<any>(
     props.parameterDisplayValue && multiSelector ? '' : props.parameterDisplayValue
   );
-  const [inputValue, setInputValue] = React.useState(getInitialValue(props.parameterDisplayValue, multiSelector));
+  const [inputValue, setInputValue] = React.useState<any>(getInitialValue(props.parameterDisplayValue, multiSelector));
 
-  const [paramValueLocal, setParamValueLocal] = React.useState(props.parameterValue);
-  const [paramValueDisplayLocal, setParamValueDisplayLocal] = React.useState(props.parameterDisplayValue);
+  const [paramValueLocal, setParamValueLocal] = React.useState<any>(props.parameterValue);
+  const [paramValueDisplayLocal, setParamValueDisplayLocal] = React.useState<any>(props.parameterDisplayValue);
 
   const debouncedQueryCallback = useCallback(debounce(props.queryCallback, suggestionsUpdateTimeout), []);
   const label = props.settings && props.settings.entityType ? props.settings.entityType : '';
@@ -171,6 +171,7 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
         multiple={multiSelector}
         options={options}
         disabled={disabled}
+        noOptionsText={<div className='no-options-text'>No options</div>}
         limitTags={multiSelectLimit}
         style={{
           maxWidth: 'calc(100% - 40px)',

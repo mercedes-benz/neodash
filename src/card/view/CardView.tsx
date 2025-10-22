@@ -49,7 +49,7 @@ const NeoCardView = ({
 }) => {
   const reportHeight = heightPx - CARD_FOOTER_HEIGHT - CARD_HEADER_HEIGHT + 20;
   const cardHeight = heightPx - CARD_FOOTER_HEIGHT + 23;
-  const ref = React.useRef();
+  const ref = React.useRef<HTMLDivElement | null>(null);
 
   const settingsSelector = Object.keys(
     Object.fromEntries(Object.entries(REPORT_TYPES[type]?.settings || {}).filter(([_, value]) => value.refresh))
@@ -279,12 +279,28 @@ const NeoCardView = ({
     </CardContent>
   );
 
+  const isDark = dashboardSettings?.theme === 'dark';
+  // Default: in light mode respect per-card backgroundColor; in dark mode
+  // ignore per-card backgrounds to let the global dark theme apply.
+  // Special case: expanded view has a CSS rule `.card-view.expanded { background: white; }`
+  // which would force a white background even in dark mode. To override that
+  // we apply a dark inline background when expanded + dark theme so the card
+  // remains dark.
+  let cardStyle: any = undefined;
+  if (isDark) {
+    if (expanded) {
+      cardStyle = { backgroundColor: 'var(--palette-dark-surface, #111827)' };
+    }
+  } else if (settings?.backgroundColor) {
+      cardStyle = { backgroundColor: settings.backgroundColor };
+    }
+
   return (
     <div
       className={`card-view n-bg-palette-neutral-bg-weak n-text-palette-neutral-text-default ${
         expanded ? 'expanded' : ''
       }`}
-      style={settings && settings.backgroundColor ? { backgroundColor: settings.backgroundColor } : {}}
+      style={cardStyle}
     >
       {reportHeader}
       {/* if there's no selection for this report, we don't have a footer, so the report can be taller. */}
