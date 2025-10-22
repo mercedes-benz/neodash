@@ -12,15 +12,23 @@ const NeoDatePicker = ({ label, value, onChange, disabled = false }) => {
         inputFormat='YYYY-MM-DD'
         value={value}
         disabled={disabled}
-        onChange={(event) => {
-          onChange(event);
-        }}
+        onChange={(event) => onChange(event)}
         maxDate={new Date('9999-12-31')}
         renderInput={(params) => (
           <TextField
-            variant='outlined'
-            style={{ width: 'calc(100% - 30px)', marginLeft: '15px', marginTop: '5px' }}
             {...params}
+            variant='outlined'
+            sx={{
+              width: 'calc(100% - 30px)',
+              ml: '15px',
+              mt: '5px',
+            }}
+            InputProps={{
+              ...params.InputProps,
+              sx: {
+                ...(params.InputProps?.sx || {}),
+              },
+            }}
           />
         )}
       />

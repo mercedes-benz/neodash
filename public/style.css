@@ -105,6 +105,10 @@
   color: rgb(222, 222, 222);
 }
 
+.no-options-text {
+  color: #787da4 !important;
+}
+
 .MuiDataGrid-footerContainer {
   border: none !important;
 }

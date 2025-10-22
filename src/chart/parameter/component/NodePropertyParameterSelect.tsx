@@ -6,7 +6,6 @@ import { RenderSubValue } from '../../../report/ReportRecordProcessing';
 import { SelectionConfirmationButton } from './SelectionConfirmationButton';
 import NeoCodeViewerComponent from '../../../component/editor/CodeViewerComponent';
 import { toNumber } from '../../ChartUtils';
-import { useThemedAutocomplete } from './useThemedAutocomplete';
 
 const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
   const suggestionsUpdateTimeout =
@@ -46,7 +45,6 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
     props.settings && props.settings.clearParameterOnFieldClear ? props.settings.clearParameterOnFieldClear : false;
   const autoSelectFirstValue =
     props.settings && props.settings.autoSelectFirstValue ? props.settings.autoSelectFirstValue : false;
-  const { textFieldSx, popupIcon, clearIcon } = useThemedAutocomplete();
 
   // index of the display value in the resulting extra records retrieved by the component when the user types. equals '1' for NeoDash 2.2.2 and later.
   const displayValueRowIndex = props.compatibilityMode
@@ -173,6 +171,7 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
         multiple={multiSelector}
         options={options}
         disabled={disabled}
+        noOptionsText={<div className='no-options-text'>No options</div>}
         limitTags={multiSelectLimit}
         style={{
           maxWidth: 'calc(100% - 40px)',
@@ -207,11 +206,8 @@ const NodePropertyParameterSelectComponent = (props: ParameterSelectProps) => {
             });
           }
         }}
-        sx={textFieldSx as any}
         value={inputValue || ''}
         onChange={propagateSelection}
-        popupIcon={popupIcon}
-        clearIcon={clearIcon}
         renderInput={(params) => (
           <TextField
             {...params}

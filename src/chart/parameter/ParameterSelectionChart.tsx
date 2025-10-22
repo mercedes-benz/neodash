@@ -6,8 +6,6 @@ import RelationshipPropertyParameterSelectComponent from './component/Relationsh
 import FreeTextParameterSelectComponent from './component/FreeTextParameterSelect';
 import QueryParameterSelectComponent from './component/QueryParameterSelect';
 import BasicSelectComponent from './component/BasicSelect';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useThemedAutocomplete } from './component/useThemedAutocomplete';
 
 /**
  * A special chart type to define global dashboard parameters that are injected as query parameters into each report.
@@ -37,7 +35,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
   const manualParameterSave = props?.settings?.manualParameterSave;
   // in NeoDash 2.2.1 or earlier, there was no means to have a different display value in the selector. This condition handles that.
   const compatibilityMode = !query?.toLowerCase().includes('as display') || false;
-  const { textFieldSx, popupIcon, clearIcon } = useThemedAutocomplete();
 
   // When Component unmounts based on clearParameterValueOnTabChange parameter value is set to empty.
   // clearParameterValueOnTabChange can be configured in settings
@@ -52,21 +49,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
   if (!query || query.trim().length == 0) {
     return <p style={{ margin: '15px' }}>No selection specified.</p>;
   }
-
-  const theme = createTheme({
-    typography: {
-      fontFamily: "'Nunito Sans', sans-serif !important",
-      allVariants: { color: 'rgb(var(--palette-neutral-text))' },
-    },
-    palette: {
-      text: {
-        primary: 'rgb(var(--palette-neutral-text))',
-      },
-      background: {
-        paper: 'rgb(var(--palette-neutral-bg-weak))',
-      },
-    },
-  });
 
   const content = () => {
     if (type == 'Free Text') {
@@ -91,7 +73,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
           compatibilityMode={compatibilityMode}
           manualParameterSave={manualParameterSave}
           multiline={multiline}
-          sx={textFieldSx as any}
         />
       );
     } else if (type == 'Node Property') {
@@ -111,7 +92,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
           multiSelector={multiSelector}
           manualParameterSave={manualParameterSave}
           autoSort={true}
-          sx={textFieldSx as any}
         />
       );
     } else if (type == 'Relationship Property') {
@@ -131,7 +111,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
           multiSelector={multiSelector}
           manualParameterSave={manualParameterSave}
           autoSort={true}
-          sx={textFieldSx as any}
         />
       );
     } else if (type == 'Date Picker') {
@@ -149,7 +128,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
           allParameters={allParameters}
           compatibilityMode={compatibilityMode}
           manualParameterSave={manualParameterSave}
-          sx={textFieldSx as any}
         />
       );
     } else if (type == 'Custom Query') {
@@ -169,7 +147,6 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
           multiSelector={multiSelector}
           manualParameterSave={manualParameterSave}
           autoSort={false}
-          sx={textFieldSx as any}
         />
       );
     } else if (type === 'Basic Select') {
@@ -189,13 +166,12 @@ export const NeoParameterSelectionChart = (props: ChartProps) => {
           compatibilityMode={compatibilityMode}
           multiSelector={multiSelector}
           manualParameterSave={manualParameterSave}
-          sx={textFieldSx as any}
         />
       );
     }
     return <div>Invalid Parameter Selector Type.</div>;
   };
-  return <ThemeProvider theme={theme}>{content()}</ThemeProvider>;
+  return content();
 };
 
 export default NeoParameterSelectionChart;
