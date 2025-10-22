@@ -5,7 +5,6 @@ import { RUN_QUERY_DELAY_MS } from '../../config/ReportConfig';
 import { QueryStatus, runCypherQuery } from '../../report/ReportQueryRunner';
 import { Neo4jContext, Neo4jContextState } from 'use-neo4j/dist/neo4j.context';
 import { Autocomplete, debounce, TextField } from '@mui/material';
-import { useThemedAutocomplete } from './component/useThemedAutocomplete';
 import NeoField from '../../component/field/Field';
 import { Dropdown } from '@neo4j-ndl/react';
 import NeoCodeEditorComponent from '../../component/editor/CodeEditorComponent';
@@ -33,7 +32,6 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
   );
   const [propertyRecords, setPropertyRecords] = React.useState<any[]>([]);
   let { parameterName } = settings;
-  const { textFieldSx, popupIcon, clearIcon } = useThemedAutocomplete();
 
   // When certain settings are updated, a re-generated search query is needed.
   useEffect(() => {
@@ -234,10 +232,9 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
         <NeoField
           label={'Name'}
           key={'freetext'}
+          valueLabel={settings.entityType ? settings.entityType : ''}
           value={settings.entityType ? settings.entityType : ''}
-          defaultValue={''}
           placeholder={'Enter a parameter name here...'}
-          style={{}}
           onChange={(value) => {
             setLabelInputText(value);
             handleNodeLabelSelectionUpdate(value);
@@ -250,10 +247,9 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
             <NeoField
               label={'Name'}
               key={'query'}
+              valueLabel={settings?.entityType || ''}
               value={settings?.entityType || ''}
-              defaultValue={''}
               placeholder={'Enter a parameter name here...'}
-              style={{}}
               onChange={(value) => {
                 setLabelInputText(value);
                 handleNodeLabelSelectionUpdate(value);
@@ -301,6 +297,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
             }
             getOptionLabel={(option) => option || ''}
             style={{ marginTop: '13px' }}
+            isOptionEqualToValue={(option, value) => (option || '') === (value || '')}
             inputValue={labelInputText}
             onInputChange={(event, value) => {
               setLabelInputText(value);
@@ -323,15 +320,12 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
             size={'small'}
             value={settings.entityType ? settings.entityType : undefined}
             onChange={(event, newValue) => handleNodeLabelSelectionUpdate(newValue)}
-            popupIcon={popupIcon}
-            clearIcon={clearIcon}
             renderInput={(params) => (
               <TextField
                 {...params}
                 placeholder='Start typing...'
                 InputLabelProps={{ shrink: true }}
                 label={settings.type == 'Node Property' ? 'Node Label' : 'Relationship Type'}
-                sx={textFieldSx as any}
               />
             )}
           />
@@ -347,6 +341,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                 }
                 getOptionLabel={(option) => option || ''}
                 style={{ display: 'inline-block', width: '65%', marginTop: '13px', marginRight: '5%' }}
+                isOptionEqualToValue={(option, value) => (option || '') === (value || '')}
                 inputValue={propertyInputText}
                 onInputChange={(event, value) => {
                   setPropertyInputText(value);
@@ -364,15 +359,12 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                 size={'small'}
                 value={settings.propertyType}
                 onChange={(event, newValue) => handlePropertyNameSelectionUpdate(newValue)}
-                popupIcon={popupIcon}
-                clearIcon={clearIcon}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     placeholder='Start typing...'
                     InputLabelProps={{ shrink: true }}
                     label={'Property Name'}
-                    sx={textFieldSx as any}
                   />
                 )}
               />
@@ -387,6 +379,7 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                   }
                   getOptionLabel={(option) => option || ''}
                   style={{ display: 'inline-block', width: '65%', marginTop: '13px', marginRight: '5%' }}
+                  isOptionEqualToValue={(option, value) => (option || '') === (value || '')}
                   inputValue={propertyInputDisplayText}
                   onInputChange={(event, value) => {
                     setPropertyInputDisplayText(value);
@@ -402,15 +395,12 @@ const ParameterSelectCardSettings = ({ query, database, settings, onReportSettin
                   }}
                   value={settings.propertyTypeDisplay || settings.propertyType}
                   onChange={(event, newValue) => handlePropertyDisplayNameSelectionUpdate(newValue)}
-                  popupIcon={popupIcon}
-                  clearIcon={clearIcon}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       placeholder='Start typing...'
                       InputLabelProps={{ shrink: true }}
                       label={'Property Display Name'}
-                      sx={textFieldSx as any}
                     />
                   )}
                 />

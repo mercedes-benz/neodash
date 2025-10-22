@@ -1,16 +1,5 @@
 import React from 'react';
-import {
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  ThemeProvider,
-  Typography,
-  createTheme,
-} from '@mui/material';
+import { Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { RenderArray, RenderString } from '../../../report/ReportRecordProcessing';
 import { valueIsArray } from '../../ChartUtils';
 
@@ -25,17 +14,6 @@ export const formatProperty = (property) => {
 /**
  * Component to render node/relationship properties in a table format, format using linebreak
  */
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
-
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-});
 
 export const GraphEntityInspectionTable = ({
   entity,
@@ -88,30 +66,28 @@ export const GraphEntityInspectionTable = ({
   const tableTextColor = theme === 'dark' ? 'var(--palette-dark-neutral-border-strong)' : 'rgba(0, 0, 0, 0.6)';
 
   const attributesList = (key: any) => (
-    <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
-      <TableRow key={key}>
-        <TableCell component='th' scope='row'>
-          {key}
+    <TableRow key={key}>
+      <TableCell component='th' scope='row'>
+        {key}
+      </TableCell>
+      <TableCell align={'left'}>
+        <Typography variant='body2' className='line-break'>
+          {formatProperty(entity && entity.properties[key])}
+        </Typography>
+      </TableCell>
+      {checklistEnabled ? (
+        <TableCell align={'center'}>
+          <Checkbox
+            color='default'
+            onChange={(event) => {
+              handleCheckboxClick(key, event.target.checked);
+            }}
+          />
         </TableCell>
-        <TableCell align={'left'}>
-          <Typography variant='body-medium' className='line-break'>
-            {formatProperty(entity && entity.properties[key])}
-          </Typography>
-        </TableCell>
-        {checklistEnabled ? (
-          <TableCell align={'center'}>
-            <Checkbox
-              color='default'
-              onChange={(event) => {
-                handleCheckboxClick(key, event.target.checked);
-              }}
-            />
-          </TableCell>
-        ) : (
-          <></>
-        )}
-      </TableRow>
-    </ThemeProvider>
+      ) : (
+        <></>
+      )}
+    </TableRow>
   );
 
   const filterCustomDataSettingsForEntityTypeHide = (attr: string) =>

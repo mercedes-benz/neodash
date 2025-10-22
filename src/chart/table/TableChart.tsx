@@ -16,7 +16,6 @@ import {
 } from '../../extensions/advancedcharts/Utils';
 import { IconButton } from '@neo4j-ndl/react';
 import { CloudArrowDownIconOutline, XMarkIconOutline } from '@neo4j-ndl/react/icons';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { renderCellExpand } from '../../component/misc/DataGridExpandRenderer';
@@ -99,22 +98,6 @@ export const NeoTableChart = (props: ChartProps) => {
   const [isApiLoading, setApiLoading] = React.useState(false);
   const themeMode = useSelector((state) => getDashboardTheme(state));
   const isDarkMode = themeMode === 'dark';
-
-  const theme = createTheme({
-    palette: {
-      mode: isDarkMode ? 'dark' : 'light',
-      text: {
-        primary: isDarkMode ? 'var(--palette-dark-text)' : 'var(--palette-neutral-text-default)',
-        secondary: isDarkMode ? 'var(--palette-dark-text-weak)' : 'var(--palette-neutral-text-weak)',
-      },
-    },
-    typography: {
-      fontFamily: "'Nunito Sans', sans-serif !important",
-      allVariants: {
-        color: isDarkMode ? 'var(--palette-dark-text)' : 'var(--palette-neutral-text-default)',
-      },
-    },
-  });
 
   const transposed = props.settings && props.settings.transposed ? props.settings.transposed : false;
   const wrapContent = props.settings && props.settings.wrapContent ? props.settings.wrapContent : false;
@@ -491,7 +474,7 @@ export const NeoTableChart = (props: ChartProps) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Notification
         open={alertOpen}
         message={notificationMessage}
@@ -606,7 +589,7 @@ export const NeoTableChart = (props: ChartProps) => {
           }}
         />
       </div>
-    </ThemeProvider>
+    </>
   );
 };
 

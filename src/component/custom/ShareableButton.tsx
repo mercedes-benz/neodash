@@ -69,7 +69,7 @@ export const ShareableButton: React.FC<ShareableButtonProps> = ({ exportPagePara
         autoHideDuration={TIMEOUT_DURATION}
         onClose={() => setIsSuccess(false)}
       >
-        <Alert severity='success' variant='filled' sx={{ width: '100%' }}>
+        <Alert severity='success' variant='filled' color='success' sx={{ width: '100%' }}>
           {exportPageParameters ? 'Page link copied!' : 'Dashboard link copied!'}
         </Alert>
       </Snackbar>
