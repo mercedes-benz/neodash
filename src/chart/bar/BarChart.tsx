@@ -41,6 +41,14 @@ const NeoBarChart = (props: ChartProps) => {
   const enableLabel = settings.barValues ? settings.barValues : false;
   const positionLabel = settings.positionLabel ? settings.positionLabel : 'off';
 
+  // New value toggle related settings (primary vs alternate numeric field)
+  const { alternateValueField } = settings; // optional second numeric field name
+  const valueFieldModeSetting = settings.valueFieldMode ? settings.valueFieldMode : 'primary';
+  const [localValueFieldMode] = React.useState<string>(valueFieldModeSetting);
+  const valueFieldMode = settings.valueFieldMode ? valueFieldModeSetting : localValueFieldMode;
+  const currentValueField =
+    valueFieldMode === 'alternate' && alternateValueField ? alternateValueField : selection?.value;
+
   // TODO: we should make all these defaults be loaded from the config file.
   const layout = settings.layout ? settings.layout : 'vertical';
   const colorScheme = settings.colors ? settings.colors : 'set2';
@@ -66,9 +74,10 @@ const NeoBarChart = (props: ChartProps) => {
           }
           const index = convertRecordObjectToString(row.get(selection.index));
           const idx = data.findIndex((item) => item.index === index);
-
+          // Keep key name stable even when toggling value field
           const key = selection.key !== '(none)' ? recordToNative(row.get(selection.key)) : selection.value;
-          const rawValue = recordToNative(row.get(selection.value));
+          // Retrieve value from currentValueField (primary or alternate)
+          const rawValue = recordToNative(row.get(currentValueField));
           const value = rawValue !== null ? rawValue : 0.0000001;
           if (isNaN(value)) {
             return data;
@@ -99,7 +108,7 @@ const NeoBarChart = (props: ChartProps) => {
       });
     setKeys(Object.keys(newKeys));
     setData(newData);
-  }, [selection]);
+  }, [selection, currentValueField, records]);
 
   if (!selection || props.records == null || props.records.length == 0 || props.records[0].keys == null) {
     return <NoDrawableDataErrorMessage />;
@@ -176,8 +185,13 @@ const NeoBarChart = (props: ChartProps) => {
       return chartColorsByScheme[colorIndex];
     }
     dict[selection.index] = bar.indexValue;
-    dict[selection.value] = bar.value;
-    dict[selection.key] = bar.id;
+    // Populate current numeric field for styling rules
+    if (currentValueField) {
+      dict[currentValueField] = bar.value;
+    }
+    if (selection.key) {
+      dict[selection.key] = bar.id;
+    }
     const validRuleIndex = evaluateRulesOnDict(dict, styleRules, ['bar color']);
     if (validRuleIndex !== -1) {
       return styleRules[validRuleIndex].customizationValue;
@@ -387,7 +401,7 @@ const NeoBarChart = (props: ChartProps) => {
         <BarChartComponent
           theme={canvas ? themeNivoCanvas(props.theme) : themeNivo}
           data={data}
-          key={`${selection.index}___${selection.value}`}
+          key={`${selection.index}___${currentValueField}`}
           layout={layout}
           groupMode={groupMode == 'stacked' ? 'stacked' : 'grouped'}
           enableLabel={enableLabel}
