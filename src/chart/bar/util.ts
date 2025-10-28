@@ -78,16 +78,16 @@ export function getRecordByCategory(e, records, selection, bar) {
           break;
         }
       } else if (recordCategory == category) {
-          // Build dictionary of all fields from this record
-          const dict: Record<string, any> = {};
-          r.keys.forEach((key) => {
-            if (typeof key === 'string') {
-              dict[key] = recordToNative(r.get(key));
-            }
-          });
-          record = dict;
-          break;
-        }
+        // Build dictionary of all fields from this record
+        const dict: Record<string, any> = {};
+        r.keys.forEach((key) => {
+          if (typeof key === 'string') {
+            dict[key] = recordToNative(r.get(key));
+          }
+        });
+        record = dict;
+        break;
+      }
     } catch (e) {
       // Skip records that don't have required fields
       continue;
@@ -95,3 +95,10 @@ export function getRecordByCategory(e, records, selection, bar) {
   }
   return record;
 }
+
+export const formatToolTipValue = (value: any): string => {
+  if (Array.isArray(value)) {
+    return value.join(', ');
+  }
+  return String(value);
+};

@@ -8,7 +8,7 @@ import { convertRecordObjectToString, recordToNative } from '../ChartUtils';
 import { themeNivo, themeNivoCanvas } from '../Utils';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { getPageNumbersAndNamesList, getRule, performActionOnElement } from '../../extensions/advancedcharts/Utils';
-import { getOriginalRecordForNivoClickEvent, getRecordByCategory } from './util';
+import { formatToolTipValue, getOriginalRecordForNivoClickEvent, getRecordByCategory } from './util';
 import { BarChartTooltip } from './BarChartTooltip';
 
 const NeoBarChart = (props: ChartProps) => {
@@ -42,7 +42,7 @@ const NeoBarChart = (props: ChartProps) => {
   const enableLabel = settings.barValues ? settings.barValues : false;
   const positionLabel = settings.positionLabel ? settings.positionLabel : 'off';
   // New configurable tooltip property (name of field to show on hover instead of default value)
-  const {tooltipField} = settings;
+  const { tooltipField } = settings;
 
   // New value toggle related settings (primary vs alternate numeric field)
   const { alternateValueField } = settings; // optional second numeric field name
@@ -415,17 +415,22 @@ const NeoBarChart = (props: ChartProps) => {
           // Find the original record by matching category and group (not value, since value changes with toggle)
           const record = getRecordByCategory(bar, records, selection, bar);
           // Priority1: Display tooltipField value if available, otherwise fall back to bar.value
-          let content = `${bar.id} - ${bar.indexValue}: ${bar.value}`;
+          // Format bar.value if it's an array
+          let content = `${bar.id} - ${bar.indexValue}: <strong>${formatToolTipValue(bar.value)}</strong>`;
           if (tooltipField && record && record[tooltipField] !== undefined) {
-            content = `${tooltipField}: ${record[tooltipField]}`;
+            content = `${tooltipField}: <strong>${formatToolTipValue(record[tooltipField])}</strong>`;
           } else if (record) {
             // Priority 2: Show field based on current mode (alternate or primary)
             if (valueFieldMode === 'alternate' && alternateValueField && record[alternateValueField] !== undefined) {
               // Alternate mode: show alternate field
-              content = `${alternateValueField} - ${bar.indexValue}: ${record[alternateValueField]}`;
+              content = `${alternateValueField} - ${bar.indexValue}: <strong>${formatToolTipValue(
+                record[alternateValueField]
+              )}</strong>`;
             } else if (selection?.value && record[selection.value] !== undefined) {
               // Primary mode: show primary field
-              content = `${selection.value} - ${bar.indexValue}: ${record[selection.value]}`;
+              content = `${selection.value} - ${bar.indexValue}: <strong>${formatToolTipValue(
+                record[selection.value]
+              )}</strong>`;
             }
           }
           const isDarkMode = props.theme === 'dark';

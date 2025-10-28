@@ -44,7 +44,7 @@ export const BarChartTooltip = ({ content, isDarkMode, barColor }) => {
   return (
     <div style={tooltipStyle}>
       <span style={colorBoxStyle} />
-      <span>{content}</span>
+      <span dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
 };
