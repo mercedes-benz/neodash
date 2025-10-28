@@ -42,12 +42,10 @@ const NeoBarChart = (props: ChartProps) => {
   const positionLabel = settings.positionLabel ? settings.positionLabel : 'off';
 
   // New value toggle related settings (primary vs alternate numeric field)
-  const {alternateValueField} = settings; // optional second numeric field name
+  const { alternateValueField } = settings; // optional second numeric field name
   const valueFieldModeSetting = settings.valueFieldMode ? settings.valueFieldMode : 'primary';
   const [localValueFieldMode] = React.useState<string>(valueFieldModeSetting);
   const valueFieldMode = settings.valueFieldMode ? valueFieldModeSetting : localValueFieldMode;
-  // const primaryValueLabel = settings.valueFieldPrimaryLabel || 'Percentage';
-  // const secondaryValueLabel = settings.valueFieldSecondaryLabel || 'Count';
   const currentValueField =
     valueFieldMode === 'alternate' && alternateValueField ? alternateValueField : selection?.value;
 
