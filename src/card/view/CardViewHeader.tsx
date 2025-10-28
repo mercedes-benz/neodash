@@ -192,7 +192,6 @@ const NeoCardViewHeader = ({
   const valueToggleButton = (
     <Tooltip
       title={`Switch to ${valueFieldMode === 'alternate' ? primaryValueLabel : secondaryValueLabel}`}
-      aria-label='toggle-value-mode'
       disableInteractive
     >
       <IconButton aria-label='toggle value mode' onClick={onToggleValueFieldMode} clean size='medium'>
