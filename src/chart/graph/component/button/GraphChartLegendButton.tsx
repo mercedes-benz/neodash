@@ -134,7 +134,7 @@ export const NeoGraphChartLegendButton = (props: GraphChartVisualizationProps) =
             padding: 0,
             marginTop: '0.2rem',
             fontWeight: 'bold',
-            color: '#535a65',
+            color: isDark ? '#ffffff' : '#535a65',
           }}
         >
           LEGEND
