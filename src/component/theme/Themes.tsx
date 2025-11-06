@@ -157,6 +157,24 @@ export const darkTheme = createTheme({
         },
       },
     },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#1e1e1e',
+          color: '#ffffff',
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        primary: {
+          color: '#ffffff',
+        },
+        secondary: {
+          color: '#9ca3af',
+        },
+      },
+    },
   } as any,
   breakpoints: {
     values: {

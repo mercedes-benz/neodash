@@ -55,7 +55,7 @@ const NeoLineChart = (props: ChartProps) => {
   const curve = settings.curve ? settings.curve : 'linear';
   const marginRight = settings.marginRight ? settings.marginRight : 24;
   const marginLeft = settings.marginLeft ? settings.marginLeft : 36;
-  const marginTop = settings.marginTop ? settings.marginTop : 24;
+  const marginTop = settings.marginTop ? settings.marginTop : 40;
   const marginBottom = settings.marginBottom ? settings.marginBottom : 40;
   const lineWidth = settings.type == 'scatter' ? 0 : settings.lineWidth || 2;
   const pointSize = settings.pointSize ? settings.pointSize : 10;

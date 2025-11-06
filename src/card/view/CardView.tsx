@@ -127,6 +127,7 @@ const NeoCardView = ({
       onToggleCardExpand={onToggleCardExpand}
       expanded={expanded}
       parameters={getLocalParameters(title)}
+      updateReportSetting={updateReportSetting}
     ></NeoCardViewHeader>
   );
 
@@ -292,8 +293,8 @@ const NeoCardView = ({
       cardStyle = { backgroundColor: 'var(--palette-dark-surface, #111827)' };
     }
   } else if (settings?.backgroundColor) {
-      cardStyle = { backgroundColor: settings.backgroundColor };
-    }
+    cardStyle = { backgroundColor: settings.backgroundColor };
+  }
 
   return (
     <div

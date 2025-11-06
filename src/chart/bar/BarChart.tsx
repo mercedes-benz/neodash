@@ -8,7 +8,8 @@ import { convertRecordObjectToString, recordToNative } from '../ChartUtils';
 import { themeNivo, themeNivoCanvas } from '../Utils';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { getPageNumbersAndNamesList, getRule, performActionOnElement } from '../../extensions/advancedcharts/Utils';
-import { getOriginalRecordForNivoClickEvent } from './util';
+import { formatToolTipValue, getOriginalRecordForNivoClickEvent, getRecordByCategory } from './util';
+import { BarChartTooltip } from './BarChartTooltip';
 
 const NeoBarChart = (props: ChartProps) => {
   const { records, selection } = props;
@@ -40,6 +41,16 @@ const NeoBarChart = (props: ChartProps) => {
   const labelSkipHeight = settings.labelSkipHeight ? settings.labelSkipHeight : 0;
   const enableLabel = settings.barValues ? settings.barValues : false;
   const positionLabel = settings.positionLabel ? settings.positionLabel : 'off';
+  // New configurable tooltip property (name of field to show on hover instead of default value)
+  const { tooltipField } = settings;
+
+  // New value toggle related settings (primary vs alternate numeric field)
+  const { alternateValueField } = settings; // optional second numeric field name
+  const valueFieldModeSetting = settings.valueFieldMode ? settings.valueFieldMode : 'primary';
+  const [localValueFieldMode] = React.useState<string>(valueFieldModeSetting);
+  const valueFieldMode = settings.valueFieldMode ? valueFieldModeSetting : localValueFieldMode;
+  const currentValueField =
+    valueFieldMode === 'alternate' && alternateValueField ? alternateValueField : selection?.value;
 
   // TODO: we should make all these defaults be loaded from the config file.
   const layout = settings.layout ? settings.layout : 'vertical';
@@ -66,9 +77,10 @@ const NeoBarChart = (props: ChartProps) => {
           }
           const index = convertRecordObjectToString(row.get(selection.index));
           const idx = data.findIndex((item) => item.index === index);
-
+          // Keep key name stable even when toggling value field
           const key = selection.key !== '(none)' ? recordToNative(row.get(selection.key)) : selection.value;
-          const rawValue = recordToNative(row.get(selection.value));
+          // Retrieve value from currentValueField (primary or alternate)
+          const rawValue = recordToNative(row.get(currentValueField));
           const value = rawValue !== null ? rawValue : 0.0000001;
           if (isNaN(value)) {
             return data;
@@ -99,7 +111,7 @@ const NeoBarChart = (props: ChartProps) => {
       });
     setKeys(Object.keys(newKeys));
     setData(newData);
-  }, [selection]);
+  }, [selection, currentValueField, records]);
 
   if (!selection || props.records == null || props.records.length == 0 || props.records[0].keys == null) {
     return <NoDrawableDataErrorMessage />;
@@ -176,8 +188,13 @@ const NeoBarChart = (props: ChartProps) => {
       return chartColorsByScheme[colorIndex];
     }
     dict[selection.index] = bar.indexValue;
-    dict[selection.value] = bar.value;
-    dict[selection.key] = bar.id;
+    // Populate current numeric field for styling rules
+    if (currentValueField) {
+      dict[currentValueField] = bar.value;
+    }
+    if (selection.key) {
+      dict[selection.key] = bar.id;
+    }
     const validRuleIndex = evaluateRulesOnDict(dict, styleRules, ['bar color']);
     if (validRuleIndex !== -1) {
       return styleRules[validRuleIndex].customizationValue;
@@ -381,13 +398,53 @@ const NeoBarChart = (props: ChartProps) => {
         overflowY: 'auto',
       };
 
+  const handleToolTipRendering =
+    settings.tooltipField || settings.alternateValueField
+      ? (
+          bar: {
+            id: string | number;
+            value: number;
+            formattedValue: string;
+            index: number;
+            indexValue: string | number;
+            data: object;
+          },
+          _color: string,
+          _label: string
+        ) => {
+          // Find the original record by matching category and group (not value, since value changes with toggle)
+          const record = getRecordByCategory(bar, records, selection, bar);
+          // Priority1: Display tooltipField value if available, otherwise fall back to bar.value
+          // Format bar.value if it's an array
+          let content = `${bar.id} - ${bar.indexValue}: <strong>${formatToolTipValue(bar.value)}</strong>`;
+          if (tooltipField && record && record[tooltipField] !== undefined) {
+            content = `${tooltipField}: <strong>${formatToolTipValue(record[tooltipField])}</strong>`;
+          } else if (record) {
+            // Priority 2: Show field based on current mode (alternate or primary)
+            if (valueFieldMode === 'alternate' && alternateValueField && record[alternateValueField] !== undefined) {
+              // Alternate mode: show alternate field
+              content = `${alternateValueField} - ${bar.indexValue}: <strong>${formatToolTipValue(
+                record[alternateValueField]
+              )}</strong>`;
+            } else if (selection?.value && record[selection.value] !== undefined) {
+              // Primary mode: show primary field
+              content = `${selection.value} - ${bar.indexValue}: <strong>${formatToolTipValue(
+                record[selection.value]
+              )}</strong>`;
+            }
+          }
+          const isDarkMode = props.theme === 'dark';
+          return <BarChartTooltip content={content} isDarkMode={isDarkMode} barColor={bar.color} />;
+        }
+      : undefined;
+
   const chart = (
     <div style={barChartStyle}>
       <div style={scrollableWrapperStyle}>
         <BarChartComponent
           theme={canvas ? themeNivoCanvas(props.theme) : themeNivo}
           data={data}
-          key={`${selection.index}___${selection.value}`}
+          key={`${selection.index}___${currentValueField}`}
           layout={layout}
           groupMode={groupMode == 'stacked' ? 'stacked' : 'grouped'}
           enableLabel={enableLabel}
@@ -413,6 +470,7 @@ const NeoBarChart = (props: ChartProps) => {
             tickPadding: 5,
             tickRotation: 0,
           }}
+          tooltip={handleToolTipRendering}
           labelSkipWidth={labelSkipWidth}
           labelSkipHeight={labelSkipHeight}
           labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}

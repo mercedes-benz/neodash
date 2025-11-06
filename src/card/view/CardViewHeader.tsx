@@ -17,6 +17,7 @@ import {
   InformationCircleIconOutline,
   XMarkIconOutline,
   MinusIconOutline,
+  ArrowsRightLeftIconOutline,
 } from '@neo4j-ndl/react/icons';
 
 const NeoCardViewHeader = ({
@@ -35,11 +36,24 @@ const NeoCardViewHeader = ({
   parameters,
   onHandleMinimize,
   settings,
+  updateReportSetting,
 }) => {
   const [text, setText] = React.useState(title);
   const [parsedText, setParsedText] = React.useState(title);
   const [editing, setEditing] = React.useState(false);
   const [descriptionModalOpen, setDescriptionModalOpen] = React.useState(false);
+  // Value field toggle button (alternate vs primary) appears when settings.alternateValueField exists.
+  const valueToggleAvailable = settings?.alternateValueField !== undefined && settings.alternateValueField.length > 0;
+  const valueFieldMode: 'primary' | 'alternate' = settings?.valueFieldMode || 'primary';
+  const primaryValueLabel = settings?.valueFieldPrimaryLabel || 'Percentage';
+  const secondaryValueLabel = settings?.valueFieldSecondaryLabel || 'Count';
+  const onToggleValueFieldMode = () => {
+    if (!valueToggleAvailable) {
+      return;
+    }
+    const newMode = valueFieldMode === 'alternate' ? 'primary' : 'alternate';
+    updateReportSetting && updateReportSetting('valueFieldMode', newMode);
+  };
 
   function replaceParamsOnString(s, p) {
     let parsed: string;
@@ -175,6 +189,17 @@ const NeoCardViewHeader = ({
     </Tooltip>
   );
 
+  const valueToggleButton = (
+    <Tooltip
+      title={`Switch to ${valueFieldMode === 'alternate' ? primaryValueLabel : secondaryValueLabel}`}
+      disableInteractive
+    >
+      <IconButton aria-label='toggle value mode' onClick={onToggleValueFieldMode} clean size='medium'>
+        <ArrowsRightLeftIconOutline />
+      </IconButton>
+    </Tooltip>
+  );
+
   return (
     <>
       <Dialog
@@ -204,6 +229,7 @@ const NeoCardViewHeader = ({
         style={{ height: '72px' }}
         action={
           <>
+            {valueToggleAvailable ? valueToggleButton : <></>}
             {downloadImageEnabled ? downloadImageButton : <></>}
             {fullscreenEnabled ? expanded ? unMaximizeButton : maximizeButton : <></>}
             {settings.minimizable && minimizeButton}
