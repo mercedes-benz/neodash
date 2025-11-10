@@ -19,10 +19,9 @@ datadogRum.init({
   // see https://docs.datadoghq.com/getting_started/site/
   site: 'datadoghq.com',
   service: 'oupt',
-  env: 'dev',
-  // Specify a version number to identify the deployed version of your application in Datadog
+  env: globalThis.location.hostname.includes('-dev.') ? 'dev' : 'prod',
   version: '1.0.0',
-  sessionSampleRate: 20,
+  sessionSampleRate: 100,
   sessionReplaySampleRate: 20,
   defaultPrivacyLevel: 'mask-user-input',
   plugins: [reactPlugin()],
