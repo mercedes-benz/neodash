@@ -90,6 +90,7 @@ export const createConnectionThunk =
           } else {
             dispatch(createNotificationThunk('Unable to establish connection', records[0].error));
           }
+          console.error('Neo4j Connection error: Unauthorized');
           if (loggingSettings.loggingMode > '0') {
             dispatch(
               createLogThunk(
@@ -111,6 +112,7 @@ export const createConnectionThunk =
           dispatch(setConnectionProperties(protocol, url, port, database, username, password));
           dispatch(setConnectionModalOpen(false));
           dispatch(setConnected(true));
+          console.log('Connection established successfully.');
           // An old dashboard (pre-2.3.5) may not always have a UUID. We catch this case here.
           dispatch(assignDashboardUuidIfNotPresentThunk());
           dispatch(updateSessionParameterThunk('session_uri', `${protocol}://${url}:${port}`));
@@ -175,6 +177,7 @@ export const createConnectionThunk =
           }
         } else {
           dispatch(createNotificationThunk('Unknown Connection Error', 'Check the browser console.'));
+          console.error('Neo4j Connection error: Unknown error');
         }
       };
       const query = 'RETURN true as connected';
@@ -189,7 +192,9 @@ export const createConnectionThunk =
         (records) => validateConnection(records)
       );
     } catch (e) {
-      dispatch(createNotificationThunk('Unable to establish connection', e));
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error('Neo4j Connection error: Unknown error');
+      dispatch(createNotificationThunk('Unable to establish connection', msg));
     }
   };
 
