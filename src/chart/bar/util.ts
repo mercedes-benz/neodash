@@ -102,3 +102,27 @@ export const formatToolTipValue = (value: any): string => {
   }
   return String(value);
 };
+
+/**
+ * Formats numeric values with thousand separators (commas).
+ * @param value The value to format (can be number or string).
+ * @returns Formatted string with thousand separators for integers/floats, or original value for non-numeric types.
+ */
+export const formatNumberWithSeparators = (value: any): string => {
+  // Handle null/undefined
+  if (value === null || value === undefined) {
+    return String(value);
+  }
+  const numValue = typeof value === 'string' ? Number.parseFloat(value) : value;
+
+  // Check if it's a valid number (integer or float)
+  if (typeof numValue === 'number' && !Number.isNaN(numValue)) {
+    const res = numValue.toLocaleString('en-US', {
+      maximumFractionDigits: 10, // Preserve decimal places
+      useGrouping: true,
+    });
+    return res;
+  }
+  // Return as-is for non-numeric values
+  return String(value);
+};

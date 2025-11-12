@@ -8,7 +8,12 @@ import { convertRecordObjectToString, recordToNative } from '../ChartUtils';
 import { themeNivo, themeNivoCanvas } from '../Utils';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { getPageNumbersAndNamesList, getRule, performActionOnElement } from '../../extensions/advancedcharts/Utils';
-import { formatToolTipValue, getOriginalRecordForNivoClickEvent, getRecordByCategory } from './util';
+import {
+  formatToolTipValue,
+  formatNumberWithSeparators,
+  getOriginalRecordForNivoClickEvent,
+  getRecordByCategory,
+} from './util';
 import { BarChartTooltip } from './BarChartTooltip';
 
 const NeoBarChart = (props: ChartProps) => {
@@ -274,7 +279,7 @@ const NeoBarChart = (props: ChartProps) => {
               fontSize: 10,
             }}
           >
-            {bar.data.value}
+            {formatNumberWithSeparators(bar.data.value)}
           </text>
         ) : (
           <></>
@@ -417,19 +422,21 @@ const NeoBarChart = (props: ChartProps) => {
           // Priority1: Display tooltipField value if available, otherwise fall back to bar.value
           // Format bar.value if it's an array
           let content = `${bar.id} - ${bar.indexValue}: <strong>${formatToolTipValue(bar.value)}</strong>`;
-          if (tooltipField && record && record[tooltipField] !== undefined) {
-            content = `${tooltipField}: <strong>${formatToolTipValue(record[tooltipField])}</strong>`;
+          if (tooltipField && record?.[tooltipField] !== undefined) {
+            content = `${tooltipField}: <strong>${formatToolTipValue(
+              formatNumberWithSeparators(record[tooltipField])
+            )}</strong>`;
           } else if (record) {
             // Priority 2: Show field based on current mode (alternate or primary)
             if (valueFieldMode === 'alternate' && alternateValueField && record[alternateValueField] !== undefined) {
               // Alternate mode: show alternate field
               content = `${alternateValueField} - ${bar.indexValue}: <strong>${formatToolTipValue(
-                record[alternateValueField]
+                formatNumberWithSeparators(record[alternateValueField])
               )}</strong>`;
             } else if (selection?.value && record[selection.value] !== undefined) {
               // Primary mode: show primary field
               content = `${selection.value} - ${bar.indexValue}: <strong>${formatToolTipValue(
-                record[selection.value]
+                formatNumberWithSeparators(record[selection.value])
               )}</strong>`;
             }
           }
@@ -457,6 +464,7 @@ const NeoBarChart = (props: ChartProps) => {
           innerPadding={innerPadding}
           minValue={minValue}
           maxValue={maxValue}
+          valueFormat={(value) => formatNumberWithSeparators(value)}
           colors={getBarColor}
           axisTop={null}
           axisRight={null}
@@ -464,11 +472,13 @@ const NeoBarChart = (props: ChartProps) => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: labelRotation,
+            format: (value) => formatNumberWithSeparators(value),
           }}
           axisLeft={{
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
+            format: (value) => formatNumberWithSeparators(value),
           }}
           tooltip={handleToolTipRendering}
           labelSkipWidth={labelSkipWidth}
