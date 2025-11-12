@@ -472,7 +472,6 @@ const NeoBarChart = (props: ChartProps) => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: labelRotation,
-            format: (value) => formatNumberWithSeparators(value),
           }}
           axisLeft={{
             tickSize: 5,
@@ -486,7 +485,7 @@ const NeoBarChart = (props: ChartProps) => {
           labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
           {...extraProperties}
           legends={calculateLegendConfig()}
-          animate={false}
+          animate={true}
         />
       </div>
     </div>
