@@ -57,6 +57,9 @@ const NeoBarChart = (props: ChartProps) => {
   const currentValueField =
     valueFieldMode === 'alternate' && alternateValueField ? alternateValueField : selection?.value;
 
+  // Thousand separators configuration (default: enabled if not specified)
+  const disableThousandSeparators = settings.disableThousandSeparators ? settings.disableThousandSeparators : false;
+
   // TODO: we should make all these defaults be loaded from the config file.
   const layout = settings.layout ? settings.layout : 'vertical';
   const colorScheme = settings.colors ? settings.colors : 'set2';
@@ -279,7 +282,7 @@ const NeoBarChart = (props: ChartProps) => {
               fontSize: 10,
             }}
           >
-            {formatNumberWithSeparators(bar.data.value)}
+            {formatNumberWithSeparators(bar.data.value, disableThousandSeparators)}
           </text>
         ) : (
           <></>
@@ -424,19 +427,19 @@ const NeoBarChart = (props: ChartProps) => {
           let content = `${bar.id} - ${bar.indexValue}: <strong>${formatToolTipValue(bar.value)}</strong>`;
           if (tooltipField && record?.[tooltipField] !== undefined) {
             content = `${tooltipField}: <strong>${formatToolTipValue(
-              formatNumberWithSeparators(record[tooltipField])
+              formatNumberWithSeparators(record[tooltipField], disableThousandSeparators)
             )}</strong>`;
           } else if (record) {
             // Priority 2: Show field based on current mode (alternate or primary)
             if (valueFieldMode === 'alternate' && alternateValueField && record[alternateValueField] !== undefined) {
               // Alternate mode: show alternate field
               content = `${alternateValueField} - ${bar.indexValue}: <strong>${formatToolTipValue(
-                formatNumberWithSeparators(record[alternateValueField])
+                formatNumberWithSeparators(record[alternateValueField], disableThousandSeparators)
               )}</strong>`;
             } else if (selection?.value && record[selection.value] !== undefined) {
               // Primary mode: show primary field
               content = `${selection.value} - ${bar.indexValue}: <strong>${formatToolTipValue(
-                formatNumberWithSeparators(record[selection.value])
+                formatNumberWithSeparators(record[selection.value], disableThousandSeparators)
               )}</strong>`;
             }
           }
@@ -464,7 +467,7 @@ const NeoBarChart = (props: ChartProps) => {
           innerPadding={innerPadding}
           minValue={minValue}
           maxValue={maxValue}
-          valueFormat={(value) => formatNumberWithSeparators(value)}
+          valueFormat={(value) => formatNumberWithSeparators(value, disableThousandSeparators)}
           colors={getBarColor}
           axisTop={null}
           axisRight={null}
@@ -472,12 +475,13 @@ const NeoBarChart = (props: ChartProps) => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: labelRotation,
+            format: (value) => formatNumberWithSeparators(value, disableThousandSeparators),
           }}
           axisLeft={{
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            format: (value) => formatNumberWithSeparators(value),
+            format: (value) => formatNumberWithSeparators(value, disableThousandSeparators),
           }}
           tooltip={handleToolTipRendering}
           labelSkipWidth={labelSkipWidth}
