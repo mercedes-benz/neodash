@@ -4,7 +4,7 @@ import { NoDrawableDataErrorMessage } from '../../component/editor/CodeViewerCom
 import { getD3ColorsByScheme } from '../../config/ColorConfig';
 import { evaluateRulesOnDict, useStyleRules } from '../../extensions/styling/StyleRuleEvaluator';
 import { ChartProps } from '../Chart';
-import { convertRecordObjectToString, recordToNative } from '../ChartUtils';
+import { convertRecordObjectToString, convertToCSVRowsForBarCharts, recordToNative } from '../ChartUtils';
 import { themeNivo, themeNivoCanvas } from '../Utils';
 import { extensionEnabled } from '../../utils/ReportUtils';
 import { getPageNumbersAndNamesList, getRule, performActionOnElement } from '../../extensions/advancedcharts/Utils';
@@ -15,6 +15,7 @@ import {
   getRecordByCategory,
 } from './util';
 import { BarChartTooltip } from './BarChartTooltip';
+import ChartDownloadButton from '../ChartDownloadButton';
 
 const NeoBarChart = (props: ChartProps) => {
   const { records, selection } = props;
@@ -59,6 +60,9 @@ const NeoBarChart = (props: ChartProps) => {
 
   // Thousand separators configuration (default: enabled if not specified)
   const disableThousandSeparators = settings.disableThousandSeparators ? settings.disableThousandSeparators : false;
+
+  // CSV download configuration
+  const allowDownload = settings && settings.allowDownload !== undefined ? settings.allowDownload : false;
 
   // TODO: we should make all these defaults be loaded from the config file.
   const layout = settings.layout ? settings.layout : 'vertical';
@@ -390,6 +394,8 @@ const NeoBarChart = (props: ChartProps) => {
     width: calculateWidth(customDimensions, legendPosition, adaptableWidth, legendWidth, data, barWidth),
     height: expandHeightForLegend ? itemHeight * data.length + conditionalMarginBottom : '100%',
     whiteSpace: 'nowrap',
+    flex: 1,
+    overflow: 'auto',
   };
 
   // Container for scrolling container to scroll in
@@ -399,11 +405,17 @@ const NeoBarChart = (props: ChartProps) => {
         overflowX: 'auto',
         overflowY: 'auto',
         height: '100%',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
       }
     : {
         width: '100%',
         height: '100%',
         overflowY: 'auto',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
       };
 
   const handleToolTipRendering =
@@ -475,7 +487,6 @@ const NeoBarChart = (props: ChartProps) => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: labelRotation,
-            format: (value) => formatNumberWithSeparators(value, disableThousandSeparators),
           }}
           axisLeft={{
             tickSize: 5,
@@ -492,6 +503,7 @@ const NeoBarChart = (props: ChartProps) => {
           animate={true}
         />
       </div>
+      <ChartDownloadButton allowDownload={allowDownload} data={convertToCSVRowsForBarCharts(data, selection, keys)} />
     </div>
   );
 
