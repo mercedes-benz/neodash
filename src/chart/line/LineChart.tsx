@@ -9,9 +9,11 @@ import {
   processHierarchyFromRecords,
   recordToNative,
   toNumber,
+  convertToCSVRows,
 } from '../ChartUtils';
 import { themeNivo } from '../Utils';
 import { extensionEnabled } from '../../utils/ReportUtils';
+import ChartDownloadButton from '../ChartDownloadButton';
 
 interface LineChartData {
   id: string;
@@ -68,6 +70,7 @@ const NeoLineChart = (props: ChartProps) => {
   const xTickRotationAngle = settings.xTickRotationAngle != undefined ? settings.xTickRotationAngle : 0;
   const yTickRotationAngle = settings.yTickRotationAngle != undefined ? settings.yTickRotationAngle : 0;
   const yTickCount = settings.yTickCount !== undefined ? settings.yTickCount : 'auto';
+  const allowDownload = settings && settings.allowDownload !== undefined ? settings.allowDownload : false;
   const styleRules = useStyleRules(
     extensionEnabled(props.extensions, 'styling'),
     props.settings.styleRules,
@@ -190,99 +193,100 @@ const NeoLineChart = (props: ChartProps) => {
     );
   }
 
-  // T18:40:32.142+0100
-  // %Y-%m-%dT%H:%M:%SZ
   const lineViz = (
-    <div className='n-h-full n-w-full overflow-hidden'>
-      <ResponsiveLine
-        theme={themeNivo}
-        data={data}
-        xScale={
-          isTimeChart
-            ? { format: parseFormat, type: 'time' }
-            : xScale == 'linear'
-            ? { type: xScale, min: minXValue, max: maxXValue, stacked: false, reverse: false }
-            : { type: xScale, min: minXValue, max: maxXValue, constant: xScaleLogBase, base: xScaleLogBase }
-        }
-        xFormat={isTimeChart ? `time:${xAxisTimeFormat}` : xAxisFormat}
-        margin={{ top: marginTop, right: marginRight, bottom: marginBottom, left: marginLeft }}
-        yScale={
-          yScale == 'linear'
-            ? { type: yScale, min: minYValue, max: maxYValue, stacked: false, reverse: false }
-            : { type: yScale, min: minYValue, max: maxYValue, constant: xScaleLogBase, base: yScaleLogBase }
-        }
-        curve={curve}
-        enableGridX={showGrid}
-        enableGridY={showGrid}
-        axisTop={null}
-        axisRight={null}
-        axisBottom={
-          isTimeChart
-            ? {
-                tickValues: xTickTimeValues,
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: xTickRotationAngle,
-                format: xAxisTimeFormat,
-                legend: 'Time',
-                legendOffset: 36,
-                legendPosition: 'middle',
-              }
-            : {
-                orient: 'bottom',
-                tickSize: 6,
-                tickValues: xTickValues,
-                format: xAxisFormat,
-                tickRotation: xTickRotationAngle,
-                tickPadding: 12,
-              }
-        }
-        axisLeft={{
-          tickSize: 6,
-          tickPadding: 12,
-          tickRotation: yTickRotationAngle,
-          tickValues: yTickCount !== 'auto' && !isNaN(Number(yTickCount)) ? Number(yTickCount) : undefined,
-        }}
-        pointSize={pointSize}
-        lineWidth={lineWidth}
-        lineColor='black'
-        pointColor='white'
-        colors={styleRules.length >= 1 ? getLineColors : { scheme: colorScheme }}
-        pointBorderWidth={2}
-        pointBorderColor={{ from: 'serieColor' }}
-        pointLabelYOffset={-12}
-        useMesh={true}
-        legends={
-          legend
-            ? [
-                {
-                  anchor: 'top-right',
-                  direction: 'row',
-                  justify: false,
-                  translateX: -10,
-                  translateY: -20,
-                  itemsSpacing: 0,
-                  itemDirection: 'right-to-left',
-                  itemWidth: legendWidth,
-                  itemHeight: 20,
-                  itemOpacity: 0.75,
-                  symbolSize: 6,
-                  symbolShape: 'circle',
-                  symbolBorderColor: 'rgba(0, 0, 0, .5)',
-                  effects: [
-                    {
-                      on: 'hover',
-                      style: {
-                        itemBackground: 'rgba(0, 0, 0, .03)',
-                        itemOpacity: 1,
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <ResponsiveLine
+          theme={themeNivo}
+          data={data}
+          xScale={
+            isTimeChart
+              ? { format: parseFormat, type: 'time' }
+              : xScale == 'linear'
+              ? { type: xScale, min: minXValue, max: maxXValue, stacked: false, reverse: false }
+              : { type: xScale, min: minXValue, max: maxXValue, constant: xScaleLogBase, base: xScaleLogBase }
+          }
+          xFormat={isTimeChart ? `time:${xAxisTimeFormat}` : xAxisFormat}
+          margin={{ top: marginTop, right: marginRight, bottom: marginBottom, left: marginLeft }}
+          yScale={
+            yScale == 'linear'
+              ? { type: yScale, min: minYValue, max: maxYValue, stacked: false, reverse: false }
+              : { type: yScale, min: minYValue, max: maxYValue, constant: xScaleLogBase, base: yScaleLogBase }
+          }
+          curve={curve}
+          enableGridX={showGrid}
+          enableGridY={showGrid}
+          axisTop={null}
+          axisRight={null}
+          axisBottom={
+            isTimeChart
+              ? {
+                  tickValues: xTickTimeValues,
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: xTickRotationAngle,
+                  format: xAxisTimeFormat,
+                  legend: 'Time',
+                  legendOffset: 36,
+                  legendPosition: 'middle',
+                }
+              : {
+                  orient: 'bottom',
+                  tickSize: 6,
+                  tickValues: xTickValues,
+                  format: xAxisFormat,
+                  tickRotation: xTickRotationAngle,
+                  tickPadding: 12,
+                }
+          }
+          axisLeft={{
+            tickSize: 6,
+            tickPadding: 12,
+            tickRotation: yTickRotationAngle,
+            tickValues: yTickCount !== 'auto' && !isNaN(Number(yTickCount)) ? Number(yTickCount) : undefined,
+          }}
+          pointSize={pointSize}
+          lineWidth={lineWidth}
+          lineColor='black'
+          pointColor='white'
+          colors={styleRules.length >= 1 ? getLineColors : { scheme: colorScheme }}
+          pointBorderWidth={2}
+          pointBorderColor={{ from: 'serieColor' }}
+          pointLabelYOffset={-12}
+          useMesh={true}
+          legends={
+            legend
+              ? [
+                  {
+                    anchor: 'top-right',
+                    direction: 'row',
+                    justify: false,
+                    translateX: -10,
+                    translateY: -20,
+                    itemsSpacing: 0,
+                    itemDirection: 'right-to-left',
+                    itemWidth: legendWidth,
+                    itemHeight: 20,
+                    itemOpacity: 0.75,
+                    symbolSize: 6,
+                    symbolShape: 'circle',
+                    symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                    effects: [
+                      {
+                        on: 'hover',
+                        style: {
+                          itemBackground: 'rgba(0, 0, 0, .03)',
+                          itemOpacity: 1,
+                        },
                       },
-                    },
-                  ],
-                },
-              ]
-            : []
-        }
-      />
+                    ],
+                  },
+                ]
+              : []
+          }
+        />
+      </div>
+      <ChartDownloadButton allowDownload={allowDownload} data={convertToCSVRows(data, selection)} />
     </div>
   );
   return lineViz;

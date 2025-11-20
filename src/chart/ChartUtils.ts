@@ -456,3 +456,72 @@ export function getSelectionBasedOnFields(fields, oldSelection = {}, autoAssignS
 }
 
 export const DEFAULT_NODE_LABELS = ['name', 'title', 'label', 'id', 'uid', '(label)'];
+
+/**
+ * Formats date/time values to a consistent YYYY-MM-DD format.
+ * Handles multiple date formats including Neo4j Date objects, JavaScript Date objects, and DateTime objects.
+ * @param value The value to format (can be Neo4j Date, JS Date, DateTime, or any other type).
+ * @returns Formatted date string
+ */
+const formatDateValue = (value: any): string => {
+  // Handle Neo4j Date format with year, month, day structure (both nested and direct properties)
+  if (value && typeof value === 'object' && value.year && value.month && value.day) {
+    const year = value.year.low !== undefined ? value.year.low : value.year;
+    const month = String(value.month.low !== undefined ? value.month.low : value.month).padStart(2, '0');
+    const day = String(value.day.low !== undefined ? value.day.low : value.day).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Handle Date objects
+  if (value instanceof Date) {
+    return value.toISOString().split('T')[0];
+  }
+
+  // Handle DateTime objects with __isDateTime__ flag
+  if (value && value.__isDateTime__) {
+    return new Date(value.toString()).toISOString().split('T')[0];
+  }
+
+  // Handle regular values (numbers, strings, etc.)
+  return String(value);
+};
+
+/**
+ * Convert line chart data to CSV format with x-axis and y-axis columns
+ * @param data The line chart data (array of series with id and data points)
+ * @param selection The chart selection configuration (to get x-axis label)
+ * @returns Array of objects representing CSV rows with x-axis and y-axis values
+ */
+export const convertToCSVRows = (data, selection) => {
+  const rows: any[] = [];
+  let rowId = 0;
+
+  // Get x-axis label (from selection.x or default to 'x-axis')
+  const xAxisLabel = selection?.x || 'x-axis';
+
+  // For each series (line), create rows with x and y values
+  data.forEach((series: any) => {
+    const yAxisLabel = series.id;
+    series.data.forEach((point: any) => {
+      rowId += 1;
+      rows.push({
+        id: rowId,
+        [xAxisLabel]: formatDateValue(point.x),
+        [yAxisLabel]: point.y,
+      });
+    });
+  });
+
+  return rows;
+};
+
+// Convert bar chart data to CSV format (similar to table rows)
+export const convertToCSVRowsForBarCharts = (data, selection, keys) => {
+  return data.map((item, index) => {
+    const row: any = { id: index, [selection.index]: item.index };
+    keys.forEach((key) => {
+      row[key] = item[key];
+    });
+    return row;
+  });
+};
