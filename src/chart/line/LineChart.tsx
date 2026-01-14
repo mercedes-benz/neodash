@@ -225,7 +225,8 @@ const NeoLineChart = (props: ChartProps) => {
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: xTickRotationAngle,
-                  format: xAxisTimeFormat,
+                  // Do not render specific date labels on the time axis
+                  format: () => '',
                   legend: 'Time',
                   legendOffset: 36,
                   legendPosition: 'middle',

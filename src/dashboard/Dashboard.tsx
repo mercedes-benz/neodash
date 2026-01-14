@@ -20,7 +20,7 @@ const Dashboard = ({
   onConnectionUpdate,
   onDownloadDashboardAsImage,
   onAboutModalOpen,
-  resetApplication,
+  _resetApplication,
 }) => {
   const [driver, setDriver] = React.useState(undefined);
 
