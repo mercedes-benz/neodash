@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chip, Tooltip } from '@mui/material';
 import { GraphLabel, TextLink } from '@neo4j-ndl/react';
+import { CheckIconOutline, ExclamationTriangleIconSolid } from '@neo4j-ndl/react/icons';
 import { withStyles } from '@mui/styles';
 import {
   getRecordType,
@@ -346,6 +347,38 @@ function RenderPoint(value) {
   );
 }
 
+function RenderBoolean(value, useBooleanIcons = false) {
+  if (useBooleanIcons) {
+    const isDarkMode = store.getState()?.dashboard?.settings?.theme === 'dark';
+    const trueBackgroundColor = isDarkMode ? '#2a6b2c' : '#4caf50';
+    const falseBackgroundColor = isDarkMode ? '#ad7118' : '#ff9800';
+    const backgroundColor = value ? trueBackgroundColor : falseBackgroundColor;
+    const icon = value ? <CheckIconOutline /> : <ExclamationTriangleIconSolid />;
+
+    return (
+      <Chip
+        icon={icon}
+        sx={{
+          backgroundColor: backgroundColor,
+          width: '24px',
+          height: '24px',
+          borderRadius: '50%',
+          '& .MuiChip-icon': {
+            color: 'white',
+            width: '14px',
+            height: '14px',
+            margin: 0,
+          },
+          '& .MuiChip-label': {
+            display: 'none',
+          },
+        }}
+      />
+    );
+  }
+  return RenderString(value);
+}
+
 function RenderInteger(value) {
   // if we cannot cast to integer, use the generic number renderer.
   if (!value || !value.toInt) {
@@ -437,7 +470,7 @@ export const rendererForType: any = {
   },
   boolean: {
     type: 'string',
-    renderValue: (c) => RenderString(c.value),
+    renderValue: (c) => RenderBoolean(c.value, c.useBooleanIcons),
   },
   link: {
     type: 'link',
