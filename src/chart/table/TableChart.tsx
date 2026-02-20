@@ -60,18 +60,38 @@ function renderAsButtonWrapper(renderer) {
   };
 }
 
-function ApplyColumnType(column, value, asAction, useExpandedRenderer) {
+function ApplyColumnType(column, value, asAction, useExpandedRenderer, useBooleanIcons = false) {
   const renderer = getRendererForValue(value);
-  const renderCell = useExpandedRenderer
-    ? (obj) => expandedCellRenderer(obj, column.lineBreakAfterListEntry)
-    : asAction
-    ? renderAsButtonWrapper(renderer.renderValue)
-    : renderer.renderValue;
+
+  const renderCell = (obj) => {
+    // Check if this specific cell value is boolean and icons are enabled
+    const isBooleanCell = (obj.value === true || obj.value === false) && useBooleanIcons;
+
+    if (isBooleanCell) {
+      // For boolean values with icons enabled, use the boolean renderer directly
+      const boolRenderer = getRendererForValue(obj.value);
+      return boolRenderer.renderValue({ ...obj, useBooleanIcons: true });
+    } else if (useExpandedRenderer) {
+      // For non-boolean values, use expanded renderer if enabled
+      return expandedCellRenderer(obj, column.lineBreakAfterListEntry);
+    } else if (asAction) {
+      // For action fields
+      return renderAsButtonWrapper(renderer.renderValue)(obj);
+    } 
+      // Default rendering
+      return renderer.renderValue({ ...obj, useBooleanIcons: false });
+    
+  };
+
+  // Check if the value is boolean to apply center alignment
+  const isBoolean = value === true || value === false;
 
   const columnProperties = renderer
     ? {
         type: renderer.type,
         renderCell: renderCell ? renderCell : fallbackRenderer,
+        align: isBoolean && useBooleanIcons ? 'center' : 'left',
+        headerAlign: isBoolean && useBooleanIcons ? 'center' : 'left',
         valueGetter: (params) => {
           const fieldValue = params.row[params.field];
           if (typeof fieldValue === 'number') {
@@ -113,6 +133,7 @@ export const NeoTableChart = (props: ChartProps) => {
       ? props.settings.preConditions
       : [];
   const compact = props.settings && props.settings.compact !== undefined ? props.settings.compact : false;
+  const useBooleanIcons = props.settings?.useBooleanIcons ?? false;
   const styleRules = useStyleRules(
     extensionEnabled(props.extensions, 'styling'),
     props.settings?.styleRules,
@@ -220,7 +241,8 @@ export const NeoTableChart = (props: ChartProps) => {
           },
           key,
           actionableFields.includes(key),
-          useExpandedRenderer
+          useExpandedRenderer,
+          useBooleanIcons
         );
       })
     : records[0] &&
@@ -241,7 +263,8 @@ export const NeoTableChart = (props: ChartProps) => {
             },
             value,
             actionableFields.includes(key),
-            useExpandedRenderer
+            useExpandedRenderer,
+            useBooleanIcons
           );
         }
         return ApplyColumnType(
@@ -257,7 +280,8 @@ export const NeoTableChart = (props: ChartProps) => {
           },
           value,
           actionableFields.includes(key),
-          useExpandedRenderer
+          useExpandedRenderer,
+          useBooleanIcons
         );
       });
 
