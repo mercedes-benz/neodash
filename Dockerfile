@@ -23,6 +23,9 @@ FROM nginxinc/nginx-unprivileged:latest AS neodash
 COPY --chown=101:101 --from=build-stage /usr/local/src/neodash/dist /usr/share/nginx/html
 
 USER root
+# Unused XSLT module pulls in libxslt1.1 (libexslt), which has an unpatched CVE.
+RUN apt-get purge -y --auto-remove nginx-module-xslt libxslt1.1 \
+    && rm -rf /var/lib/apt/lists/*
 RUN chown -R 101:101 /usr/share/nginx/html
 COPY --chown=101:101 ./conf/default.conf /etc/nginx/conf.d/
 COPY --chown=101:101 ./scripts/config-entrypoint.sh /docker-entrypoint.d/config-entrypoint.sh
