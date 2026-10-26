@@ -1,5 +1,7 @@
 # build stage
-FROM node:22-alpine AS build-stage
+FROM node:22.23.4-alpine AS build-stage
+
+RUN apk upgrade --no-cache
 
 RUN yarn global add typescript jest
 WORKDIR /usr/local/src/neodash
@@ -24,7 +26,9 @@ COPY --chown=101:101 --from=build-stage /usr/local/src/neodash/dist /usr/share/n
 
 USER root
 # Unused XSLT module pulls in libxslt1.1 (libexslt), which has an unpatched CVE.
-RUN apt-get purge -y --auto-remove nginx-module-xslt libxslt1.1 \
+RUN apt-get update \
+    && apt-get install -y --only-upgrade libbrotli1 \
+    && apt-get purge -y --auto-remove nginx-module-xslt libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
 RUN chown -R 101:101 /usr/share/nginx/html
 COPY --chown=101:101 ./conf/default.conf /etc/nginx/conf.d/
