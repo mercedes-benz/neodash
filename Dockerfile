@@ -27,8 +27,9 @@ COPY --chown=101:101 --from=build-stage /usr/local/src/neodash/dist /usr/share/n
 USER root
 # Unused XSLT module pulls in libxslt1.1 (libexslt), which has an unpatched CVE.
 RUN apt-get update \
-    && apt-get install -y --only-upgrade libbrotli1 \
-    && apt-get purge -y --auto-remove nginx-module-xslt libxslt1.1 \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get purge -y --auto-remove nginx-module-xslt libxslt1.1 nginx-module-image-filter curl \
+    && apt-get install -y --no-install-recommends wget \
     && rm -rf /var/lib/apt/lists/*
 RUN chown -R 101:101 /usr/share/nginx/html
 COPY --chown=101:101 ./conf/default.conf /etc/nginx/conf.d/
@@ -42,5 +43,5 @@ EXPOSE 5005
 
 ## Launch webserver as non-root user.
 CMD ["nginx", "-g", "daemon off;"]
-HEALTHCHECK cmd curl --fail http://localhost:5005 || exit 1
+HEALTHCHECK CMD wget --quiet --output-document=/dev/null http://localhost:5005/ || exit 1
 LABEL version="2.4.0"
